@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Bild-Einbetter</title></head>
+<body>
+<h2>Bilder einbetten</h2>
+<p id="status">Bereit...</p>
+<button id="btn" onclick="run()">Jetzt einbetten und speichern</button>
+<script>
+async function fetchBase64(url) {
+    const r = await fetch(url);
+    const blob = await r.blob();
+    return new Promise(res => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.readAsDataURL(blob);
+    });
+}
+
+async function run() {
+    document.getElementById('btn').disabled = true;
+    const status = document.getElementById('status');
+
+    const ids = {
+        riechen: 3785708, geruch: 261463, schmecken: 3338538, geschmack: 8775420,
+        probieren: 4350104, kosten: 10048670, zunge: 8954879, suess: 1854652,
+        sauer: 13915, salzig: 1640775, scharf: 3756709, bitter: 8105105,
+        fruchtig: 11745476, ungewoehnlich: 52577, verderben: 5978507,
+        geniessen: 4262167, portion: 306059, vegetarier: 1640777,
+    };
+
+    // 1. HTML-Datei lesen
+    status.textContent = 'Lese HTML-Datei...';
+    const htmlResp = await fetch('DE_A2_2011V-sinneswahrnehmungen.html');
+    let html = await htmlResp.text();
+
+    // 2. Bilder laden und einbetten
+    let count = 0;
+    for (const [name, id] of Object.entries(ids)) {
+        status.textContent = `Lade Bild: ${name} (${count+1}/${Object.keys(ids).length})...`;
+        const url = `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop`;
+        try {
+            const b64 = await fetchBase64(url);
+            const search = `id="img-${name}" src=""`;
+            if (html.includes(search)) {
+                html = html.replace(search, `id="img-${name}" src="${b64}"`);
+                count++;
+            }
+        } catch(e) { console.error(name, e); }
+    }
+
+    // 3. Datei speichern via showSaveFilePicker
+    status.textContent = `${count} Bilder eingebettet. Speichere Datei...`;
+    try {
+        const fileHandle = await window.showSaveFilePicker({
+            suggestedName: 'DE_A2_2011V-sinneswahrnehmungen.html',
+            types: [{ description: 'HTML', accept: { 'text/html': ['.html'] } }],
+        });
+        const writable = await fileHandle.createWritable();
+        await writable.write(html);
+        await writable.close();
+        status.textContent = `✅ Fertig! ${count} Bilder eingebettet, Datei gespeichert (${Math.round(html.length/1024)} KB).`;
+    } catch(e) {
+        // Fallback: Download
+        const blob = new Blob([html], {type: 'text/html'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'DE_A2_2011V-sinneswahrnehmungen.html';
+        a.click();
+        status.textContent = `✅ Fertig! ${count} Bilder eingebettet. Download gestartet.`;
+    }
+}
+</script>
+</body>
+</html>
