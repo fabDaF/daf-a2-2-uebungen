@@ -16,10 +16,11 @@ nav button.active { background: #6c3483; color: #fff; border-color: #6c3483; }
 nav button:hover:not(.active) { background: #e8d5f5; }
 .tab { display: none; padding: 22px 24px 28px; }
 .tab.active { display: block; }
-.timer-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; font-size:0.82rem; color:#6c3483; }
-.timer-display { font-weight:700; font-size:1rem; min-width:52px; }
-.timer-btn { padding:4px 12px; border-radius:6px; border:none; background:#6c3483; color:#fff; cursor:pointer; font-size:0.8rem; }
-.timer-btn:hover { background:#9b59b6; }
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
 .best-time { font-size:0.78rem; color:#888; }
 
 /* VOCAB CARDS */
@@ -118,7 +119,10 @@ footer { text-align: center; font-size: 0.75rem; color: #aaa; padding: 14px; bor
 
 <!-- TAB 0: WÖRTER -->
 <div class="tab active" id="tab0">
-  <div class="timer-row">⏱ <span class="timer-display" id="timer0">0:00</span><span class="best-time" id="best0"></span></div>
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="timerAutoStart(0);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-0">00:00</span></span><span class="best-time">🏆 <span id="best-0">--:--</span></span></div>
+  </div>
   <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">💡 Klicke auf eine Karte, um die englische Übersetzung zu sehen.</p>
   <div class="vocab-grid">
     <div class="vcard" onclick="this.classList.toggle('flipped')">
@@ -198,7 +202,10 @@ footer { text-align: center; font-size: 0.75rem; color: #aaa; padding: 14px; bor
 
 <!-- TAB 1: REDEMITTEL -->
 <div class="tab" id="tab1">
-  <div class="timer-row">⏱ <span class="timer-display" id="timer1">0:00</span><span class="best-time" id="best1"></span></div>
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="timerAutoStart(1);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-1">00:00</span></span><span class="best-time">🏆 <span id="best-1">--:--</span></span></div>
+  </div>
   <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">💡 Klicke auf die rechte Seite, um die Antwort zu sehen.</p>
   <div class="qa-grid">
     <div class="qa-pair">
@@ -238,7 +245,10 @@ footer { text-align: center; font-size: 0.75rem; color: #aaa; padding: 14px; bor
 
 <!-- TAB 2: LÜCKENTEXT -->
 <div class="tab" id="tab2">
-  <div class="timer-row">⏱ <span class="timer-display" id="timer2">0:00</span><span class="best-time" id="best2"></span></div>
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-show" onclick="document.querySelectorAll('.luecken-inp:not(.ok)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('ok');})">Lösungen</button><button class="btn btn-reset" onclick="document.querySelectorAll('.luecken-inp').forEach(function(i){i.value='';i.classList.remove('ok','no');});timerAutoStart(2);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-2">00:00</span></span><span class="best-time">🏆 <span id="best-2">--:--</span></span></div>
+  </div>
   <div class="wortbank">
     <strong>Wortbank:</strong>
     <span class="wb-chip">Sehenswürdigkeiten</span><span class="wb-chip">besichtigen</span><span class="wb-chip">Stadtführung</span>
@@ -283,7 +293,10 @@ footer { text-align: center; font-size: 0.75rem; color: #aaa; padding: 14px; bor
 
 <!-- TAB 3: TEXT & FRAGEN -->
 <div class="tab" id="tab3">
-  <div class="timer-row">⏱ <span class="timer-display" id="timer3">0:00</span><span class="best-time" id="best3"></span></div>
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="timerAutoStart(3);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-3">00:00</span></span><span class="best-time">🏆 <span id="best-3">--:--</span></span></div>
+  </div>
   <div class="lese-text">
     <p><strong>Die Müllers werden Rucksacktouristen</strong></p>
     <p>Früher ist Familie Müller, wie viele andere Deutsche, in den Ferien nach Spanien oder in die Türkei geflogen. Dort blüht der Massentourismus. Das macht es sehr bequem: Sie brauchten kein Visum, der Reiseleiter hat Stadtführungen und Touren organisiert und sich um alle Beschwerden gekümmert. Sie mussten auch keine neue Sprache lernen, denn im Hotel haben sie nur Deutsche kennengelernt und auch alle Informationstafeln waren auf Deutsch.</p>
@@ -353,20 +366,26 @@ footer { text-align: center; font-size: 0.75rem; color: #aaa; padding: 14px; bor
 
 <!-- TAB 4: SATZBAU -->
 <div class="tab" id="tab4">
-  <div class="timer-row">⏱ <span class="timer-display" id="timer4">0:00</span><span class="best-time" id="best4"></span></div>
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-show" onclick="document.querySelectorAll('.sb-row').forEach(function(r,i){sbShowSolution(i);})">Lösungen</button><button class="btn btn-reset" onclick="initSatzbau && initSatzbau(); timerAutoStart(4);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-4">00:00</span></span><span class="best-time">🏆 <span id="best-4">--:--</span></span></div>
+  </div>
   <p style="font-size:0.88rem;color:#555;margin-bottom:14px;">Bringe die Wörter in die richtige Reihenfolge!</p>
   <div id="satzbauContainer"></div>
 </div>
 
 <!-- TAB 5: WORTSCHATZ -->
 <div class="tab" id="tab5">
-  <div class="timer-row">
-    ⏱ <span class="timer-display" id="timer5">0:00</span>
-    <span class="best-time" id="best5"></span>
-  </div>
-  <div class="btn-row" style="margin-bottom:10px;">
-    <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
-    <button class="btn btn-reset" onclick="resetVocab(); resetTimer(5);">Neu starten</button>
+  <h2>📚 Wortschatz</h2>
+  <div class="control-bar">
+    <div class="btn-row">
+      <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
+      <button class="btn btn-reset" onclick="resetVocab(); timerAutoStart(5);">Neu starten</button>
+    </div>
+    <div class="timer-display">
+      <span class="current-time">⏱ <span id="timer-5">00:00</span></span>
+      <span class="best-time">🏆 <span id="best-5">--:--</span></span>
+    </div>
   </div>
   <div class="help-box">
     <strong>Aufgabe:</strong> Übersetze die Wörter ins Deutsche. Bei Nomen: Artikel + Wort + Plural!
@@ -385,7 +404,7 @@ function timerFmt(sec){const m=Math.floor(sec/60),s=sec%60;return m+':'+(s<10?'0
 function timerAutoStart(i){
   if(running[i])return;
   running[i]=true;
-  timers[i]=setInterval(function(){elapsed[i]++;document.getElementById('timer'+i).textContent=timerFmt(elapsed[i]);},1000);
+  timers[i]=setInterval(function(){elapsed[i]++;document.getElementById('timer-'+i).textContent=timerFmt(elapsed[i]);},1000);
 }
 function timerStop(i){
   if(!running[i])return;
@@ -394,7 +413,7 @@ function timerStop(i){
   if(!prev||elapsed[i]<parseInt(prev))localStorage.setItem(k,elapsed[i]);
   timerLoadBest(i);
 }
-function timerLoadBest(i){var b=localStorage.getItem(timerKey(i));if(b)document.getElementById('best'+i).textContent='Bestzeit: '+timerFmt(parseInt(b));}
+function timerLoadBest(i){var b=localStorage.getItem(timerKey(i));if(b)document.getElementById('best-'+i).textContent='Bestzeit: '+timerFmt(parseInt(b));}
 [0,1,2,3,4,5].forEach(timerLoadBest);
 function normalise(s){return s.trim().toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');}
 function liveCheck(inp){const val=normalise(inp.value);const ans=normalise(inp.dataset.ans);if(val===ans){inp.classList.add('correct');inp.classList.remove('partial','wrong');return;}if(ans.startsWith(val)&&val.length>0){inp.classList.add('partial');inp.classList.remove('correct','wrong');return;}inp.classList.remove('correct','partial');if(val.length>0)inp.classList.add('wrong');else inp.classList.remove('wrong');}

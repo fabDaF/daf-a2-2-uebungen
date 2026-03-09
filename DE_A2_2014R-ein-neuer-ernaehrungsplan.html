@@ -72,12 +72,14 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .solution-btn:hover { background: #667eea; color: white; border-color: #667eea; }
 
 /* ── TIMER ──────────────────────────────────────────────────── */
-.timer-bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #f8f9fa; border-bottom: 1px solid #eee; font-size: 0.9em; }
-.timer-display { font-weight: 700; color: #667eea; font-size: 1.05em; min-width: 60px; }
-.best-display { color: #27ae60; font-size: 0.85em; }
-.score-display { margin-left: auto; color: #764ba2; font-weight: 700; }
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
 .section-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
-.author-footer { text-align: center; padding: 18px; background: #f8f9fa; border-top: 1px solid #eee; font-size: 0.82em; color: #999; }
+.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #999; }
 .author-footer a { color: #667eea; text-decoration: none; }
 .author-name { font-weight: 600; }
     </style>
@@ -125,11 +127,15 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
          TAB 1 — RICHTIG / FALSCH
          ═══════════════════════════════════════════════════════ -->
     <div class="section" id="sec1">
-        <div class="timer-bar">
-            <span>⏱</span>
-            <span class="timer-display" id="timer1">0:00</span>
-            <span class="best-display" id="best1"></span>
-            <span class="score-display" id="score1">0 / 8</span>
+        <div class="control-bar">
+            <div class="btn-row">
+                <button class="btn btn-show" onclick="document.querySelectorAll('.luecken-inp:not(.ok)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('ok');})">Lösungen</button>
+                <button class="btn btn-reset" onclick="document.querySelectorAll('.luecken-inp').forEach(function(i){i.value='';i.classList.remove('ok','no');});timerAutoStart(1);">Neu starten</button>
+            </div>
+            <div class="timer-display">
+                <span class="current-time">⏱ <span id="timer-1">00:00</span></span>
+                <span class="best-time">🏆 <span id="best-1">--:--</span></span>
+            </div>
         </div>
         <div class="sec-inner">
             <div class="section-title">✅ Richtig oder Falsch?</div>
@@ -141,11 +147,15 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
          TAB 2 — LÜCKENTEXT
          ═══════════════════════════════════════════════════════ -->
     <div class="section" id="sec2">
-        <div class="timer-bar">
-            <span>⏱</span>
-            <span class="timer-display" id="timer2">0:00</span>
-            <span class="best-display" id="best2"></span>
-            <span class="score-display" id="score2">0 / 10</span>
+        <div class="control-bar">
+            <div class="btn-row">
+                <button class="btn btn-show" onclick="document.querySelectorAll('.luecken-inp:not(.ok)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('ok');})">Lösungen</button>
+                <button class="btn btn-reset" onclick="document.querySelectorAll('.luecken-inp').forEach(function(i){i.value='';i.classList.remove('ok','no');});timerAutoStart(2);">Neu starten</button>
+            </div>
+            <div class="timer-display">
+                <span class="current-time">⏱ <span id="timer-2">00:00</span></span>
+                <span class="best-time">🏆 <span id="best-2">--:--</span></span>
+            </div>
         </div>
         <div class="luecken-block">
             <div class="wortkasten">
@@ -162,11 +172,15 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
          TAB 3 — SATZBAU
          ═══════════════════════════════════════════════════════ -->
     <div class="section" id="sec3">
-        <div class="timer-bar">
-            <span>⏱</span>
-            <span class="timer-display" id="timer3">0:00</span>
-            <span class="best-display" id="best3"></span>
-            <span class="score-display" id="score3">0 / 7</span>
+        <div class="control-bar">
+            <div class="btn-row">
+                <button class="btn btn-show" onclick="document.querySelectorAll('.sb-row').forEach(function(r,i){sbShowSolution(i);})">Lösungen</button>
+                <button class="btn btn-reset" onclick="initSatzbau(); timerAutoStart(3);">Neu starten</button>
+            </div>
+            <div class="timer-display">
+                <span class="current-time">⏱ <span id="timer-3">00:00</span></span>
+                <span class="best-time">🏆 <span id="best-3">--:--</span></span>
+            </div>
         </div>
         <div class="sec-inner">
             <div class="section-title">🧩 Sätze aus dem Text bauen</div>

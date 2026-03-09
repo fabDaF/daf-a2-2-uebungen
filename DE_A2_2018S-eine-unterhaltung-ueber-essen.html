@@ -21,10 +21,11 @@
   .tab.active { display: block; }
 
   /* TIMER */
-  .timer-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; font-size:0.82rem; color:#6c3483; }
-  .timer-display { font-weight:700; font-size:1rem; min-width:52px; }
-  .timer-btn { padding:4px 12px; border-radius:6px; border:none; background:#6c3483; color:#fff; cursor:pointer; font-size:0.8rem; }
-  .timer-btn:hover { background:#9b59b6; }
+  .control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+  .btn-row { display: flex; gap: 6px; }
+  .btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+  .btn:hover { border-color: #667eea; color: #667eea; }
+  .timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
   .best-time { font-size:0.78rem; color:#888; }
 
   /* AUSSPRACHE */
@@ -117,10 +118,15 @@
 
 <!-- ══════════════════════ TAB 0: AUSSPRACHE ══════════════════════ -->
 <div class="tab active" id="tab0">
-  <div class="timer-row">
-    ⏱ <span class="timer-display" id="timer0">0:00</span>
-    <span class="best-time" id="best0"></span>
-  </div>
+  <div class="control-bar">
+            <div class="btn-row">
+                <button class="btn btn-reset" onclick="timerAutoStart(0);">Neu starten</button>
+            </div>
+            <div class="timer-display">
+                <span class="current-time">⏱ <span id="timer-0">00:00</span></span>
+                <span class="best-time">🏆 <span id="best-0">--:--</span></span>
+            </div>
+        </div>
 
   <div class="aussprache-intro">
     <strong>Aussprache: Wortbetonung</strong><br>
@@ -228,10 +234,16 @@
 
 <!-- ══════════════════════ TAB 1: ESSGEWOHNHEITEN ══════════════════════ -->
 <div class="tab" id="tab1">
-  <div class="timer-row">
-    ⏱ <span class="timer-display" id="timer1">0:00</span>
-    <span class="best-time" id="best1"></span>
-  </div>
+  <div class="control-bar">
+            <div class="btn-row">
+                <button class="btn btn-show" onclick="document.querySelectorAll('.chip').forEach(function(c){c.classList.add('correct');})">Lösungen</button>
+                <button class="btn btn-reset" onclick="initZuordnung && initZuordnung(); timerAutoStart(1);">Neu starten</button>
+            </div>
+            <div class="timer-display">
+                <span class="current-time">⏱ <span id="timer-1">00:00</span></span>
+                <span class="best-time">🏆 <span id="best-1">--:--</span></span>
+            </div>
+        </div>
 
   <div class="rollen-intro">
     <strong>Rollenspiel: Essgewohnheiten</strong><br>
@@ -332,10 +344,16 @@
 
 <!-- ══════════════════════ TAB 2: PASSIV LÜCKENTEXT ══════════════════════ -->
 <div class="tab" id="tab2">
-  <div class="timer-row">
-    ⏱ <span class="timer-display" id="timer2">0:00</span>
-    <span class="best-time" id="best2"></span>
-  </div>
+  <div class="control-bar">
+            <div class="btn-row">
+                <button class="btn btn-show" onclick="document.querySelectorAll('.luecken-inp:not(.ok)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('ok');})">Lösungen</button>
+                <button class="btn btn-reset" onclick="document.querySelectorAll('.luecken-inp').forEach(function(i){i.value='';i.classList.remove('ok','no');});timerAutoStart(2);">Neu starten</button>
+            </div>
+            <div class="timer-display">
+                <span class="current-time">⏱ <span id="timer-2">00:00</span></span>
+                <span class="best-time">🏆 <span id="best-2">--:--</span></span>
+            </div>
+        </div>
 
   <div class="luecken-intro">
     <strong>Passiv-Lückentext: Kuchen backen</strong><br>
@@ -416,10 +434,16 @@
 
 <!-- ══════════════════════ TAB 3: SATZBAU ══════════════════════ -->
 <div class="tab" id="tab3">
-  <div class="timer-row">
-    ⏱ <span class="timer-display" id="timer3">0:00</span>
-    <span class="best-time" id="best3"></span>
-  </div>
+  <div class="control-bar">
+            <div class="btn-row">
+                <button class="btn btn-show" onclick="document.querySelectorAll('.drop-row').forEach(function(r,i){sbShowSolution(i);})">Lösungen</button>
+                <button class="btn btn-reset" onclick="initSatzbau(); timerAutoStart(3);">Neu starten</button>
+            </div>
+            <div class="timer-display">
+                <span class="current-time">⏱ <span id="timer-3">00:00</span></span>
+                <span class="best-time">🏆 <span id="best-3">--:--</span></span>
+            </div>
+        </div>
   <p style="font-size:0.88rem;color:#555;margin-bottom:14px;">Bringe die Wörter in die richtige Reihenfolge. Ziehe die Chips in die graue Box!</p>
   <div id="satzbauContainer"></div>
 </div>

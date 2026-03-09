@@ -103,9 +103,12 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .art { width: 70px; }
 
 /* ── TIMER ──────────────────────────────────────────────────────── */
-.timer-box { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: #f8f9fa; border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; font-size: 0.88em; color: #555; }
-.timer-val { font-weight: 700; color: #667eea; }
-.btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+.btn-row { display: flex; gap: 6px; }
 .btn { padding: 10px 22px; border: none; border-radius: 25px; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: all 0.2s; }
 .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
 .btn-reset { background: #fff; color: #e74c3c; border: 2px solid #e74c3c; }
@@ -347,12 +350,15 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     <!-- ══════════════════════════════════════ TAB 2: LÜCKENTEXT -->
     <div class="section" id="sec-2">
         <div class="luecken-block">
-            <div class="timer-box">
-                <span>⏱</span>
-                <span>Zeit: <span class="timer-val" id="timer-2">0:00</span></span>
-                <span>🏆 Bestzeit: <span class="timer-val" id="best-2">—</span></span>
-                <button class="btn btn-reset" style="padding:6px 14px;font-size:0.82em;" onclick="timerReset(2)">↺ Neustart</button>
-                <button class="btn btn-loesung" style="padding:6px 14px;font-size:0.82em;" onclick="showLueckenLoesungen()">💡 Lösungen</button>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showLueckenLoesungen()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="timerReset(2);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span class="current-time">⏱ <span id="timer-2">00:00</span></span>
+                    <span class="best-time">🏆 <span id="best-2">--:--</span></span>
+                </div>
             </div>
 
             <h2>📝 Lückentext 1 — Im Restaurant</h2>
@@ -413,12 +419,15 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     <!-- ══════════════════════════════════════ TAB 4: SATZBAU -->
     <div class="section" id="sec-4">
         <div class="sec-inner">
-            <div class="timer-box">
-                <span>⏱</span>
-                <span>Zeit: <span class="timer-val" id="timer-4">0:00</span></span>
-                <span>🏆 Bestzeit: <span class="timer-val" id="best-4">—</span></span>
-                <button class="btn btn-reset" style="padding:6px 14px;font-size:0.82em;" onclick="timerReset(4)">↺ Neustart</button>
-                <button class="btn btn-loesung" style="padding:6px 14px;font-size:0.82em;" onclick="for(var i=0;i<satzbauData.length;i++)sbShowSolution(i)">💡 Lösungen</button>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="for(var i=0;i<satzbauData.length;i++)sbShowSolution(i)">Lösungen</button>
+                    <button class="btn btn-reset" onclick="timerReset(4);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span class="current-time">⏱ <span id="timer-4">00:00</span></span>
+                    <span class="best-time">🏆 <span id="best-4">--:--</span></span>
+                </div>
             </div>
             <div id="satzbauContainer"></div>
         </div>
@@ -427,14 +436,16 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     <!-- ══════════════════════════════════════ TAB 5: WORTSCHATZ -->
     <div class="section" id="sec-5">
         <div class="sec-inner">
-            <div class="timer-box">
-                <span>⏱</span>
-                <span>Zeit: <span class="timer-val" id="timer-5">0:00</span></span>
-                <span>🏆 Bestzeit: <span class="timer-val" id="best-5">—</span></span>
-            </div>
-            <div class="btn-row" style="margin-bottom:10px;">
-                <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
-                <button class="btn btn-reset" onclick="resetVocab(); timerReset(5);">Neu starten</button>
+            <h2>📚 Wortschatz</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetVocab(); timerReset(5);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span class="current-time">⏱ <span id="timer-5">00:00</span></span>
+                    <span class="best-time">🏆 <span id="best-5">--:--</span></span>
+                </div>
             </div>
             <div class="hilfe-box">
                 💡 Übersetze die Wörter ins Deutsche. Bei Nomen: Artikel + Wort + Plural!
