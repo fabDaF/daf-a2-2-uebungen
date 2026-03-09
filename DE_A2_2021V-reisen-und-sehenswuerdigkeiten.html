@@ -88,16 +88,15 @@ nav button:hover:not(.active) { background: #e8d5f5; }
 .chip.incorrect { background: #ffcdd2; border-color: #e74c3c; color: #b71c1c; }
 
 /* WORTSCHATZ */
-.ws-grid { display: flex; flex-direction: column; gap: 10px; }
-.ws-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 8px 12px; background: #f9f9f9; border-radius: 8px; }
+.ws-table { width: 100%; border-collapse: collapse; }
+.ws-table th { background: #f0f4ff; color: #667eea; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 10px; text-align: left; }
+.ws-table td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.ws-table tr:last-child td { border-bottom: none; }
 .ws-en { font-size: 0.85rem; color: #555; }
-.ws-inp-group { display: flex; gap: 6px; align-items: center; }
-.ws-inp { border: none; border-bottom: 2px solid #9b59b6; background: transparent; font-size: 0.85rem; font-family: inherit; padding: 2px 4px; outline: none; }
-.ws-inp.art { width: 52px; text-align: center; }
-.ws-inp.wort { width: 140px; }
-.ws-inp.plural { width: 100px; }
-.ws-inp.correct { border-bottom-color: #27ae60; background: #e8f9ec; border-radius: 3px 3px 0 0; }
-.ws-inp.partial { border-bottom-color: #f39c12; }
+.ws-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.92em; padding: 2px 4px; transition: border-color 0.2s; }
+.ws-inp:focus { border-bottom-color: #667eea; }
+.ws-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.ws-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
 
 footer { text-align: center; font-size: 0.75rem; color: #aaa; padding: 14px; border-top: 1px solid #eee; margin-top: 8px; }
 </style>
@@ -358,9 +357,16 @@ footer { text-align: center; font-size: 0.75rem; color: #aaa; padding: 14px; bor
 
 <!-- TAB 5: WORTSCHATZ -->
 <div class="tab" id="tab5">
-  <div class="timer-row">⏱ <span class="timer-display" id="timer5">0:00</span><span class="best-time" id="best5"></span></div>
+  <div class="timer-row">
+    ⏱ <span class="timer-display" id="timer5">0:00</span>
+    <span class="best-time" id="best5"></span>
+    <span style="font-size:0.78rem;color:#667eea;margin-left:8px;" id="score5">0 / 0</span>
+  </div>
   <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">Tippe Artikel, Wort und Plural auf Deutsch. 💡 ä=ae, ö=oe, ü=ue, ß=ss</p>
-  <div class="ws-grid" id="wsGrid"></div>
+  <table class="ws-table">
+    <thead><tr><th>Englisch</th><th class="art">Artikel</th><th class="wort">Wort</th><th>Plural</th></tr></thead>
+    <tbody id="ws-tbody"></tbody>
+  </table>
 </div>
 
 <footer>© Frank Burkert · DaF-Materialien · FrankBurkert@fabdaf.onmicrosoft.com</footer>
@@ -614,28 +620,86 @@ function initSatzbau() {
 initSatzbau();
 
 // WORTSCHATZ
-const wsData=[
-  {en:'tourist attraction',art:'die',wort:'Sehenswürdigkeit',plural:'Sehenswürdigkeiten'},
-  {en:'view / outlook',art:'die',wort:'Aussicht',plural:'Aussichten'},
-  {en:'old town',art:'die',wort:'Altstadt',plural:'Altstädte'},
-  {en:'city tour',art:'die',wort:'Stadtführung',plural:'Stadtführungen'},
-  {en:'tour guide',art:'der',wort:'Reiseleiter',plural:'Reiseleiter'},
-  {en:'tourist info office',art:'die',wort:'Touristeninformation',plural:'Touristeninformationen'},
-  {en:'admission price',art:'der',wort:'Eintrittspreis',plural:'Eintrittspreise'},
-  {en:'discount / concession',art:'die',wort:'Ermäßigung',plural:'Ermäßigungen'},
-  {en:'complaint',art:'die',wort:'Beschwerde',plural:'Beschwerden'},
-  {en:'visa',art:'das',wort:'Visum',plural:'Visa'},
-  {en:'entry (into a country)',art:'die',wort:'Einreise',plural:'Einreisen'},
-  {en:'mass tourism',art:'der',wort:'Massentourismus',plural:'—'},
-  {en:'information board',art:'die',wort:'Informationstafel',plural:'Informationstafeln'},
-  {en:'luggage',art:'das',wort:'Gepäck',plural:'—'},
-  {en:'travel destination',art:'das',wort:'Reiseziel',plural:'Reiseziele'},
-  {en:'accommodation',art:'die',wort:'Unterkunft',plural:'Unterkünfte'},
-  {en:'to be cancelled',art:'—',wort:'ausfallen',plural:'—'},
-  {en:'to miss (transport)',art:'—',wort:'verpassen',plural:'—'},
+/* ════════════════════════════════════════════════════════════
+   TAB 5 — WORTSCHATZ
+   ════════════════════════════════════════════════════════════ */
+var WS_DATA = [
+    { en: 'tourist attraction', art: 'die', de: 'Sehenswürdigkeit', plural: 'Sehenswürdigkeiten' },
+    { en: 'view / outlook', art: 'die', de: 'Aussicht', plural: 'Aussichten' },
+    { en: 'old town', art: 'die', de: 'Altstadt', plural: 'Altstädte' },
+    { en: 'city tour', art: 'die', de: 'Stadtführung', plural: 'Stadtführungen' },
+    { en: 'tour guide', art: 'der', de: 'Reiseleiter', plural: 'Reiseleiter' },
+    { en: 'tourist info office', art: 'die', de: 'Touristeninformation', plural: 'Touristeninformationen' },
+    { en: 'admission price', art: 'der', de: 'Eintrittspreis', plural: 'Eintrittspreise' },
+    { en: 'discount / concession', art: 'die', de: 'Ermäßigung', plural: 'Ermäßigungen' },
+    { en: 'complaint', art: 'die', de: 'Beschwerde', plural: 'Beschwerden' },
+    { en: 'visa', art: 'das', de: 'Visum', plural: 'Visa' },
+    { en: 'entry (into a country)', art: 'die', de: 'Einreise', plural: 'Einreisen' },
+    { en: 'mass tourism', art: 'der', de: 'Massentourismus', plural: '-' },
+    { en: 'information board', art: 'die', de: 'Informationstafel', plural: 'Informationstafeln' },
+    { en: 'luggage', art: 'das', de: 'Gepäck', plural: '-' },
+    { en: 'travel destination', art: 'das', de: 'Reiseziel', plural: 'Reiseziele' },
+    { en: 'accommodation', art: 'die', de: 'Unterkunft', plural: 'Unterkünfte' },
+    { en: 'to be cancelled', art: '', de: 'ausfallen', plural: '' },
+    { en: 'to miss (transport)', art: '', de: 'verpassen', plural: '' }
 ];
-function makeWsInp(cls,placeholder,ans){const inp=document.createElement('input');inp.className=`ws-inp ${cls}`;inp.placeholder=placeholder;inp.dataset.ans=ans;inp.addEventListener('input',()=>{const v=normalise(inp.value);const a=normalise(ans);if(v===a){inp.classList.add('correct');inp.classList.remove('partial');}else if(a.startsWith(v)&&v.length>0){inp.classList.add('partial');inp.classList.remove('correct');}else{inp.classList.remove('correct','partial');}});return inp;}
-function buildWortschatz(){const grid=document.getElementById('wsGrid');wsData.forEach(d=>{const row=document.createElement('div');row.className='ws-row';const enDiv=document.createElement('div');enDiv.className='ws-en';enDiv.textContent=d.en;const grp=document.createElement('div');grp.className='ws-inp-group';if(d.art!=='—'){grp.appendChild(makeWsInp('art','Art.',d.art));grp.appendChild(makeWsInp('wort','Wort',d.wort));}else{const verbInp=makeWsInp('wort','Verb',d.wort);verbInp.style.width='180px';grp.appendChild(verbInp);}const pluralInp=makeWsInp('plural','Plural',d.plural);row.appendChild(enDiv);row.appendChild(grp);row.appendChild(pluralInp);grid.appendChild(row);});}
+
+var ws5Total = 0;
+var ws5Correct = 0;
+
+function makeWsInp(item, colClass, ans, tab) {
+    var cell = document.createElement('td');
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'ws-inp ' + (colClass||'');
+    inp.placeholder = colClass === 'art' ? 'Artikel' : '';
+    inp.autocomplete = 'off';
+    ws5Total++;
+    inp.addEventListener('input', function(){
+        timerAutoStart(tab);
+        var val = inp.value.trim();
+        var normVal = normalise(val);
+        var normAns = normalise(ans);
+        if (normVal === normAns) {
+            inp.classList.add('ok'); inp.classList.remove('no');
+            inp.disabled = true;
+            ws5Correct++;
+            document.getElementById('score'+tab).textContent = ws5Correct + ' / ' + ws5Total;
+            if (ws5Correct === ws5Total) timerStop(tab);
+            return;
+        }
+        if (normAns.startsWith(normVal) && val.length > 0) { inp.classList.remove('ok','no'); return; }
+        if (val.length > 0) inp.classList.add('no'); else inp.classList.remove('ok','no');
+    });
+    cell.appendChild(inp);
+    return cell;
+}
+
+function buildWortschatz() {
+    var tbody = document.getElementById('ws-tbody');
+    WS_DATA.forEach(function(item){
+        var tr = document.createElement('tr');
+        var tdEn = document.createElement('td');
+        tdEn.className = 'ws-en';
+        tdEn.textContent = item.en;
+        tr.appendChild(tdEn);
+        if (item.art !== '') {
+            tr.appendChild(makeWsInp(item, 'art', item.art, 5));
+        } else {
+            var blank = document.createElement('td'); blank.innerHTML = '<span style="color:#bbb;font-size:0.85em;">—</span>'; tr.appendChild(blank);
+        }
+        tr.appendChild(makeWsInp(item, 'wort', item.de, 5));
+        if (item.plural !== '' && item.plural !== '-') {
+            tr.appendChild(makeWsInp(item, '', item.plural, 5));
+        } else {
+            var blank2 = document.createElement('td');
+            blank2.innerHTML = item.plural === '-' ? '<span style="color:#bbb;font-size:0.85em;">—</span>' : '';
+            tr.appendChild(blank2);
+        }
+        tbody.appendChild(tr);
+    });
+    document.getElementById('score5').textContent = '0 / ' + ws5Total;
+}
 buildWortschatz();
 timerAutoStart(0);
 </script>
