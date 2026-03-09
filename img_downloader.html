@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Image Downloader</title></head>
+<body>
+<h2>Lade Bilder herunter und bettet sie ein...</h2>
+<pre id="log">Starte...</pre>
+<script>
+const URLS = {
+  "test_3785708": "https://images.pexels.com/photos/3785708/pexels-photo-3785708.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
+};
+
+(async function() {
+  const log = document.getElementById('log');
+  for (const [id, url] of Object.entries(URLS)) {
+    try {
+      const r = await fetch(url, {mode: 'cors'});
+      const status = r.status;
+      const corsHeader = r.headers.get('Access-Control-Allow-Origin');
+      log.textContent += '\n' + id + ': status=' + status + ' CORS=' + corsHeader;
+    } catch(e) {
+      log.textContent += '\nERROR: ' + e.message;
+    }
+  }
+  log.textContent += '\nFertig.';
+})();
+</script>
+</body>
+</html>
