@@ -85,16 +85,22 @@
   .wb-chip { display:inline-block; background:#fff; border:1.5px solid #9b59b6; border-radius:12px; padding:3px 10px; font-size:0.82rem; color:#4a235a; margin:3px; }
 
   /* SATZBAU */
-  .sb-aufgabe { background:#f9f9f9; border-radius:8px; padding:14px; margin-bottom:14px; }
-  .sb-aufgabe .sb-info { font-size:0.8rem; color:#888; margin-bottom:6px; }
-  .sb-drop { min-height:38px; background:#fff; border:2px dashed #9b59b6; border-radius:6px; padding:4px 8px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:8px; }
-  .sb-drop.drag-over { background:#f3e5f5; border-color:#6c3483; }
-  .sb-chip { display:inline-flex; align-items:center; background:#e8d5f5; border:1.5px solid #9b59b6; border-radius:14px; padding:4px 12px; font-size:0.82rem; font-weight:600; color:#4a235a; cursor:grab; user-select:none; }
-  .sb-chip:active { cursor:grabbing; }
-  .sb-chip-bank { display:flex; flex-wrap:wrap; gap:6px; padding:8px 0; }
-  .sb-result { font-size:0.82rem; margin-top:4px; min-height:20px; font-weight:600; }
-  .sb-result.ok { color:#27ae60; }
-  .sb-result.err { color:#e74c3c; }
+  .chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+  .sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+  .sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+  .sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+  .sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+  .satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+  .satzbau-feedback.correct { color: #27ae60; }
+  .satzbau-feedback.incorrect { color: #e74c3c; }
+  .sb-block { margin-bottom: 22px; }
+  .sb-num { font-size: 0.82em; font-weight: 700; color: #764ba2; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .solution-btn { margin-top: 6px; padding: 5px 14px; border: 2px solid #c5cae9; border-radius: 20px; background: white; color: #667eea; font-size: 0.8em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .solution-btn:hover { background: #667eea; color: white; border-color: #667eea; }
+  .chip { display: inline-flex; align-items: center; background: #e8d5f5; border: 1.5px solid #9b59b6; border-radius: 14px; padding: 4px 12px; font-size: 0.82rem; font-weight: 600; color: #4a235a; cursor: grab; user-select: none; }
+  .chip:active { cursor: grabbing; }
+  .chip.correct { background: #c8e6c9; border-color: #27ae60; color: #1b5e20; }
+  .chip.incorrect { background: #ffcdd2; border-color: #e74c3c; color: #b71c1c; }
 
   footer { text-align:center; font-size:0.75rem; color:#aaa; padding:14px; border-top:1px solid #eee; margin-top:8px; }
 </style>
@@ -112,9 +118,8 @@
 <!-- ══════════════════════ TAB 0: AUSSPRACHE ══════════════════════ -->
 <div class="tab active" id="tab0">
   <div class="timer-row">
-    ⏱ <span class="timer-display" id="td0">0:00</span>
-    <button class="timer-btn" onclick="timerToggle(0)">Start</button>
-    <span class="best-time" id="tb0"></span>
+    ⏱ <span class="timer-display" id="timer0">0:00</span>
+    <span class="best-time" id="best0"></span>
   </div>
 
   <div class="aussprache-intro">
@@ -224,9 +229,8 @@
 <!-- ══════════════════════ TAB 1: ESSGEWOHNHEITEN ══════════════════════ -->
 <div class="tab" id="tab1">
   <div class="timer-row">
-    ⏱ <span class="timer-display" id="td1">0:00</span>
-    <button class="timer-btn" onclick="timerToggle(1)">Start</button>
-    <span class="best-time" id="tb1"></span>
+    ⏱ <span class="timer-display" id="timer1">0:00</span>
+    <span class="best-time" id="best1"></span>
   </div>
 
   <div class="rollen-intro">
@@ -329,9 +333,8 @@
 <!-- ══════════════════════ TAB 2: PASSIV LÜCKENTEXT ══════════════════════ -->
 <div class="tab" id="tab2">
   <div class="timer-row">
-    ⏱ <span class="timer-display" id="td2">0:00</span>
-    <button class="timer-btn" onclick="timerToggle(2)">Start</button>
-    <span class="best-time" id="tb2"></span>
+    ⏱ <span class="timer-display" id="timer2">0:00</span>
+    <span class="best-time" id="best2"></span>
   </div>
 
   <div class="luecken-intro">
@@ -414,12 +417,11 @@
 <!-- ══════════════════════ TAB 3: SATZBAU ══════════════════════ -->
 <div class="tab" id="tab3">
   <div class="timer-row">
-    ⏱ <span class="timer-display" id="td3">0:00</span>
-    <button class="timer-btn" onclick="timerToggle(3)">Start</button>
-    <span class="best-time" id="tb3"></span>
+    ⏱ <span class="timer-display" id="timer3">0:00</span>
+    <span class="best-time" id="best3"></span>
   </div>
   <p style="font-size:0.88rem;color:#555;margin-bottom:14px;">Bringe die Wörter in die richtige Reihenfolge. Ziehe die Chips in die graue Box!</p>
-  <div id="sbContainer"></div>
+  <div id="satzbauContainer"></div>
 </div>
 
 <footer>© Frank Burkert · DaF-Materialien · FrankBurkert@fabdaf.onmicrosoft.com</footer>
@@ -437,12 +439,30 @@ function showTab(i, btn) {
 const timers = [null,null,null,null];
 const elapsed = [0,0,0,0];
 const running = [false,false,false,false];
-function timerAutoStart(i) { if (!running[i]) { running[i]=true; timers[i]=setInterval(()=>tickTimer(i),1000); document.querySelectorAll('.timer-btn')[i].textContent='Stop'; } }
-function timerToggle(i) { if (running[i]) { timerStop(i); } else { running[i]=true; timers[i]=setInterval(()=>tickTimer(i),1000); document.querySelectorAll('.timer-btn')[i].textContent='Stop'; } }
-function timerStop(i) { clearInterval(timers[i]); running[i]=false; document.querySelectorAll('.timer-btn')[i].textContent='Start'; const k=`daf-2018s-best-${i}`; const b=localStorage.getItem(k); if (!b||elapsed[i]<parseInt(b)) { localStorage.setItem(k,elapsed[i]); } showBest(i); }
-function tickTimer(i) { elapsed[i]++; const m=Math.floor(elapsed[i]/60); const s=elapsed[i]%60; document.getElementById(`td${i}`).textContent=`${m}:${s<10?'0':''}${s}`; }
-function showBest(i) { const k=`daf-2018s-best-${i}`; const b=localStorage.getItem(k); if (b) { const m=Math.floor(parseInt(b)/60),s=parseInt(b)%60; document.getElementById(`tb${i}`).textContent=`Bestzeit: ${m}:${s<10?'0':''}${s}`; } }
-[0,1,2,3].forEach(showBest);
+function timerKey(t) { return 'daf-2018s-best-' + t; }
+function timerFmt(sec) { const m=Math.floor(sec/60),s=sec%60; return m+':'+(s<10?'0':'')+s; }
+function timerAutoStart(i) {
+  if (running[i]) return;
+  running[i] = true;
+  timers[i] = setInterval(() => {
+    elapsed[i]++;
+    document.getElementById('timer'+i).textContent = timerFmt(elapsed[i]);
+  }, 1000);
+}
+function timerStop(i) {
+  if (!running[i]) return;
+  clearInterval(timers[i]);
+  running[i] = false;
+  const k = timerKey(i);
+  const prev = localStorage.getItem(k);
+  if (!prev || elapsed[i] < parseInt(prev)) localStorage.setItem(k, elapsed[i]);
+  timerLoadBest(i);
+}
+function timerLoadBest(i) {
+  const b = localStorage.getItem(timerKey(i));
+  if (b) document.getElementById('best'+i).textContent = 'Bestzeit: ' + timerFmt(parseInt(b));
+}
+[0,1,2,3].forEach(timerLoadBest);
 
 // ─── AUSSPRACHE REVEAL ────────────────────────────────────────────
 function revealAkzent(card) {
@@ -469,110 +489,229 @@ function liveCheck(inp) {
   else inp.classList.remove('wrong');
 }
 
-// ─── SATZBAU ──────────────────────────────────────────────────────
-const sbSaetze = [
-  { info:'Passiv mit werden + Partizip II', words:['Die','Eier','werden','aufgeschlagen','und','unter','den','Teig','gerührt.'] },
-  { info:'Passiv Rezept-Schritt', words:['Der','Teig','wird','bei','250','Grad','in','den','Ofen','gestellt.'] },
-  { info:'Passiv mit Adverb der Reihenfolge', words:['Zuerst','werden','die','Zwiebeln','in','der','Pfanne','angebraten.'] },
-  { info:'Passiv Gewürze', words:['Dann','wird','alles','mit','Salz','und','Pfeffer','gewürzt.'] },
-  { info:'Passiv Flüssigkeit', words:['Sojasoße','und','Wasser','werden','hinzugefügt.'] },
-  { info:'Passiv Reis kochen', words:['Der','Reis','wird','ins','Wasser','gegeben.'] },
-  { info:'Passiv Kuchen', words:['Zuletzt','wird','der','Kuchen','im','Ofen','gebacken.'] },
+/* ════════════════════════════════════════════════════════════
+   TAB 3 — SATZBAU (satzbau-drag-drop Skill)
+   ════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    { parts: ['die', 'Eier', 'werden', 'aufgeschlagen', 'und', 'unter', 'den', 'Teig', 'gerührt'], valid: [['die', 'Eier', 'werden', 'aufgeschlagen', 'und', 'unter', 'den', 'Teig', 'gerührt']], punct: '.' },
+    { parts: ['der', 'Teig', 'wird', 'bei', '250', 'Grad', 'in', 'den', 'Ofen', 'gestellt'], valid: [['der', 'Teig', 'wird', 'bei', '250', 'Grad', 'in', 'den', 'Ofen', 'gestellt']], punct: '.' },
+    { parts: ['zuerst', 'werden', 'die', 'Zwiebeln', 'in', 'der', 'Pfanne', 'angebraten'], valid: [['zuerst', 'werden', 'die', 'Zwiebeln', 'in', 'der', 'Pfanne', 'angebraten']], punct: '.' },
+    { parts: ['dann', 'wird', 'alles', 'mit', 'Salz', 'und', 'Pfeffer', 'gewürzt'], valid: [['dann', 'wird', 'alles', 'mit', 'Salz', 'und', 'Pfeffer', 'gewürzt']], punct: '.' },
+    { parts: ['Sojasoße', 'und', 'Wasser', 'werden', 'hinzugefügt'], valid: [['Sojasoße', 'und', 'Wasser', 'werden', 'hinzugefügt']], punct: '.' },
+    { parts: ['der', 'Reis', 'wird', 'ins', 'Wasser', 'gegeben'], valid: [['der', 'Reis', 'wird', 'ins', 'Wasser', 'gegeben']], punct: '.' },
+    { parts: ['zuletzt', 'wird', 'der', 'Kuchen', 'im', 'Ofen', 'gebacken'], valid: [['zuletzt', 'wird', 'der', 'Kuchen', 'im', 'Ofen', 'gebacken']], punct: '.' }
 ];
 
-let sbDragged = null;
+var sbDragged = null;
 
-function sbMakeChip(word, inBank) {
-  const chip = document.createElement('span');
-  chip.className = 'sb-chip';
-  chip.textContent = word;
-  chip.draggable = true;
-  chip.addEventListener('dragstart', e => { sbDragged = chip; e.dataTransfer.effectAllowed='move'; });
-  chip.addEventListener('dragend', () => sbDragged = null);
-  return chip;
-}
-
-function sbRegisterZone(zone, bank, answerArr, resultEl) {
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
-    if (!sbDragged) return;
-    zone.appendChild(sbDragged);
-    sbCheckAuto(zone, answerArr, resultEl);
-  });
-  bank.addEventListener('dragover', e => { e.preventDefault(); bank.classList.add('drag-over'); });
-  bank.addEventListener('dragleave', () => bank.classList.remove('drag-over'));
-  bank.addEventListener('drop', e => {
-    e.preventDefault();
-    bank.classList.remove('drag-over');
-    if (!sbDragged) return;
-    bank.appendChild(sbDragged);
-    resultEl.textContent = '';
-    resultEl.className = 'sb-result';
-  });
-}
-
-let sbTimers = {};
-function sbCheckAuto(zone, answerArr, resultEl) {
-  clearTimeout(sbTimers[zone.id]);
-  sbTimers[zone.id] = setTimeout(() => {
-    const placed = [...zone.querySelectorAll('.sb-chip')].map(c=>c.textContent);
-    if (placed.length === answerArr.length) {
-      if (placed.join(' ') === answerArr.join(' ')) {
-        resultEl.textContent = '✅ Richtig!';
-        resultEl.className = 'sb-result ok';
-      } else {
-        resultEl.textContent = '❌ Nicht ganz richtig. Versuche es nochmal!';
-        resultEl.className = 'sb-result err';
-      }
-    } else {
-      resultEl.textContent = '';
-      resultEl.className = 'sb-result';
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
     }
-  }, 500);
+    return c;
 }
 
-function buildSatzbau() {
-  const container = document.getElementById('sbContainer');
-  sbSaetze.forEach((s, idx) => {
-    const div = document.createElement('div');
-    div.className = 'sb-aufgabe';
-
-    const info = document.createElement('div');
-    info.className = 'sb-info';
-    info.textContent = `${idx+1}. ${s.info}`;
-    div.appendChild(info);
-
-    const zone = document.createElement('div');
-    zone.className = 'sb-drop';
-    zone.id = `sbzone${idx}`;
-    div.appendChild(zone);
-
-    const result = document.createElement('div');
-    result.className = 'sb-result';
-    div.appendChild(result);
-
-    const bank = document.createElement('div');
-    bank.className = 'sb-chip-bank';
-    bank.id = `sbbank${idx}`;
-
-    // Shuffle words
-    const shuffled = [...s.words];
-    for (let i = shuffled.length-1; i>0; i--) {
-      const j = Math.floor(Math.random()*(i+1));
-      [shuffled[i],shuffled[j]] = [shuffled[j],shuffled[i]];
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
     }
-    shuffled.forEach(w => bank.appendChild(sbMakeChip(w, true)));
-    div.appendChild(bank);
-
-    sbRegisterZone(zone, bank, s.words, result);
-    container.appendChild(div);
-  });
+    return null;
 }
 
-buildSatzbau();
+function sbCapitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase()
+                    && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) {
+            c.textContent = orig;
+        } else {
+            c.textContent = (i === 0) ? sbCapitalize(orig) : orig;
+        }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else {
+            zone.appendChild(sbDragged);
+        }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) {
+            c.classList.remove('correct', 'incorrect');
+        });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '✓ Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '✗ Falsche Reihenfolge – verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = {};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c)  { allChips[c.dataset.orig] = c; });
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        var chip = allChips[word];
+        if (chip) {
+            chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+            chip.classList.remove('correct', 'incorrect');
+            row.appendChild(chip);
+        }
+    });
+    fb.textContent = '';
+    setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function initSatzbau() {
+    var wrap = document.getElementById('satzbauContainer');
+    wrap.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var block = document.createElement('div');
+        block.className = 'sb-block';
+        var num = document.createElement('div');
+        num.className = 'sb-num';
+        num.textContent = 'Satz ' + (idx + 1);
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+        var solBtn = document.createElement('button');
+        solBtn.className = 'solution-btn';
+        solBtn.textContent = 'Lösung anzeigen';
+        solBtn.addEventListener('click', function() { sbShowSolution(idx); });
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+        block.appendChild(num);
+        block.appendChild(bank);
+        block.appendChild(row);
+        block.appendChild(fb);
+        block.appendChild(solBtn);
+        wrap.appendChild(block);
+    });
+}
+initSatzbau();
 timerAutoStart(0);
 </script>
 </body>
