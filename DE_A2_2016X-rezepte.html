@@ -83,14 +83,15 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .art { width: 70px; }
 .wort { width: 160px; }
 
-/* ── TIMER ──────────────────────────────────────────────────── */
-.timer-bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: #f8f9fa; border-bottom: 1px solid #eee; font-size: 0.9em; }
-.timer-display { font-weight: 700; color: #667eea; font-size: 1.05em; min-width: 60px; }
-.best-display { color: #27ae60; font-size: 0.85em; }
-.score-display { margin-left: auto; color: #764ba2; font-weight: 700; }
-.author-footer { text-align: center; padding: 18px; background: #f8f9fa; border-top: 1px solid #eee; font-size: 0.82em; color: #999; }
-.author-footer a { color: #667eea; text-decoration: none; }
-.author-name { font-weight: 600; }
+/* ── CONTROL-BAR ─────────────────────────────────────────────── */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
     </style>
 </head>
 <body>
@@ -118,7 +119,17 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 
     <!-- TAB 1: LÜCKENTEXT (Spaghetti Bolognese Rezept) -->
     <div class="section" id="sec1">
-        <div class="timer-bar"><span>⏱</span><span class="timer-display" id="timer1">0:00</span><span class="best-display" id="best1"></span><span class="score-display" id="score1">0 / 8</span></div>
+        <div class="sec-inner">
+        <div class="control-bar">
+            <div class="btn-row">
+                <button class="btn btn-show" onclick="showLueckenLoesung()">Lösungen</button>
+                <button class="btn btn-reset" onclick="resetLueckentext(); resetTimer(1);">Neu starten</button>
+            </div>
+            <div class="timer-display">
+                <span class="current-time">⏱ <span id="timer-1">00:00</span></span>
+                <span class="best-time">🏆 <span id="best-1">--:--</span></span>
+            </div>
+        </div>
         <div class="luecken-block">
             <div class="wortkasten"><strong>Wortkasten:</strong> Zwiebeln · Hackfleisch · Salz · Pfeffer · Schneiden · hinzugegeben · Kochen · reiben</div>
             <h2>Spaghetti Bolognese — Fülle die Lücken</h2>
@@ -140,22 +151,36 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 
     <!-- TAB 2: SATZBAU -->
     <div class="section" id="sec2">
-        <div class="timer-bar"><span>⏱</span><span class="timer-display" id="timer2">0:00</span><span class="best-display" id="best2"></span><span class="score-display" id="score2">0 / 7</span></div>
         <div class="sec-inner">
-            <div class="section-title">🧩 Sätze über Kochen bauen</div>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="satzbauData.forEach(function(_,i){sbShowSolution(i);})">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetSatzbau(); resetTimer(2);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span class="current-time">⏱ <span id="timer-2">00:00</span></span>
+                    <span class="best-time">🏆 <span id="best-2">--:--</span></span>
+                </div>
+            </div>
             <div id="satzbauContainer"></div>
         </div>
     </div>
 
     <!-- TAB 3: WORTSCHATZ -->
     <div class="section" id="sec3">
-        <div class="timer-bar"><span>⏱</span><span class="timer-display" id="timer3">0:00</span><span class="best-display" id="best3"></span></div>
         <div class="sec-inner">
-            <div class="btn-row" style="margin-bottom:10px;">
-                <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
-                <button class="btn btn-reset" onclick="resetVocab(); resetTimer(3);">Neu starten</button>
+            <h2>📚 Wortschatz</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetVocab(); resetTimer(3);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span class="current-time">⏱ <span id="timer-3">00:00</span></span>
+                    <span class="best-time">🏆 <span id="best-3">--:--</span></span>
+                </div>
             </div>
-            <div class="help-box">
+            <div class="hilfe-box">
                 <strong>Aufgabe:</strong> Übersetze die Wörter ins Deutsche. Bei Nomen: Artikel + Wort + Plural!
             </div>
             <div id="vocabContainer"></div>
