@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2018S Eine Unterhaltung über Essen</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #6c3483; min-height: 100vh; padding: 20px; }
+  .container { max-width: 860px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); overflow: hidden; }
+  h1 { background: #6c3483; color: #fff; padding: 18px 24px; font-size: 1.25rem; }
+  h1 span { font-size: 0.9rem; opacity: 0.8; margin-left: 10px; }
+
+  /* NAV */
+  nav { display: flex; flex-wrap: wrap; background: #f3e5f5; border-bottom: 2px solid #6c3483; padding: 6px 8px 0; gap: 4px; }
+  nav button { padding: 8px 13px; border: 1.5px solid #9b59b6; background: #fff; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 0.82rem; font-weight: 600; color: #6c3483; transition: background 0.15s; margin-bottom: -2px; }
+  nav button.active { background: #6c3483; color: #fff; border-color: #6c3483; }
+  nav button:hover:not(.active) { background: #e8d5f5; }
+
+  .tab { display: none; padding: 22px 24px 28px; }
+  .tab.active { display: block; }
+
+  /* TIMER */
+  .timer-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; font-size:0.82rem; color:#6c3483; }
+  .timer-display { font-weight:700; font-size:1rem; min-width:52px; }
+  .timer-btn { padding:4px 12px; border-radius:6px; border:none; background:#6c3483; color:#fff; cursor:pointer; font-size:0.8rem; }
+  .timer-btn:hover { background:#9b59b6; }
+  .best-time { font-size:0.78rem; color:#888; }
+
+  /* AUSSPRACHE */
+  .aussprache-intro { background:#f3e5f5; border-radius:8px; padding:14px 18px; margin-bottom:18px; font-size:0.9rem; color:#4a235a; }
+  .regel-box { background:#fff3cd; border:1.5px solid #f39c12; border-radius:8px; padding:14px 18px; margin-bottom:18px; font-size:0.88rem; line-height:1.6; }
+  .regel-box strong { color:#e67e22; }
+  .wort-gruppe { margin-bottom:20px; }
+  .wort-gruppe h3 { font-size:0.88rem; font-weight:700; color:#6c3483; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.04em; }
+  .wort-cards { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px; }
+  .wort-card { background:#e8d5f5; border:2px solid #9b59b6; border-radius:8px; padding:10px 16px; font-size:0.95rem; font-weight:600; color:#4a235a; cursor:pointer; user-select:none; position:relative; }
+  .wort-card .akzent { color:#e74c3c; text-decoration:underline; text-decoration-style:dotted; }
+  .wort-card:hover { background:#d2aff0; }
+  .wort-card.revealed .akzent { text-decoration: underline; text-decoration-style: solid; text-decoration-color:#e74c3c; }
+  .hinweis { font-size:0.8rem; color:#888; font-style:italic; margin-top:4px; }
+  .zuordnung-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .sort-zone { flex:1; min-width:160px; background:#f9f9f9; border:2px dashed #9b59b6; border-radius:8px; padding:12px; min-height:80px; }
+  .sort-zone h4 { font-size:0.82rem; color:#6c3483; font-weight:700; margin-bottom:8px; }
+  .sort-chip { display:inline-block; background:#e8d5f5; border:1.5px solid #9b59b6; border-radius:16px; padding:5px 12px; font-size:0.82rem; font-weight:600; color:#4a235a; margin:3px; cursor:grab; }
+  .sort-chip.placed { background:#c8e6c9; border-color:#27ae60; }
+
+  /* DIALOG / ROLLEN */
+  .rollen-intro { background:#e8f4f8; border-radius:8px; padding:14px 18px; margin-bottom:18px; font-size:0.88rem; color:#1a5276; }
+  .profil-cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; }
+  .profil-card { border-radius:10px; padding:14px 16px; border:2px solid; }
+  .profil-card.paul { background:#e3f2fd; border-color:#2196f3; }
+  .profil-card.marie { background:#fce4ec; border-color:#e91e63; }
+  .profil-card h3 { font-size:1rem; font-weight:700; margin-bottom:8px; }
+  .profil-card.paul h3 { color:#1565c0; }
+  .profil-card.marie h3 { color:#c2185b; }
+  .profil-row { display:flex; gap:6px; align-items:flex-start; font-size:0.82rem; margin-bottom:4px; }
+  .profil-label { font-weight:700; min-width:120px; color:#555; }
+  .fragen-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .frage-card { background:#fff; border:1.5px solid #9b59b6; border-radius:8px; padding:12px 14px; font-size:0.88rem; color:#4a235a; cursor:pointer; }
+  .frage-card:hover { background:#f3e5f5; }
+  .frage-card .antwort { display:none; color:#27ae60; font-weight:600; margin-top:6px; font-size:0.82rem; }
+  .frage-card.open .antwort { display:block; }
+  .frage-card .frage-text { color:#6c3483; font-weight:600; }
+  .dialog-beispiel { background:#f3e5f5; border-radius:8px; padding:14px 18px; font-size:0.88rem; color:#4a235a; margin-bottom:14px; }
+  .dialog-beispiel strong { color:#6c3483; }
+
+  /* PASSIV REZEPT */
+  .rezept-intro { background:#e8f5e9; border-radius:8px; padding:14px 18px; margin-bottom:18px; font-size:0.88rem; color:#1b5e20; }
+  .rezept-schritte { counter-reset: schritt; }
+  .rezept-schritt { display:flex; align-items:flex-start; gap:12px; margin-bottom:12px; padding:12px 14px; background:#f9f9f9; border-radius:8px; border-left:4px solid #9b59b6; }
+  .schritt-nr { background:#6c3483; color:#fff; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.88rem; flex-shrink:0; }
+  .schritt-text { font-size:0.9rem; color:#333; line-height:1.5; }
+  .schritt-passiv { color:#8e44ad; font-style:italic; font-size:0.82rem; display:block; margin-top:4px; }
+
+  /* LÜCKENTEXT */
+  .luecken-intro { background:#e8f5e9; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:0.88rem; color:#1b5e20; }
+  .luecken-text { font-size:0.92rem; line-height:2.2; color:#333; }
+  .gap-inp { width:130px; border:none; border-bottom:2px solid #9b59b6; background:transparent; font-size:0.9rem; font-family:inherit; color:#333; padding:2px 4px; outline:none; text-align:center; }
+  .gap-inp.correct { border-bottom-color:#27ae60; background:#e8f9ec; border-radius:4px 4px 0 0; }
+  .gap-inp.partial { border-bottom-color:#f39c12; }
+  .gap-inp.wrong { border-bottom-color:#e74c3c; }
+  .wortbank { background:#f3e5f5; border-radius:8px; padding:12px 16px; margin-bottom:18px; }
+  .wortbank strong { font-size:0.82rem; color:#6c3483; display:block; margin-bottom:6px; }
+  .wb-chip { display:inline-block; background:#fff; border:1.5px solid #9b59b6; border-radius:12px; padding:3px 10px; font-size:0.82rem; color:#4a235a; margin:3px; }
+
+  /* SATZBAU */
+  .sb-aufgabe { background:#f9f9f9; border-radius:8px; padding:14px; margin-bottom:14px; }
+  .sb-aufgabe .sb-info { font-size:0.8rem; color:#888; margin-bottom:6px; }
+  .sb-drop { min-height:38px; background:#fff; border:2px dashed #9b59b6; border-radius:6px; padding:4px 8px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:8px; }
+  .sb-drop.drag-over { background:#f3e5f5; border-color:#6c3483; }
+  .sb-chip { display:inline-flex; align-items:center; background:#e8d5f5; border:1.5px solid #9b59b6; border-radius:14px; padding:4px 12px; font-size:0.82rem; font-weight:600; color:#4a235a; cursor:grab; user-select:none; }
+  .sb-chip:active { cursor:grabbing; }
+  .sb-chip-bank { display:flex; flex-wrap:wrap; gap:6px; padding:8px 0; }
+  .sb-result { font-size:0.82rem; margin-top:4px; min-height:20px; font-weight:600; }
+  .sb-result.ok { color:#27ae60; }
+  .sb-result.err { color:#e74c3c; }
+
+  footer { text-align:center; font-size:0.75rem; color:#aaa; padding:14px; border-top:1px solid #eee; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🗣️ Eine Unterhaltung über Essen <span>A2.2 · 2018S · Sprechen</span></h1>
+<nav>
+  <button class="active" onclick="showTab(0,this)">🔊 Aussprache</button>
+  <button onclick="showTab(1,this)">🍽️ Essgewohnheiten</button>
+  <button onclick="showTab(2,this)">✏️ Passiv-Lückentext</button>
+  <button onclick="showTab(3,this)">🧩 Satzbau</button>
+</nav>
+
+<!-- ══════════════════════ TAB 0: AUSSPRACHE ══════════════════════ -->
+<div class="tab active" id="tab0">
+  <div class="timer-row">
+    ⏱ <span class="timer-display" id="td0">0:00</span>
+    <button class="timer-btn" onclick="timerToggle(0)">Start</button>
+    <span class="best-time" id="tb0"></span>
+  </div>
+
+  <div class="aussprache-intro">
+    <strong>Aussprache: Wortbetonung</strong><br>
+    Klicke auf ein Wort, um den betonten Teil zu sehen. Sprich dann das Wort laut aus!
+  </div>
+
+  <div class="regel-box">
+    <strong>Regel 1 – Komposita:</strong> Komposita bestehen aus zwei oder mehr Wörtern. Das letzte Wort bestimmt den Artikel, aber das <strong>erste Wort</strong> bekommt den <strong>Wortakzent</strong>.<br>
+    Beispiel: <em><strong>SCHO</strong>ko·kuchen, <strong>WEIß</strong>·wein, <strong>GE</strong>·mü·se·pfan·ne</em><br><br>
+    <strong>Regel 2 – Trennbare Verben:</strong> Bei trennbaren Verben hat das <strong>Präfix</strong> den Wortakzent.<br>
+    Beispiel: <em><strong>UM</strong>·rüh·ren, <strong>ZU</strong>·be·rei·ten, <strong>AN</strong>·bra·ten</em><br><br>
+    <strong>Regel 3 – Nicht trennbare Verben:</strong> Bei nicht trennbaren Verben liegt der Wortakzent auf dem <strong>Verb</strong>.<br>
+    Beispiel: <em>ver·<strong>RÜH</strong>·ren, be·<strong>ZAH</strong>·len, zer·<strong>BRE</strong>·chen</em>
+  </div>
+
+  <div class="wort-gruppe">
+    <h3>1 · Komposita — Klick um Betonung zu sehen</h3>
+    <div class="wort-cards">
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Schokokuchen</span>
+        <span class="akzent" style="display:none"><u>Scho</u>ko·kuchen</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Weißwein</span>
+        <span class="akzent" style="display:none"><u>Weiß</u>·wein</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Gemüsepfanne</span>
+        <span class="akzent" style="display:none"><u>Ge</u>·mü·se·pfanne</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Saftschorle</span>
+        <span class="akzent" style="display:none"><u>Saft</u>·schorle</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Auflaufform</span>
+        <span class="akzent" style="display:none"><u>Auf</u>·lauf·form</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Wasserglas</span>
+        <span class="akzent" style="display:none"><u>Was</u>·ser·glas</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Brotmesser</span>
+        <span class="akzent" style="display:none"><u>Brot</u>·mes·ser</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Kuchengabel</span>
+        <span class="akzent" style="display:none"><u>Ku</u>·chen·ga·bel</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Backofen</span>
+        <span class="akzent" style="display:none"><u>Back</u>·o·fen</span>
+      </div>
+    </div>
+    <p class="hinweis">💡 Das erste Wort eines Kompositums trägt den Hauptakzent.</p>
+  </div>
+
+  <div class="wort-gruppe">
+    <h3>2 · Verben mit Präfixen — Klick um Betonung zu sehen</h3>
+    <div class="wort-cards">
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">umrühren</span>
+        <span class="akzent" style="display:none"><u>um</u>·rühren ✓ (trennbar)</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">zubereiten</span>
+        <span class="akzent" style="display:none"><u>zu</u>·bereiten ✓ (trennbar)</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">anbraten</span>
+        <span class="akzent" style="display:none"><u>an</u>·braten ✓ (trennbar)</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">aufbacken</span>
+        <span class="akzent" style="display:none"><u>auf</u>·backen ✓ (trennbar)</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#e74c3c;background:#fdecea;">
+        <span class="akzent-hidden">verrühren</span>
+        <span class="akzent" style="display:none">ver·<u>rühren</u> ✗ (nicht trennbar)</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#e74c3c;background:#fdecea;">
+        <span class="akzent-hidden">bezahlen</span>
+        <span class="akzent" style="display:none">be·<u>zahlen</u> ✗ (nicht trennbar)</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#e74c3c;background:#fdecea;">
+        <span class="akzent-hidden">zerbrechen</span>
+        <span class="akzent" style="display:none">zer·<u>brechen</u> ✗ (nicht trennbar)</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#e74c3c;background:#fdecea;">
+        <span class="akzent-hidden">verarbeiten</span>
+        <span class="akzent" style="display:none">ver·<u>ar</u>·bei·ten ✗ (nicht trennbar)</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">abkühlen</span>
+        <span class="akzent" style="display:none"><u>ab</u>·kühlen ✓ (trennbar)</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;margin-top:6px;font-size:0.8rem;">
+      <span style="color:#27ae60;font-weight:700;">🟢 Grün = trennbar → Präfix betont</span>
+      <span style="color:#e74c3c;font-weight:700;">🔴 Rot = nicht trennbar → Verb betont</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TAB 1: ESSGEWOHNHEITEN ══════════════════════ -->
+<div class="tab" id="tab1">
+  <div class="timer-row">
+    ⏱ <span class="timer-display" id="td1">0:00</span>
+    <button class="timer-btn" onclick="timerToggle(1)">Start</button>
+    <span class="best-time" id="tb1"></span>
+  </div>
+
+  <div class="rollen-intro">
+    <strong>Rollenspiel: Essgewohnheiten</strong><br>
+    Du spielst Paul oder Marie. Beantworte die Fragen anhand deines Profils. Klicke auf eine Frage-Karte, um eine Muster-Antwort zu sehen.
+  </div>
+
+  <div class="profil-cards">
+    <div class="profil-card paul">
+      <h3>👨 Paul</h3>
+      <div class="profil-row"><span class="profil-label">Lieblingsessen:</span> Pizza</div>
+      <div class="profil-row"><span class="profil-label">Mag:</span> süß, salzig, sauer, scharf</div>
+      <div class="profil-row"><span class="profil-label">Mag nicht:</span> bitter</div>
+      <div class="profil-row"><span class="profil-label">Allergie:</span> Allergie gegen Nüsse</div>
+    </div>
+    <div class="profil-card marie">
+      <h3>👩 Marie</h3>
+      <div class="profil-row"><span class="profil-label">Lieblingsessen:</span> Hähnchen süß-sauer</div>
+      <div class="profil-row"><span class="profil-label">Mag:</span> süß, salzig, bitter, sauer</div>
+      <div class="profil-row"><span class="profil-label">Mag nicht:</span> scharf</div>
+      <div class="profil-row"><span class="profil-label">Allergie:</span> Laktose-Intoleranz</div>
+    </div>
+  </div>
+
+  <p style="font-size:0.88rem;color:#555;margin-bottom:12px;">👆 Klicke auf eine Frage-Karte, um Muster-Antworten für Paul und Marie zu sehen:</p>
+
+  <div class="fragen-grid">
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Was ist dein Lieblingsessen?</div>
+      <div class="antwort">
+        Paul: „Mein Lieblingsessen ist Pizza."<br>
+        Marie: „Mein Lieblingsessen ist Hähnchen süß-sauer."
+      </div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Welchen Geschmack magst du?</div>
+      <div class="antwort">
+        Paul: „Ich mag süß, salzig, sauer und scharf."<br>
+        Marie: „Ich mag süß, salzig, bitter und sauer."
+      </div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Welchen Geschmack magst du nicht?</div>
+      <div class="antwort">
+        Paul: „Bitter mag ich nicht. Das schmeckt mir nicht."<br>
+        Marie: „Ich mag kein scharfes Essen. Das ist mir zu scharf."
+      </div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Hast du eine Allergie?</div>
+      <div class="antwort">
+        Paul: „Ja, ich habe eine Allergie gegen Nüsse."<br>
+        Marie: „Ja, ich habe eine Laktose-Intoleranz. Ich vertrage keine Milchprodukte."
+      </div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Wie ist der Geschmack von …?</div>
+      <div class="antwort">
+        „Der Käsekuchen schmeckt süß und cremig."<br>
+        „Die Grapefruit schmeckt etwas sauer."<br>
+        „Das Gericht schmeckt mir sehr gut!"
+      </div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Ist das Gericht laktosefrei?</div>
+      <div class="antwort">
+        „Ja, das Gericht ist laktosefrei."<br>
+        „Nein, leider nicht. Es enthält Käse."<br>
+        „Ich bin nicht sicher, ob es laktosefrei ist."
+      </div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Hast du das Essen schon zubereitet?</div>
+      <div class="antwort">
+        „Ja, ich habe das Essen schon zubereitet."<br>
+        „Nein, ich bereite es gerade zu."<br>
+        „Nein, noch nicht. Ich fange gleich an."
+      </div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Bis wann ist die Milch haltbar?</div>
+      <div class="antwort">
+        „Die Milch ist bis zum 15. März haltbar."<br>
+        „Das Mindesthaltbarkeitsdatum ist der 20. März."<br>
+        „Die Milch ist noch drei Tage haltbar."
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-beispiel">
+    <strong>💬 Beispiel-Dialog:</strong><br>
+    A: „Was ist dein Lieblingsessen?"<br>
+    B: „Mein Lieblingsessen ist Pizza. Was ist deins?"<br>
+    A: „Ich esse am liebsten Hähnchen süß-sauer."<br>
+    B: „Hast du eine Allergie?"<br>
+    A: „Ja, ich habe eine Laktose-Intoleranz. Ich vertrage keine Milchprodukte."
+  </div>
+</div>
+
+<!-- ══════════════════════ TAB 2: PASSIV LÜCKENTEXT ══════════════════════ -->
+<div class="tab" id="tab2">
+  <div class="timer-row">
+    ⏱ <span class="timer-display" id="td2">0:00</span>
+    <button class="timer-btn" onclick="timerToggle(2)">Start</button>
+    <span class="best-time" id="tb2"></span>
+  </div>
+
+  <div class="luecken-intro">
+    <strong>Passiv-Lückentext: Kuchen backen</strong><br>
+    Ergänze die Sätze mit den richtigen Passiv-Formen (werden + Partizip II). Die Wörter aus der Wortbank helfen dir!
+  </div>
+
+  <div class="wortbank">
+    <strong>Wortbank:</strong>
+    <span class="wb-chip">vorgeheizt</span>
+    <span class="wb-chip">geschlagen</span>
+    <span class="wb-chip">hinzugefügt</span>
+    <span class="wb-chip">umgerührt</span>
+    <span class="wb-chip">gefüllt</span>
+    <span class="wb-chip">gebacken</span>
+    <span class="wb-chip">wird</span>
+    <span class="wb-chip">werden</span>
+    <span class="wb-chip">angebraten</span>
+    <span class="wb-chip">gewürzt</span>
+    <span class="wb-chip">gegeben</span>
+    <span class="wb-chip">gebracht</span>
+  </div>
+
+  <div class="luecken-text" id="lueckenText">
+    <p style="margin-bottom:16px;"><strong>Kuchen backen – Schritt für Schritt im Passiv:</strong></p>
+
+    <p style="margin-bottom:12px;">
+      Zuerst <input class="gap-inp" id="g1" data-ans="wird" oninput="liveCheck(this)" placeholder=""> der Ofen auf 100 Grad
+      <input class="gap-inp" id="g2" data-ans="vorgeheizt" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Dann <input class="gap-inp" id="g3" data-ans="wird" oninput="liveCheck(this)" placeholder=""> ein Ei
+      <input class="gap-inp" id="g4" data-ans="geschlagen" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Danach <input class="gap-inp" id="g5" data-ans="werden" oninput="liveCheck(this)" placeholder=""> Mehl und Zucker
+      <input class="gap-inp" id="g6" data-ans="hinzugefügt" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Der Teig <input class="gap-inp" id="g7" data-ans="wird" oninput="liveCheck(this)" placeholder="">
+      gut <input class="gap-inp" id="g8" data-ans="umgerührt" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Daraufhin <input class="gap-inp" id="g9" data-ans="wird" oninput="liveCheck(this)" placeholder=""> der Teig in eine Form
+      <input class="gap-inp" id="g10" data-ans="gefüllt" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Zuletzt <input class="gap-inp" id="g11" data-ans="wird" oninput="liveCheck(this)" placeholder=""> der Kuchen im Ofen
+      <input class="gap-inp" id="g12" data-ans="gebacken" oninput="liveCheck(this)" placeholder="">.
+    </p>
+
+    <p style="margin-top:20px;margin-bottom:12px;"><strong>Hähnchen süß-sauer – Rezept im Passiv:</strong></p>
+    <p style="margin-bottom:12px;">
+      Das Gemüse und das Fleisch <input class="gap-inp" id="g13" data-ans="werden" oninput="liveCheck(this)" placeholder=""> in kleine Stücke geschnitten.
+    </p>
+    <p style="margin-bottom:12px;">
+      Zuerst <input class="gap-inp" id="g14" data-ans="wird" oninput="liveCheck(this)" placeholder=""> das Hähnchen in der Pfanne
+      <input class="gap-inp" id="g15" data-ans="angebraten" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Dann <input class="gap-inp" id="g16" data-ans="wird" oninput="liveCheck(this)" placeholder=""> alles mit Salz und Pfeffer
+      <input class="gap-inp" id="g17" data-ans="gewürzt" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Sojasoße und Wasser <input class="gap-inp" id="g18" data-ans="werden" oninput="liveCheck(this)" placeholder="">
+      <input class="gap-inp" id="g19" data-ans="hinzugefügt" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Der Reis <input class="gap-inp" id="g20" data-ans="wird" oninput="liveCheck(this)" placeholder=""> ins Wasser
+      <input class="gap-inp" id="g21" data-ans="gegeben" oninput="liveCheck(this)" placeholder="">.
+    </p>
+    <p style="margin-bottom:12px;">
+      Das Wasser für den Reis <input class="gap-inp" id="g22" data-ans="wird" oninput="liveCheck(this)" placeholder=""> zum Kochen
+      <input class="gap-inp" id="g23" data-ans="gebracht" oninput="liveCheck(this)" placeholder="">.
+    </p>
+  </div>
+  <p style="font-size:0.8rem;color:#888;margin-top:8px;">💡 Passiv = <strong>werden</strong> (konjugiert) + <strong>Partizip II</strong> am Satzende</p>
+</div>
+
+<!-- ══════════════════════ TAB 3: SATZBAU ══════════════════════ -->
+<div class="tab" id="tab3">
+  <div class="timer-row">
+    ⏱ <span class="timer-display" id="td3">0:00</span>
+    <button class="timer-btn" onclick="timerToggle(3)">Start</button>
+    <span class="best-time" id="tb3"></span>
+  </div>
+  <p style="font-size:0.88rem;color:#555;margin-bottom:14px;">Bringe die Wörter in die richtige Reihenfolge. Ziehe die Chips in die graue Box!</p>
+  <div id="sbContainer"></div>
+</div>
+
+<footer>© Frank Burkert · DaF-Materialien · FrankBurkert@fabdaf.onmicrosoft.com</footer>
+</div>
+
+<script>
+// ─── TAB NAVIGATION ───────────────────────────────────────────────
+function showTab(i, btn) {
+  document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', j===i));
+  document.querySelectorAll('nav button').forEach((b,j) => b.classList.toggle('active', j===i));
+  timerAutoStart(i);
+}
+
+// ─── TIMER ────────────────────────────────────────────────────────
+const timers = [null,null,null,null];
+const elapsed = [0,0,0,0];
+const running = [false,false,false,false];
+function timerAutoStart(i) { if (!running[i]) { running[i]=true; timers[i]=setInterval(()=>tickTimer(i),1000); document.querySelectorAll('.timer-btn')[i].textContent='Stop'; } }
+function timerToggle(i) { if (running[i]) { timerStop(i); } else { running[i]=true; timers[i]=setInterval(()=>tickTimer(i),1000); document.querySelectorAll('.timer-btn')[i].textContent='Stop'; } }
+function timerStop(i) { clearInterval(timers[i]); running[i]=false; document.querySelectorAll('.timer-btn')[i].textContent='Start'; const k=`daf-2018s-best-${i}`; const b=localStorage.getItem(k); if (!b||elapsed[i]<parseInt(b)) { localStorage.setItem(k,elapsed[i]); } showBest(i); }
+function tickTimer(i) { elapsed[i]++; const m=Math.floor(elapsed[i]/60); const s=elapsed[i]%60; document.getElementById(`td${i}`).textContent=`${m}:${s<10?'0':''}${s}`; }
+function showBest(i) { const k=`daf-2018s-best-${i}`; const b=localStorage.getItem(k); if (b) { const m=Math.floor(parseInt(b)/60),s=parseInt(b)%60; document.getElementById(`tb${i}`).textContent=`Bestzeit: ${m}:${s<10?'0':''}${s}`; } }
+[0,1,2,3].forEach(showBest);
+
+// ─── AUSSPRACHE REVEAL ────────────────────────────────────────────
+function revealAkzent(card) {
+  const hidden = card.querySelector('.akzent-hidden');
+  const shown = card.querySelector('.akzent');
+  if (hidden.style.display !== 'none') {
+    hidden.style.display = 'none';
+    shown.style.display = 'inline';
+  } else {
+    hidden.style.display = 'inline';
+    shown.style.display = 'none';
+  }
+}
+
+// ─── LIVE CHECK ───────────────────────────────────────────────────
+function normalise(s) { return s.trim().toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss'); }
+function liveCheck(inp) {
+  const val = normalise(inp.value);
+  const ans = normalise(inp.dataset.ans);
+  if (val === ans) { inp.classList.add('correct'); inp.classList.remove('partial','wrong'); return; }
+  if (ans.startsWith(val) && val.length > 0) { inp.classList.add('partial'); inp.classList.remove('correct','wrong'); return; }
+  inp.classList.remove('correct','partial');
+  if (val.length > 0) inp.classList.add('wrong');
+  else inp.classList.remove('wrong');
+}
+
+// ─── SATZBAU ──────────────────────────────────────────────────────
+const sbSaetze = [
+  { info:'Passiv mit werden + Partizip II', words:['Die','Eier','werden','aufgeschlagen','und','unter','den','Teig','gerührt.'] },
+  { info:'Passiv Rezept-Schritt', words:['Der','Teig','wird','bei','250','Grad','in','den','Ofen','gestellt.'] },
+  { info:'Passiv mit Adverb der Reihenfolge', words:['Zuerst','werden','die','Zwiebeln','in','der','Pfanne','angebraten.'] },
+  { info:'Passiv Gewürze', words:['Dann','wird','alles','mit','Salz','und','Pfeffer','gewürzt.'] },
+  { info:'Passiv Flüssigkeit', words:['Sojasoße','und','Wasser','werden','hinzugefügt.'] },
+  { info:'Passiv Reis kochen', words:['Der','Reis','wird','ins','Wasser','gegeben.'] },
+  { info:'Passiv Kuchen', words:['Zuletzt','wird','der','Kuchen','im','Ofen','gebacken.'] },
+];
+
+let sbDragged = null;
+
+function sbMakeChip(word, inBank) {
+  const chip = document.createElement('span');
+  chip.className = 'sb-chip';
+  chip.textContent = word;
+  chip.draggable = true;
+  chip.addEventListener('dragstart', e => { sbDragged = chip; e.dataTransfer.effectAllowed='move'; });
+  chip.addEventListener('dragend', () => sbDragged = null);
+  return chip;
+}
+
+function sbRegisterZone(zone, bank, answerArr, resultEl) {
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    if (!sbDragged) return;
+    zone.appendChild(sbDragged);
+    sbCheckAuto(zone, answerArr, resultEl);
+  });
+  bank.addEventListener('dragover', e => { e.preventDefault(); bank.classList.add('drag-over'); });
+  bank.addEventListener('dragleave', () => bank.classList.remove('drag-over'));
+  bank.addEventListener('drop', e => {
+    e.preventDefault();
+    bank.classList.remove('drag-over');
+    if (!sbDragged) return;
+    bank.appendChild(sbDragged);
+    resultEl.textContent = '';
+    resultEl.className = 'sb-result';
+  });
+}
+
+let sbTimers = {};
+function sbCheckAuto(zone, answerArr, resultEl) {
+  clearTimeout(sbTimers[zone.id]);
+  sbTimers[zone.id] = setTimeout(() => {
+    const placed = [...zone.querySelectorAll('.sb-chip')].map(c=>c.textContent);
+    if (placed.length === answerArr.length) {
+      if (placed.join(' ') === answerArr.join(' ')) {
+        resultEl.textContent = '✅ Richtig!';
+        resultEl.className = 'sb-result ok';
+      } else {
+        resultEl.textContent = '❌ Nicht ganz richtig. Versuche es nochmal!';
+        resultEl.className = 'sb-result err';
+      }
+    } else {
+      resultEl.textContent = '';
+      resultEl.className = 'sb-result';
+    }
+  }, 500);
+}
+
+function buildSatzbau() {
+  const container = document.getElementById('sbContainer');
+  sbSaetze.forEach((s, idx) => {
+    const div = document.createElement('div');
+    div.className = 'sb-aufgabe';
+
+    const info = document.createElement('div');
+    info.className = 'sb-info';
+    info.textContent = `${idx+1}. ${s.info}`;
+    div.appendChild(info);
+
+    const zone = document.createElement('div');
+    zone.className = 'sb-drop';
+    zone.id = `sbzone${idx}`;
+    div.appendChild(zone);
+
+    const result = document.createElement('div');
+    result.className = 'sb-result';
+    div.appendChild(result);
+
+    const bank = document.createElement('div');
+    bank.className = 'sb-chip-bank';
+    bank.id = `sbbank${idx}`;
+
+    // Shuffle words
+    const shuffled = [...s.words];
+    for (let i = shuffled.length-1; i>0; i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [shuffled[i],shuffled[j]] = [shuffled[j],shuffled[i]];
+    }
+    shuffled.forEach(w => bank.appendChild(sbMakeChip(w, true)));
+    div.appendChild(bank);
+
+    sbRegisterZone(zone, bank, s.words, result);
+    container.appendChild(div);
+  });
+}
+
+buildSatzbau();
+timerAutoStart(0);
+</script>
+</body>
+</html>
