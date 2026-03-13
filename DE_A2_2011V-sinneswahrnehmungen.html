@@ -80,10 +80,6 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
 .satzbau-feedback.correct { color: #27ae60; }
 .satzbau-feedback.incorrect { color: #e74c3c; }
-.sb-block { margin-bottom: 22px; }
-.sb-num { font-size: 0.82em; font-weight: 700; color: #764ba2; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
-.solution-btn { margin-top: 6px; padding: 5px 14px; border: 2px solid #c5cae9; border-radius: 20px; background: white; color: #667eea; font-size: 0.8em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.solution-btn:hover { background: #667eea; color: white; border-color: #667eea; }
 
 /* ── WORTSCHATZ ─────────────────────────────────────────────────── */
 /* WORTSCHATZ */
@@ -109,9 +105,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .btn:hover { border-color: #667eea; color: #667eea; }
 .timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
 .btn-row { display: flex; gap: 6px; }
-.btn { padding: 10px 22px; border: none; border-radius: 25px; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: all 0.2s; }
-.btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-.btn-reset { background: #fff; color: #e74c3c; border: 2px solid #e74c3c; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { background: #eee; color: #444; }
 .btn-loesung { background: #fff; color: #667eea; border: 2px solid #667eea; }
 .hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
 
@@ -128,7 +123,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     .vocab-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
     .qa-grid { grid-template-columns: 1fr; }
 }
-    </style>
+    .satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+</style>
 </head>
 <body>
 <div class="container">
@@ -342,7 +338,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
             <div id="qaContainer"></div>
             <div class="btn-row">
                 <button class="btn btn-reset" onclick="initQa()">↺ Neustart</button>
-                <button class="btn btn-loesung" onclick="showQaLoesung()">💡 Lösungen</button>
+                <button class="btn btn-loesung" onclick="showQaLoesung()">Lösungen</button>
             </div>
         </div>
     </div><!-- /sec-1 -->
@@ -411,7 +407,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
             <ul class="rf-list" id="rfList"></ul>
             <div class="btn-row">
                 <button class="btn btn-reset" onclick="resetRF()">↺ Neustart</button>
-                <button class="btn btn-loesung" onclick="showRFLoesung()">💡 Lösungen</button>
+                <button class="btn btn-loesung" onclick="showRFLoesung()">Lösungen</button>
             </div>
         </div>
     </div><!-- /sec-3 -->
@@ -470,7 +466,7 @@ function showSection(idx) {
     document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===idx); });
     if (idx === 1 && !qaInited) initQa();
     if (idx === 4 && !sbInitialized) { initSatzbau(); sbInitialized = true; }
-    if (idx === 5 && !wsInitialized) { initWortschatz(); wsInitialized = true; }
+    if (idx === 5 && !wsInitialized) { initVocab(); wsInitialized = true; }
     if (idx === 3) initRF();
 }
 
@@ -540,8 +536,8 @@ document.addEventListener('DOMContentLoaded', function(){
 // ══════════════════════════════════════════════════════════════════
 function liveCheckLuecke(inp) {
     timerAutoStart(2);
-    var val = inp.value.trim().toLowerCase();
-    var ans = (inp.dataset.ans || '').toLowerCase();
+    var val = inp.value.trim();
+    var ans = (inp.dataset.ans || '');
     inp.classList.remove('ok','no');
     if (!val) return;
     if (val === ans) {
@@ -567,7 +563,7 @@ function resetLuecken() {
 function showLueckenLoesungen() {
     document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp){
         var ans = inp.dataset.ans || '';
-        inp.value = ans.charAt(0).toUpperCase() + ans.slice(1);
+        inp.value = ans;
         inp.classList.remove('no'); inp.classList.add('ok');
     });
 }
@@ -800,24 +796,88 @@ function sbShowSolution(idx) {
     fb.textContent='';
     setTimeout(function(){ sbCheckAuto(idx); }, 100);
 }
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
 function initSatzbau() {
-    var container=document.getElementById('satzbauContainer');
-    container.innerHTML='';
-    satzbauData.forEach(function(ex,idx){
-        var block=document.createElement('div'); block.className='sb-block';
-        block.innerHTML='<div class="sb-num">Satz '+(idx+1)+'</div>'
-            +'<div class="chips-container" id="sb-bank-'+idx+'"></div>'
-            +'<div class="sentence-builder" id="sb-row-'+idx+'"></div>'
-            +'<div class="satzbau-feedback" id="sb-fb-'+idx+'"></div>'
-            +'<button class="solution-btn" onclick="sbShowSolution('+idx+')">Lösung anzeigen</button>';
-        container.appendChild(block);
-        var bank=document.getElementById('sb-bank-'+idx), row=document.getElementById('sb-row-'+idx);
-        var parts=ex.parts.slice();
-        for(var i=parts.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=parts[i]; parts[i]=parts[j]; parts[j]=t; }
-        parts.forEach(function(word){ bank.appendChild(sbMakeChip(word)); });
-        sbRegisterZone(bank,idx); sbRegisterZone(row,idx);
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+
+        // Chips mischen (Fisher-Yates)
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+
+        // Beide Zonen registrieren
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+
+        // Buttons pro Satz: Lösen + Neustart
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = '\u{1F4A1} Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '\u21BA Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
     });
 }
+
+function resetSatzbau() { initSatzbau(); }
 
 // ══════════════════════════════════════════════════════════════════
 // WORTSCHATZ
@@ -913,8 +973,8 @@ function vocabLiveCheck(inp) {
     var field = inp.dataset.field;
     inp.classList.remove('correct', 'wrong');
     if (user.length === 0) return;
-    var cmpUser = (field === 'art') ? user.toLowerCase() : user;
-    var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+    var cmpUser = user;
+    var cmpAnswer = answer;
     if (cmpUser === cmpAnswer) { inp.classList.add('correct'); }
     else if (cmpAnswer.indexOf(cmpUser) === 0) { /* Prefix — weiter tippen */ }
     else { inp.classList.add('wrong'); }
@@ -933,8 +993,8 @@ function showVocabLoesung() {
         var field = inp.dataset.field;
         var user = inp.value.trim();
         var answer = inp.dataset.answer;
-        var cmpUser = (field === 'art') ? user.toLowerCase() : user;
-        var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+        var cmpUser = user;
+        var cmpAnswer = answer;
         var existing = inp.nextElementSibling;
         if (existing && existing.classList.contains('vocab-hint')) existing.remove();
         if (cmpUser === cmpAnswer) {

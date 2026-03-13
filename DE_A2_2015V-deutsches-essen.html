@@ -80,10 +80,6 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
 .satzbau-feedback.correct { color: #27ae60; }
 .satzbau-feedback.incorrect { color: #e74c3c; }
-.sb-block { margin-bottom: 22px; }
-.sb-num { font-size: 0.82em; font-weight: 700; color: #764ba2; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
-.solution-btn { margin-top: 6px; padding: 5px 14px; border: 2px solid #c5cae9; border-radius: 20px; background: white; color: #667eea; font-size: 0.8em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.solution-btn:hover { background: #667eea; color: white; border-color: #667eea; }
 
 /* ── WORTSCHATZ ─────────────────────────────────────────────────── */
 /* WORTSCHATZ */
@@ -119,7 +115,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #999; }
 .author-footer a { color: #667eea; text-decoration: none; }
 .author-name { font-weight: 600; }
-    </style>
+    .satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+</style>
 </head>
 <body>
 <div class="container">
@@ -464,24 +461,88 @@ function sbShowSolution(idx) {
     solution.forEach(function(word, i) { var chip = allChips[word]; if (chip) { chip.textContent = (i === 0) ? sbCapitalize(word) : word; chip.classList.remove('correct', 'incorrect'); row.appendChild(chip); } });
     fb.textContent = ''; setTimeout(function() { sbCheckAuto(idx); }, 100);
 }
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
 function initSatzbau() {
-    var wrap = document.getElementById('satzbauContainer'); wrap.innerHTML = '';
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
     satzbauData.forEach(function(ex, idx) {
-        var block = document.createElement('div'); block.className = 'sb-block';
-        var num = document.createElement('div'); num.className = 'sb-num'; num.textContent = 'Satz ' + (idx + 1);
-        var bank = document.createElement('div'); bank.className = 'chips-container'; bank.id = 'sb-bank-' + idx;
-        var row = document.createElement('div'); row.className = 'sentence-builder'; row.id = 'sb-row-' + idx;
-        var fb = document.createElement('div'); fb.className = 'satzbau-feedback'; fb.id = 'sb-fb-' + idx;
-        var solBtn = document.createElement('button'); solBtn.className = 'solution-btn'; solBtn.textContent = 'Lösung anzeigen';
-        solBtn.addEventListener('click', function() { sbShowSolution(idx); });
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+
+        // Chips mischen (Fisher-Yates)
         var parts = ex.parts.slice();
-        for (var i = parts.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp; }
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
         parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
-        sbRegisterZone(bank, idx); sbRegisterZone(row, idx);
-        block.appendChild(num); block.appendChild(bank); block.appendChild(row); block.appendChild(fb); block.appendChild(solBtn);
-        wrap.appendChild(block);
+
+        // Beide Zonen registrieren
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+
+        // Buttons pro Satz: Lösen + Neustart
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = '\u{1F4A1} Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '\u21BA Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
     });
 }
+
+function resetSatzbau() { initSatzbau(); }
 initSatzbau();
 
 /* ═══════════ TAB 5 — WORTSCHATZ ═══════════ */
