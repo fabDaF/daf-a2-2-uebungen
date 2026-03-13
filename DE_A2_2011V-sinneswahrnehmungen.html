@@ -470,7 +470,7 @@ function showSection(idx) {
     document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===idx); });
     if (idx === 1 && !qaInited) initQa();
     if (idx === 4 && !sbInitialized) { initSatzbau(); sbInitialized = true; }
-    if (idx === 5 && !wsInitialized) { initWortschatz(); wsInitialized = true; }
+    if (idx === 5 && !wsInitialized) { initVocab(); wsInitialized = true; }
     if (idx === 3) initRF();
 }
 
@@ -540,8 +540,8 @@ document.addEventListener('DOMContentLoaded', function(){
 // ══════════════════════════════════════════════════════════════════
 function liveCheckLuecke(inp) {
     timerAutoStart(2);
-    var val = inp.value.trim().toLowerCase();
-    var ans = (inp.dataset.ans || '').toLowerCase();
+    var val = inp.value.trim();
+    var ans = (inp.dataset.ans || '');
     inp.classList.remove('ok','no');
     if (!val) return;
     if (val === ans) {
@@ -567,7 +567,7 @@ function resetLuecken() {
 function showLueckenLoesungen() {
     document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp){
         var ans = inp.dataset.ans || '';
-        inp.value = ans.charAt(0).toUpperCase() + ans.slice(1);
+        inp.value = ans;
         inp.classList.remove('no'); inp.classList.add('ok');
     });
 }
@@ -913,8 +913,8 @@ function vocabLiveCheck(inp) {
     var field = inp.dataset.field;
     inp.classList.remove('correct', 'wrong');
     if (user.length === 0) return;
-    var cmpUser = (field === 'art') ? user.toLowerCase() : user;
-    var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+    var cmpUser = user;
+    var cmpAnswer = answer;
     if (cmpUser === cmpAnswer) { inp.classList.add('correct'); }
     else if (cmpAnswer.indexOf(cmpUser) === 0) { /* Prefix — weiter tippen */ }
     else { inp.classList.add('wrong'); }
@@ -933,8 +933,8 @@ function showVocabLoesung() {
         var field = inp.dataset.field;
         var user = inp.value.trim();
         var answer = inp.dataset.answer;
-        var cmpUser = (field === 'art') ? user.toLowerCase() : user;
-        var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+        var cmpUser = user;
+        var cmpAnswer = answer;
         var existing = inp.nextElementSibling;
         if (existing && existing.classList.contains('vocab-hint')) existing.remove();
         if (cmpUser === cmpAnswer) {
