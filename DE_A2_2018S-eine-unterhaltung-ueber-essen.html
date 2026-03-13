@@ -5,20 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A2.2 – 2018S Eine Unterhaltung über Essen</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #6c3483; min-height: 100vh; padding: 20px; }
-  .container { max-width: 860px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); overflow: hidden; }
-  h1 { background: #6c3483; color: #fff; padding: 18px 24px; font-size: 1.25rem; }
-  h1 span { font-size: 0.9rem; opacity: 0.8; margin-left: 10px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+  .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+  .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+  .header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+  .header .subtitle, .header p { font-size: 1.0em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+  .header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
 
   /* NAV */
-  nav { display: flex; flex-wrap: wrap; background: #f3e5f5; border-bottom: 2px solid #6c3483; padding: 6px 8px 0; gap: 4px; }
-  nav button { padding: 8px 13px; border: 1.5px solid #9b59b6; background: #fff; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 0.82rem; font-weight: 600; color: #6c3483; transition: background 0.15s; margin-bottom: -2px; }
-  nav button.active { background: #6c3483; color: #fff; border-color: #6c3483; }
-  nav button:hover:not(.active) { background: #e8d5f5; }
+  .nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+  .nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .nav-btn:last-child { border-right: none; }
+  .nav-btn:hover { background: #e8ecff; color: #667eea; }
+  .nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+  .nav-emoji { font-size: 1.3em; line-height: 1.2; }
+  .nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
 
-  .tab { display: none; padding: 22px 24px 28px; }
-  .tab.active { display: block; }
+  .section { display: none; padding: 22px 24px 28px; }
+  .section.active { display: block; }
 
   /* TIMER */
   .control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
@@ -103,21 +108,34 @@
   .chip.correct { background: #c8e6c9; border-color: #27ae60; color: #1b5e20; }
   .chip.incorrect { background: #ffcdd2; border-color: #e74c3c; color: #b71c1c; }
 
-  footer { text-align:center; font-size:0.75rem; color:#aaa; padding:14px; border-top:1px solid #eee; margin-top:8px; }
+  .author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+  .author-footer a { color: #aaa; }
+  .author-name { font-weight: 700; }
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+  }
 </style>
 </head>
 <body>
 <div class="container">
-<h1>🗣️ Eine Unterhaltung über Essen <span>A2.2 · 2018S · Sprechen</span></h1>
-<nav>
-  <button class="active" onclick="showTab(0,this)">🔊 Aussprache</button>
-  <button onclick="showTab(1,this)">🍽️ Essgewohnheiten</button>
-  <button onclick="showTab(2,this)">✏️ Passiv-Lückentext</button>
-  <button onclick="showTab(3,this)">🧩 Satzbau</button>
-</nav>
+    <div class="header">
+        <h1>Eine Unterhaltung über Essen</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2018S &nbsp;|&nbsp; Sprechen</p>
+        <div class="big-emoji">🗣️</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">🔊</span><span class="nav-label">Aussprache</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">🍽️</span><span class="nav-label">Essgewohnheiten</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+    </div>
 
 <!-- ══════════════════════ TAB 0: AUSSPRACHE ══════════════════════ -->
-<div class="tab active" id="tab0">
+<div class="section active" id="tab0">
   <div class="control-bar">
             <div class="btn-row">
                 <button class="btn btn-reset" onclick="timerAutoStart(0);">Neu starten</button>
@@ -233,7 +251,7 @@
 </div>
 
 <!-- ══════════════════════ TAB 1: ESSGEWOHNHEITEN ══════════════════════ -->
-<div class="tab" id="tab1">
+<div class="section" id="tab1">
   <div class="control-bar">
             <div class="btn-row">
                 <button class="btn btn-show" onclick="document.querySelectorAll('.chip').forEach(function(c){c.classList.add('correct');})">Lösungen</button>
@@ -343,7 +361,7 @@
 </div>
 
 <!-- ══════════════════════ TAB 2: PASSIV LÜCKENTEXT ══════════════════════ -->
-<div class="tab" id="tab2">
+<div class="section" id="tab2">
   <div class="control-bar">
             <div class="btn-row">
                 <button class="btn btn-show" onclick="document.querySelectorAll('.luecken-inp:not(.ok)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('ok');})">Lösungen</button>
@@ -433,10 +451,10 @@
 </div>
 
 <!-- ══════════════════════ TAB 3: SATZBAU ══════════════════════ -->
-<div class="tab" id="tab3">
+<div class="section" id="tab3">
   <div class="control-bar">
             <div class="btn-row">
-                <button class="btn btn-show" onclick="document.querySelectorAll('.drop-row').forEach(function(r,i){sbShowSolution(i);})">Lösungen</button>
+                <button class="btn btn-show" onclick="document.querySelectorAll('.sentence-builder').forEach(function(r,i){sbShowSolution(i);})">Lösungen</button>
                 <button class="btn btn-reset" onclick="initSatzbau(); timerAutoStart(3);">Neu starten</button>
             </div>
             <div class="timer-display">
@@ -448,15 +466,18 @@
   <div id="satzbauContainer"></div>
 </div>
 
-<footer>© Frank Burkert · DaF-Materialien · FrankBurkert@fabdaf.onmicrosoft.com</footer>
-</div>
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
 
 <script>
 // ─── TAB NAVIGATION ───────────────────────────────────────────────
-function showTab(i, btn) {
-  document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', j===i));
-  document.querySelectorAll('nav button').forEach((b,j) => b.classList.toggle('active', j===i));
-  timerAutoStart(i);
+function showTab(i) {
+  document.querySelectorAll('.section').forEach(function(s,j){ s.classList.toggle('active', j===i); });
+  document.querySelectorAll('.nav-btn').forEach(function(b,j){ b.classList.toggle('active', j===i); });
 }
 
 // ─── TIMER ────────────────────────────────────────────────────────

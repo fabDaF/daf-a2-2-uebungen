@@ -102,6 +102,12 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #999; }
 .author-footer a { color: #667eea; text-decoration: none; }
 .author-name { font-weight: 600; }
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+}
     </style>
 </head>
 <body>

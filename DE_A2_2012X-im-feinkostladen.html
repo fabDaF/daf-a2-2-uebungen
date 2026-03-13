@@ -85,7 +85,12 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .vocab-inputs input.wort { width: 130px; }
 .vocab-inputs input.plural { width: 140px; }
 .vocab-hint { color: #27ae60; font-weight: 600; font-size: 0.8em; margin-left: 6px; }
-@media (max-width: 600px) { .vocab-item { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+}
 .art { width: 70px; }
 .wort { width: 150px; }
 
@@ -824,8 +829,8 @@ function vocabLiveCheck(inp) {
     var field = inp.dataset.field;
     inp.classList.remove('correct', 'wrong');
     if (user.length === 0) return;
-    var cmpUser = (field === 'art') ? user.toLowerCase() : user;
-    var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+    var cmpUser = user;
+    var cmpAnswer = answer;
     if (cmpUser === cmpAnswer) { inp.classList.add('correct'); }
     else if (cmpAnswer.indexOf(cmpUser) === 0) { /* Prefix — weiter tippen */ }
     else { inp.classList.add('wrong'); }
@@ -844,8 +849,8 @@ function showVocabLoesung() {
         var field = inp.dataset.field;
         var user = inp.value.trim();
         var answer = inp.dataset.answer;
-        var cmpUser = (field === 'art') ? user.toLowerCase() : user;
-        var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+        var cmpUser = user;
+        var cmpAnswer = answer;
         var existing = inp.nextElementSibling;
         if (existing && existing.classList.contains('vocab-hint')) existing.remove();
         if (cmpUser === cmpAnswer) {
