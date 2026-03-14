@@ -408,13 +408,13 @@ function initZuordnung(){ zCorrect=0; zSelected=null; zDragged=null; document.qu
    TAB 3 — SATZBAU (satzbau-drag-drop Skill)
    ════════════════════════════════════════════════════════════ */
 var satzbauData = [
-    { parts: ['ich', 'weiß', 'dass', 'die', 'Aufgabe', 'sehr', 'schwierig', 'ist'], valid: [['ich', 'weiß', 'dass', 'die', 'Aufgabe', 'sehr', 'schwierig', 'ist']], punct: '.' },
-    { parts: ['er', 'sagt', 'dass', 'er', 'gut', 'kochen', 'kann'], valid: [['er', 'sagt', 'dass', 'er', 'gut', 'kochen', 'kann']], punct: '.' },
-    { parts: ['sie', 'fragt', 'ob', 'ich', 'Bananen', 'mag'], valid: [['sie', 'fragt', 'ob', 'ich', 'Bananen', 'mag']], punct: '.' },
-    { parts: ['ich', 'glaube', 'dass', 'du', 'dich', 'zu', 'ungesund', 'ernährst'], valid: [['ich', 'glaube', 'dass', 'du', 'dich', 'zu', 'ungesund', 'ernährst']], punct: '.' },
-    { parts: ['du', 'fragst', 'ob', 'er', 'Gemüse', 'im', 'Kühlschrank', 'hat'], valid: [['du', 'fragst', 'ob', 'er', 'Gemüse', 'im', 'Kühlschrank', 'hat']], punct: '.' },
-    { parts: ['sie', 'meinen', 'dass', 'im', 'Kino', 'keine', 'guten', 'Filme', 'laufen'], valid: [['sie', 'meinen', 'dass', 'im', 'Kino', 'keine', 'guten', 'Filme', 'laufen']], punct: '.' },
-    { parts: ['ich', 'sagte', 'dass', 'ich', 'regelmäßig', 'Sport', 'treibe'], valid: [['ich', 'sagte', 'dass', 'ich', 'regelmäßig', 'Sport', 'treibe']], punct: '.' }
+    { parts: ['ich', 'weiß', ',', 'dass', 'die', 'Aufgabe', 'sehr', 'schwierig', 'ist'], valid: [['ich', 'weiß', ',', 'dass', 'die', 'Aufgabe', 'sehr', 'schwierig', 'ist']], punct: '.' },
+    { parts: ['er', 'sagt', ',', 'dass', 'er', 'gut', 'kochen', 'kann'], valid: [['er', 'sagt', ',', 'dass', 'er', 'gut', 'kochen', 'kann']], punct: '.' },
+    { parts: ['sie', 'fragt', ',', 'ob', 'ich', 'Bananen', 'mag'], valid: [['sie', 'fragt', ',', 'ob', 'ich', 'Bananen', 'mag']], punct: '.' },
+    { parts: ['ich', 'glaube', ',', 'dass', 'du', 'dich', 'zu', 'ungesund', 'ernährst'], valid: [['ich', 'glaube', ',', 'dass', 'du', 'dich', 'zu', 'ungesund', 'ernährst']], punct: '.' },
+    { parts: ['du', 'fragst', ',', 'ob', 'er', 'Gemüse', 'im', 'Kühlschrank', 'hat'], valid: [['du', 'fragst', ',', 'ob', 'er', 'Gemüse', 'im', 'Kühlschrank', 'hat']], punct: '.' },
+    { parts: ['sie', 'meinen', ',', 'dass', 'im', 'Kino', 'keine', 'guten', 'Filme', 'laufen'], valid: [['sie', 'meinen', ',', 'dass', 'im', 'Kino', 'keine', 'guten', 'Filme', 'laufen']], punct: '.' },
+    { parts: ['ich', 'sagte', ',', 'dass', 'ich', 'regelmäßig', 'Sport', 'treibe'], valid: [['ich', 'sagte', ',', 'dass', 'ich', 'regelmäßig', 'Sport', 'treibe']], punct: '.' }
 ];
 
 var sbDragged = null;
