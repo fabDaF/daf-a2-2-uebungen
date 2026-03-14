@@ -145,12 +145,14 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
         <div class="sec-inner">
             <div class="entdeck-intro">
                 <h3>Lies die Sätze und achte auf die markierten Wörter:</h3>
-                <p>
+                <p style="margin-bottom:0.3em"><strong>Gruppe A:</strong><br>
                     1. Ich freue mich, <span class="hl">dass</span> die Sonne <span class="hl">scheint</span>.<br>
                     2. Der Reiseleiter ist wütend, <span class="hl">weil</span> sich die Urlauber beschwert <span class="hl">haben</span>.<br>
                     3. Ich mache viele Fotos, <span class="hl">wenn</span> wir morgen im Louvre <span class="hl">sind</span>.<br>
-                    4. Thomas ist das erste Mal geflogen, <span class="hl">als</span> er 12 Jahre alt <span class="hl">war</span>.<br>
-                    5. Meine Tochter ist 25, <span class="hl">deshalb</span> <span class="hl">bekommt</span> sie keine Ermäßigung.<br>
+                    4. Thomas ist das erste Mal geflogen, <span class="hl">als</span> er 12 Jahre alt <span class="hl">war</span>.
+                </p>
+                <p style="margin-top:0.8em"><strong>Gruppe B:</strong><br>
+                    5. Die Kinder sind schon erwachsen, <span class="hl">deshalb</span> <span class="hl">bekommt</span> die Familie keine Ermäßigung.<br>
                     6. Ich vergesse vieles, <span class="hl">darum</span> <span class="hl">schreibe</span> ich immer ein Reisetagebuch.
                 </p>
             </div>
@@ -164,7 +166,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
             <!-- MC Schritt 0 -->
             <div class="mc-step active" id="mc-step0">
-                <h4>Schritt 1: Wo steht das Verb in den Sätzen 1–4?</h4>
+                <h4>Schritt 1: Wo steht das Verb in Gruppe A (Sätze 1–4)?</h4>
                 <div class="mc-options">
                     <button class="mc-btn" onclick="mcCheck(0,this,false)">An Position 2, direkt nach dem Konnektor</button>
                     <button class="mc-btn" onclick="mcCheck(0,this,true)">Am Ende des Nebensatzes</button>
@@ -175,7 +177,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
             <!-- MC Schritt 1 -->
             <div class="mc-step" id="mc-step1">
-                <h4>Schritt 2: Welche Wörter leiten die Nebensätze in 1–4 ein?</h4>
+                <h4>Schritt 2: Welche Wörter leiten die Nebensätze in Gruppe A ein?</h4>
                 <div class="mc-options">
                     <button class="mc-btn" onclick="mcCheck(1,this,false)">deshalb, darum, denn</button>
                     <button class="mc-btn" onclick="mcCheck(1,this,true)">dass, weil, wenn, als</button>
@@ -186,7 +188,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
             <!-- MC Schritt 2 -->
             <div class="mc-step" id="mc-step2">
-                <h4>Schritt 3: Schau dir die Sätze 5 und 6 an. Wo steht das Verb nach „deshalb“ und „darum“?</h4>
+                <h4>Schritt 3: Schau dir jetzt Gruppe B (Sätze 5–6) an. Wo steht das Verb nach „deshalb“ und „darum“?</h4>
                 <div class="mc-options">
                     <button class="mc-btn" onclick="mcCheck(2,this,false)">Am Ende des Satzes</button>
                     <button class="mc-btn" onclick="mcCheck(2,this,true)">An Position 2, direkt nach dem Adverb</button>
@@ -436,7 +438,7 @@ var LUECKEN_DATA = [
     { id:4, text: '___ ich länger als zwei Wochen von Zuhause weg bin, bekomme ich Heimweh.', ans: 'wenn', size: 80 },
     { id:5, text: 'Ich denke, ___ man sich manchmal ins Ungewisse wagen muss.', ans: 'dass', size: 70 },
     { id:6, text: 'Ich würde gern wissen, ___ du willst mit mir zusammen die Altstadt besichtigen.', ans: 'ob', size: 50 },
-    { id:7, text: 'Meine Tochter ist 25 Jahre alt, ___ bekommt sie keine Ermäßigung.', ans: 'deshalb', size: 100 },
+    { id:7, text: 'Die Kinder sind schon erwachsen, ___ bekommt die Familie keine Ermäßigung.', ans: 'deshalb', size: 100 },
     { id:8, text: 'Ich vergesse vieles, ___ schreibe ich immer ein Reisetagebuch.', ans: 'darum', size: 90 },
     { id:9, text: 'Ich reise viel, ___ ich habe Fernweh.', ans: 'denn', size: 70 },
     { id:10, text: 'Er war überrascht, ___ er die günstige Reise gefunden hat.', ans: 'als', size: 60 },
