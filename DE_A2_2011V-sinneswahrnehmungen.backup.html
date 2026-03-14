@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Was riecht denn da so gut? – Interaktive DaF-Übung (A2.2)</title>
+    <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header p { font-size: 1.0em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+.sec-inner { padding: 28px 30px; }
+
+/* ── VOCAB GRID ─────────────────────────────────────────────────── */
+.vocab-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 24px; }
+.vocab-card { background: #fff; border: 1px solid #e8ecff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(102,126,234,0.08); transition: transform 0.2s; }
+.vocab-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(102,126,234,0.15); }
+.vocab-img { width: 100%; height: 160px; object-fit: cover; display: block; }
+.vocab-card-body { padding: 12px 14px; }
+.vocab-article { font-size: 0.78em; color: #764ba2; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.vocab-word { font-size: 1.2em; font-weight: 700; color: #333; margin: 2px 0 4px; }
+.vocab-plural { font-size: 0.8em; color: #888; margin-bottom: 6px; }
+.vocab-en { font-size: 0.82em; color: #667eea; font-style: italic; margin-bottom: 6px; }
+.vocab-example { font-size: 0.85em; color: #555; line-height: 1.5; }
+.vocab-example strong { color: #333; }
+
+/* ── QA / REDEMITTEL ────────────────────────────────────────────── */
+.chip-bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f0f4ff; border-radius: 10px; min-height: 56px; margin-bottom: 18px; border: 2px dashed #c5cae9; }
+.qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.qa-frage-cell { background: #f8f9fa; border-radius: 8px; padding: 10px 14px; font-size: 0.9em; color: #444; display: flex; align-items: center; border-left: 3px solid #667eea; }
+.drop-zone { background: #fafafa; border: 2px dashed #ccc; border-radius: 8px; min-height: 44px; padding: 6px 10px; display: flex; align-items: center; transition: background 0.2s; }
+.drop-zone.drag-over { background: #e8ecff; border-color: #667eea; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.selected { background: #667eea; color: white; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+
+/* ── LÜCKENTEXT ─────────────────────────────────────────────────── */
+.luecken-block { padding: 28px 30px; }
+.luecken-block h2 { font-size: 1.05em; color: #667eea; margin: 22px 0 10px; }
+.luecken-text { line-height: 2.2; font-size: 0.95em; color: #444; }
+.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.luecken-inp:focus { border-bottom-color: #667eea; }
+.luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+
+/* ── TEXT & FRAGEN ──────────────────────────────────────────────── */
+.text-block { padding: 28px 30px; }
+.section-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
+.lese-text { background: #f8f9fa; border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; line-height: 1.85; font-size: 0.95em; color: #444; }
+.lese-text p { margin-bottom: 12px; }
+.lese-text p:last-child { margin-bottom: 0; }
+.rf-list { list-style: none; }
+.rf-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.92em; color: #444; }
+.rf-item:last-child { border-bottom: none; }
+.rf-stmt { flex: 1; }
+.rf-btn { padding: 5px 14px; border: 2px solid #ccc; border-radius: 20px; cursor: pointer; font-size: 0.82em; font-weight: 600; background: white; transition: all 0.2s; }
+.rf-btn:hover { border-color: #667eea; color: #667eea; }
+.rf-btn.ok { background: #27ae60; border-color: #27ae60; color: white; }
+.rf-btn.no { background: #e74c3c; border-color: #e74c3c; color: white; }
+
+/* ── SATZBAU ────────────────────────────────────────────────────── */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.sb-block { margin-bottom: 22px; }
+.sb-num { font-size: 0.82em; font-weight: 700; color: #764ba2; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+.solution-btn { margin-top: 6px; padding: 5px 14px; border: 2px solid #c5cae9; border-radius: 20px; background: white; color: #667eea; font-size: 0.8em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.solution-btn:hover { background: #667eea; color: white; border-color: #667eea; }
+
+/* ── WORTSCHATZ ─────────────────────────────────────────────────── */
+.ws-table { width: 100%; border-collapse: collapse; }
+.ws-table th { background: #f0f4ff; color: #667eea; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 10px; text-align: left; }
+.ws-table td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.ws-table tr:last-child td { border-bottom: none; }
+.ws-img { width: 56px; height: 42px; object-fit: cover; border-radius: 6px; }
+.ws-en { font-style: italic; color: #667eea; font-size: 0.88em; }
+.ws-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.92em; padding: 2px 4px; transition: border-color 0.2s; }
+.ws-inp:focus { border-bottom-color: #667eea; }
+.ws-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.ws-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+.art { width: 70px; }
+
+/* ── TIMER ──────────────────────────────────────────────────────── */
+.timer-box { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: #f8f9fa; border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; font-size: 0.88em; color: #555; }
+.timer-val { font-weight: 700; color: #667eea; }
+.btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { background: #eee; color: #444; }
+.btn-loesung { background: #fff; color: #667eea; border: 2px solid #667eea; }
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* ── AUTHOR FOOTER ──────────────────────────────────────────────── */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .vocab-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
+    .qa-grid { grid-template-columns: 1fr; }
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Was riecht denn da so gut?</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2011V &nbsp;|&nbsp; Wortschatz: Sinneswahrnehmungen</p>
+        <div class="big-emoji">👃</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showSection(0)"><span class="nav-emoji">📸</span><span class="nav-label">Wörter</span></div>
+        <div class="nav-btn" onclick="showSection(1)"><span class="nav-emoji">💬</span><span class="nav-label">Redemittel</span></div>
+        <div class="nav-btn" onclick="showSection(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showSection(3)"><span class="nav-emoji">📖</span><span class="nav-label">Text &amp; Fragen</span></div>
+        <div class="nav-btn" onclick="showSection(4)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showSection(5)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ TAB 0: WÖRTER -->
+    <div class="section active" id="sec-0">
+        <div class="vocab-grid">
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-riechen" src="https://images.pexels.com/photos/3785708/pexels-photo-3785708.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="riechen">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Verb</div>
+                    <div class="vocab-word">riechen</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">to smell</div>
+                    <div class="vocab-example">Sie liebt es, an frischen Blumen zu <strong>riechen</strong>.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-geruch" src="https://images.pexels.com/photos/8450358/pexels-photo-8450358.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Geruch">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">der</div>
+                    <div class="vocab-word">Geruch</div>
+                    <div class="vocab-plural">Plural: die Gerüche</div>
+                    <div class="vocab-en">smell, scent</div>
+                    <div class="vocab-example">Ich mag den frischen <strong>Geruch</strong> der Wäsche.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-schmecken" src="https://images.pexels.com/photos/3338538/pexels-photo-3338538.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="schmecken">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Verb</div>
+                    <div class="vocab-word">schmecken</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">to taste</div>
+                    <div class="vocab-example">Dem Mann <strong>schmeckt</strong> sein Frühstück sehr gut.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-geschmack" src="https://images.pexels.com/photos/8775420/pexels-photo-8775420.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Geschmack">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">der</div>
+                    <div class="vocab-word">Geschmack</div>
+                    <div class="vocab-plural">Plural: die Geschmäcker</div>
+                    <div class="vocab-en">taste, flavor</div>
+                    <div class="vocab-example">Das Getränk ist ganz nach seinem <strong>Geschmack</strong>.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-probieren" src="https://images.pexels.com/photos/4350104/pexels-photo-4350104.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="probieren">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Verb</div>
+                    <div class="vocab-word">probieren</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">to try, to taste</div>
+                    <div class="vocab-example">Möchten Sie eines von unseren Schnittchen <strong>probieren</strong>?</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-kosten" src="https://images.pexels.com/photos/10048670/pexels-photo-10048670.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="kosten">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Verb</div>
+                    <div class="vocab-word">kosten</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">to taste/try (food)</div>
+                    <div class="vocab-example"><strong>Koste</strong> einmal die Soße, bitte!</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-zunge" src="https://images.pexels.com/photos/8954879/pexels-photo-8954879.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Zunge">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">die</div>
+                    <div class="vocab-word">Zunge</div>
+                    <div class="vocab-plural">Plural: die Zungen</div>
+                    <div class="vocab-en">tongue</div>
+                    <div class="vocab-example">Dank der <strong>Zunge</strong> können wir Geschmäcker wahrnehmen.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-suess" src="https://images.pexels.com/photos/1854652/pexels-photo-1854652.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="süß">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Adjektiv</div>
+                    <div class="vocab-word">süß</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">sweet</div>
+                    <div class="vocab-example">Zucker macht alles <strong>süßer</strong>.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-sauer" src="https://images.pexels.com/photos/13915/pexels-photo-13915.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="sauer">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Adjektiv</div>
+                    <div class="vocab-word">sauer</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">sour</div>
+                    <div class="vocab-example">Zitronensaft ist <strong>sauer</strong>.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-salzig" src="https://images.pexels.com/photos/27545910/pexels-photo-27545910.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="salzig">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Adjektiv</div>
+                    <div class="vocab-word">salzig</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">salty</div>
+                    <div class="vocab-example">Tu nicht so viel Salz rein – die Suppe wird zu <strong>salzig</strong>.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-scharf" src="https://images.pexels.com/photos/11318049/pexels-photo-11318049.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="scharf">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Adjektiv</div>
+                    <div class="vocab-word">scharf</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">spicy, hot</div>
+                    <div class="vocab-example">Pfeffer macht Gerichte <strong>schärfer</strong>.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-bitter" src="https://images.pexels.com/photos/8105105/pexels-photo-8105105.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="bitter">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Adjektiv</div>
+                    <div class="vocab-word">bitter</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">bitter</div>
+                    <div class="vocab-example">Magst du <strong>bitteren</strong> Kaffee?</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-fruchtig" src="https://images.pexels.com/photos/11745476/pexels-photo-11745476.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="fruchtig">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Adjektiv</div>
+                    <div class="vocab-word">fruchtig</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">fruity</div>
+                    <div class="vocab-example">Der Rotwein ist besonders <strong>fruchtig</strong>.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-ungewoehnlich" src="https://images.pexels.com/photos/52577/pexels-photo-52577.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="ungewöhnlich">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Adjektiv</div>
+                    <div class="vocab-word">ungewöhnlich</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">unusual, extraordinary</div>
+                    <div class="vocab-example">Würmer? Die sind zu <strong>ungewöhnlich</strong> zum Essen.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-verderben" src="https://images.pexels.com/photos/5978507/pexels-photo-5978507.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="verderben">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Verb</div>
+                    <div class="vocab-word">verderben</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">to spoil, to go bad</div>
+                    <div class="vocab-example">Unser Obst ist <strong>verdorben</strong> – wir müssen es entsorgen.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-geniessen" src="https://images.pexels.com/photos/4262167/pexels-photo-4262167.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="genießen">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">Verb</div>
+                    <div class="vocab-word">genießen</div>
+                    <div class="vocab-plural"></div>
+                    <div class="vocab-en">to enjoy</div>
+                    <div class="vocab-example">Das Pärchen <strong>genießt</strong> ein gemeinsames Frühstück.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-portion" src="https://images.pexels.com/photos/306059/pexels-photo-306059.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Portion">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">die</div>
+                    <div class="vocab-word">Portion</div>
+                    <div class="vocab-plural">Plural: die Portionen</div>
+                    <div class="vocab-en">portion, serving</div>
+                    <div class="vocab-example">In manchen Restaurants bekommt man kleine <strong>Portionen</strong>.</div>
+                </div>
+            </div>
+            <div class="vocab-card">
+                <img class="vocab-img" id="img-vegetarier" src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Vegetarier">
+                <div class="vocab-card-body">
+                    <div class="vocab-article">der</div>
+                    <div class="vocab-word">Vegetarier</div>
+                    <div class="vocab-plural">Plural: die Vegetarier</div>
+                    <div class="vocab-en">vegetarian</div>
+                    <div class="vocab-example">Alle Familienmitglieder sind <strong>Vegetarier</strong>.</div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /sec-0 -->
+
+    <!-- ══════════════════════════════════════ TAB 1: REDEMITTEL -->
+    <div class="section" id="sec-1">
+        <div class="sec-inner">
+            <div class="hilfe-box">
+                💡 Ziehe die passende Antwort zur Frage – oder klicke erst auf eine Antwort, dann auf das Zielfeld.
+            </div>
+            <div id="qaContainer"></div>
+            <div class="btn-row">
+                <button class="btn btn-reset" onclick="initQa()">↺ Neustart</button>
+                <button class="btn btn-loesung" onclick="showQaLoesung()">Lösungen</button>
+            </div>
+        </div>
+    </div><!-- /sec-1 -->
+
+    <!-- ══════════════════════════════════════ TAB 2: LÜCKENTEXT -->
+    <div class="section" id="sec-2">
+        <div class="luecken-block">
+            <div class="timer-box">
+                <span>⏱</span>
+                <span>Zeit: <span class="timer-val" id="timer-2">0:00</span></span>
+                <span>🏆 Bestzeit: <span class="timer-val" id="best-2">—</span></span>
+                <button class="btn btn-reset" onclick="timerReset(2)">↺ Neustart</button>
+                <button class="btn btn-loesung" style="padding:6px 14px;font-size:0.82em;" onclick="showLueckenLoesungen()">Lösungen</button>
+            </div>
+
+            <h2>📝 Lückentext 1 — Im Restaurant</h2>
+            <p class="luecken-text">
+                Anna und Ben gehen heute ins Restaurant. Das Essen
+                <input class="luecken-inp" data-ans="riecht" placeholder="" style="width:80px">
+                sehr lecker. Anna möchte die Suppe zuerst
+                <input class="luecken-inp" data-ans="probieren" placeholder="" style="width:100px">,
+                bevor sie bestellt. Ben
+                <input class="luecken-inp" data-ans="genießt" placeholder="" style="width:90px">
+                sein Steak sehr.
+                Die Soße
+                <input class="luecken-inp" data-ans="schmeckt" placeholder="" style="width:100px">
+                etwas
+                <input class="luecken-inp" data-ans="scharf" placeholder="" style="width:70px">,
+                aber das mag er.
+            </p>
+
+            <h2>📝 Lückentext 2 — Beim Kochen</h2>
+            <p class="luecken-text">
+                Mia kocht heute Abend für ihre Familie. Sie
+                <input class="luecken-inp" data-ans="kostet" placeholder="" style="width:75px">
+                die Soße und bemerkt: sie ist zu
+                <input class="luecken-inp" data-ans="salzig" placeholder="" style="width:70px">!
+                Sie gibt etwas Zitronensaft dazu – jetzt schmeckt sie etwas
+                <input class="luecken-inp" data-ans="sauer" placeholder="" style="width:65px">,
+                aber das ist besser. Zum Nachtisch macht sie ein fruchtiges Sorbet – sehr
+                <input class="luecken-inp" data-ans="süß" placeholder="" style="width:55px">
+                und
+                <input class="luecken-inp" data-ans="fruchtig" placeholder="" style="width:80px">.
+                Das ist ganz nach dem
+                <input class="luecken-inp" data-ans="geschmack" placeholder="" style="width:110px">
+                ihrer Familie.
+            </p>
+        </div>
+    </div><!-- /sec-2 -->
+
+    <!-- ══════════════════════════════════════ TAB 3: TEXT & FRAGEN -->
+    <div class="section" id="sec-3">
+        <div class="text-block">
+            <div class="section-title">📖 Text &amp; Fragen</div>
+            <div class="lese-text">
+                <p><strong>Was soll ich bestellen?</strong></p>
+                <p>Ich habe heute Hunger auf Chinesisch. Aber ich bin Vegetarier, also muss ich ein Gericht ohne Fleisch bestellen. Ich habe auch eine Nussallergie. Zudem mag ich kein scharfes Essen. Vielleicht bestelle ich einfach Gemüse süß-sauer? Das wollte ich schon immer mal probieren.</p>
+                <p><strong>Tom am Markt</strong></p>
+                <p>Tom geht jeden Samstag auf den Markt. Er liebt es, frisches Obst und Gemüse zu kosten. Heute riecht alles besonders gut – die Erdbeeren duften süß und fruchtig. Der Käse sieht ungewöhnlich aus, aber Tom probiert ihn trotzdem. Er schmeckt leicht bitter, aber sehr aromatisch. Tom kauft eine große Portion für das Abendessen.</p>
+            </div>
+
+            <h2 style="font-size:1.1em; color:#667eea; margin-bottom:14px;">Richtig oder falsch?</h2>
+            <ul class="rf-list" id="rfList"></ul>
+            <div class="btn-row">
+                <button class="btn btn-reset" onclick="resetRF()">↺ Neustart</button>
+                <button class="btn btn-loesung" onclick="showRFLoesung()">Lösungen</button>
+            </div>
+        </div>
+    </div><!-- /sec-3 -->
+
+    <!-- ══════════════════════════════════════ TAB 4: SATZBAU -->
+    <div class="section" id="sec-4">
+        <div class="sec-inner">
+            <div class="timer-box">
+                <span>⏱</span>
+                <span>Zeit: <span class="timer-val" id="timer-4">0:00</span></span>
+                <span>🏆 Bestzeit: <span class="timer-val" id="best-4">—</span></span>
+                <button class="btn btn-reset" onclick="timerReset(4)">↺ Neustart</button>
+                <button class="btn btn-loesung" style="padding:6px 14px;font-size:0.82em;" onclick="for(var i=0;i<satzbauData.length;i++)sbShowSolution(i)">Lösungen</button>
+            </div>
+            <div id="satzbauContainer"></div>
+        </div>
+    </div><!-- /sec-4 -->
+
+    <!-- ══════════════════════════════════════ TAB 5: WORTSCHATZ -->
+    <div class="section" id="sec-5">
+        <div class="sec-inner">
+            <div class="hilfe-box">
+                💡 Tippe Artikel, deutsches Wort und Plural. Bei Verben und Adjektiven gibt es keinen Artikel und keinen Plural.
+            </div>
+            <div class="timer-box">
+                <span>⏱</span>
+                <span>Zeit: <span class="timer-val" id="timer-5">0:00</span></span>
+                <span>🏆 Bestzeit: <span class="timer-val" id="best-5">—</span></span>
+                <button class="btn btn-reset" onclick="timerReset(5)">↺ Neustart</button>
+                <button class="btn btn-loesung" style="padding:6px 14px;font-size:0.82em;" onclick="showWsLoesungen()">Lösungen</button>
+            </div>
+            <table class="ws-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Englisch</th>
+                        <th>Artikel</th>
+                        <th>Wort</th>
+                        <th>Plural</th>
+                    </tr>
+                </thead>
+                <tbody id="wsBody"></tbody>
+            </table>
+        </div>
+    </div><!-- /sec-5 -->
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function showSection(idx) {
+    document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===idx); });
+    document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===idx); });
+    if (idx === 1 && !qaInited) initQa();
+    if (idx === 4 && !sbInitialized) { initSatzbau(); sbInitialized = true; }
+    if (idx === 5 && !wsInitialized) { initWortschatz(); wsInitialized = true; }
+    if (idx === 3) initRF();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════════════════════════════
+var timers = {};
+function timerTick(idx) {
+    if (!timers[idx] || !timers[idx].running) return;
+    timers[idx].sec++;
+    var m = Math.floor(timers[idx].sec / 60), s = timers[idx].sec % 60;
+    var el = document.getElementById('timer-' + idx);
+    if (el) el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    timers[idx].handle = setTimeout(function(){ timerTick(idx); }, 1000);
+}
+function timerAutoStart(idx) {
+    if (timers[idx] && timers[idx].running) return;
+    if (!timers[idx]) timers[idx] = { sec: 0, running: false, handle: null };
+    timers[idx].running = true;
+    timerTick(idx);
+}
+function timerStop(idx) {
+    if (!timers[idx]) return;
+    timers[idx].running = false;
+    clearTimeout(timers[idx].handle);
+    var key = 'daf-2011v-best-' + idx;
+    var best = parseInt(localStorage.getItem(key) || '999999');
+    if (timers[idx].sec > 0 && timers[idx].sec < best) {
+        localStorage.setItem(key, timers[idx].sec);
+        var m = Math.floor(timers[idx].sec / 60), s = timers[idx].sec % 60;
+        var el = document.getElementById('best-' + idx);
+        if (el) el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    }
+}
+function timerReset(idx) {
+    if (timers[idx]) { timers[idx].running = false; clearTimeout(timers[idx].handle); timers[idx].sec = 0; }
+    var el = document.getElementById('timer-' + idx);
+    if (el) el.textContent = '0:00';
+    var key = 'daf-2011v-best-' + idx;
+    var best = parseInt(localStorage.getItem(key) || '0');
+    var elB = document.getElementById('best-' + idx);
+    if (elB) {
+        if (best > 0) {
+            var m = Math.floor(best/60), s = best%60;
+            elB.textContent = m + ':' + (s<10?'0':'') + s;
+        } else { elB.textContent = '—'; }
+    }
+    if (idx === 2) { resetLuecken(); }
+    if (idx === 4) { initSatzbau(); }
+    if (idx === 5) { resetWortschatz(); }
+}
+// Bestzeit beim Laden anzeigen
+document.addEventListener('DOMContentLoaded', function(){
+    [2,4,5].forEach(function(idx){
+        var key = 'daf-2011v-best-' + idx;
+        var best = parseInt(localStorage.getItem(key) || '0');
+        var el = document.getElementById('best-' + idx);
+        if (el && best > 0) {
+            var m = Math.floor(best/60), s = best%60;
+            el.textContent = m + ':' + (s<10?'0':'') + s;
+        }
+    });
+});
+
+// ══════════════════════════════════════════════════════════════════
+// LÜCKENTEXT
+// ══════════════════════════════════════════════════════════════════
+function liveCheckLuecke(inp) {
+    timerAutoStart(2);
+    var val = inp.value.trim().toLowerCase();
+    var ans = (inp.dataset.ans || '').toLowerCase();
+    inp.classList.remove('ok','no');
+    if (!val) return;
+    if (val === ans) {
+        inp.classList.add('ok');
+        var alle = document.querySelectorAll('#sec-2 .luecken-inp');
+        var allOk = Array.from(alle).every(function(i){ return i.classList.contains('ok'); });
+        if (allOk) timerStop(2);
+        return;
+    }
+    if (ans.startsWith(val)) return;
+    inp.classList.add('no');
+}
+function setupLuecken() {
+    document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp){
+        inp.addEventListener('input', function(){ liveCheckLuecke(inp); });
+    });
+}
+function resetLuecken() {
+    document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp){
+        inp.value = ''; inp.classList.remove('ok','no');
+    });
+}
+function showLueckenLoesungen() {
+    document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp){
+        var ans = inp.dataset.ans || '';
+        inp.value = ans.charAt(0).toUpperCase() + ans.slice(1);
+        inp.classList.remove('no'); inp.classList.add('ok');
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RICHTIG / FALSCH
+// ══════════════════════════════════════════════════════════════════
+var RF_DATA = [
+    { stmt: 'Die Person möchte kein Fleisch essen.', correct: true },
+    { stmt: 'Die Person hat eine Milchallergie.', correct: false },
+    { stmt: 'Die Person mag scharfes Essen.', correct: false },
+    { stmt: 'Die Person möchte Gemüse süß-sauer probieren.', correct: true },
+    { stmt: 'Tom kauft jeden Samstag auf dem Markt ein.', correct: true },
+    { stmt: 'Die Erdbeeren riechen bitter.', correct: false },
+    { stmt: 'Der Käse schmeckt Tom nicht.', correct: false },
+    { stmt: 'Tom kauft eine Portion für das Abendessen.', correct: true },
+];
+var rfInited = false;
+function initRF() {
+    if (rfInited) return; rfInited = true;
+    var list = document.getElementById('rfList');
+    list.innerHTML = '';
+    RF_DATA.forEach(function(item, i) {
+        var li = document.createElement('li'); li.className = 'rf-item';
+        li.innerHTML = '<span class="rf-stmt">' + item.stmt + '</span>'
+            + '<button class="rf-btn" onclick="checkRF(this,true,' + i + ')">Richtig</button>'
+            + '<button class="rf-btn" onclick="checkRF(this,false,' + i + ')">Falsch</button>';
+        list.appendChild(li);
+    });
+}
+function checkRF(btn, userAnswer, idx) {
+    var item = btn.closest('.rf-item');
+    var btns = item.querySelectorAll('.rf-btn');
+    var correct = RF_DATA[idx].correct;
+    btns.forEach(function(b){ b.classList.remove('ok','no'); });
+    btn.classList.add(userAnswer === correct ? 'ok' : 'no');
+}
+function resetRF() {
+    document.querySelectorAll('#sec-3 .rf-btn').forEach(function(b){ b.classList.remove('ok','no'); });
+}
+function showRFLoesung() {
+    document.querySelectorAll('#sec-3 .rf-item').forEach(function(item, i) {
+        var btns = item.querySelectorAll('.rf-btn');
+        btns.forEach(function(b){ b.classList.remove('ok','no'); });
+        // Richtig-Button = index 0, Falsch-Button = index 1
+        btns[RF_DATA[i].correct ? 0 : 1].classList.add('ok');
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// QA / REDEMITTEL
+// ══════════════════════════════════════════════════════════════════
+var QA_DATA = [
+    { frage: 'Wie schmeckt Zitronensaft?', antwort: 'Er schmeckt sauer.' },
+    { frage: 'Was riecht da so gut?', antwort: 'Das frische Brot riecht so gut.' },
+    { frage: 'Magst du scharfes Essen?', antwort: 'Nein, ich esse lieber milde Gerichte.' },
+    { frage: 'Bist du Vegetarier?', antwort: 'Ja, ich esse kein Fleisch.' },
+    { frage: 'Möchtest du die Soße kosten?', antwort: 'Ja, gerne – sie riecht wunderbar.' },
+    { frage: 'Wie ist der Nachtisch?', antwort: 'Er ist sehr süß und fruchtig.' },
+    { frage: 'Warum isst du das nicht?', antwort: 'Es ist verdorben.' },
+];
+var qaInited = false;
+var draggedChip = null;
+function shuffleArr(arr) {
+    var a = arr.slice();
+    for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
+    return a;
+}
+function colorAllQaChips() {
+    document.querySelectorAll('#sec-1 .drop-zone').forEach(function(zone){
+        var chip = zone.querySelector('.chip');
+        if (!chip) return;
+        var ok = chip.dataset.ans === zone.dataset.ans;
+        chip.classList.toggle('correct', ok);
+        chip.classList.toggle('incorrect', !ok);
+    });
+    document.querySelectorAll('#qaBank .chip').forEach(function(c){ c.classList.remove('correct','incorrect'); });
+}
+function initQa() {
+    qaInited = true;
+    var container = document.getElementById('qaContainer');
+    container.innerHTML = ''; draggedChip = null;
+    var bank = document.createElement('div');
+    bank.className = 'chip-bank'; bank.id = 'qaBank';
+    bank.addEventListener('dragover', function(e){ e.preventDefault(); });
+    bank.addEventListener('drop', function(e){
+        e.preventDefault(); if (!draggedChip) return;
+        bank.appendChild(draggedChip); draggedChip = null; colorAllQaChips();
+    });
+    shuffleArr(QA_DATA.map(function(q){ return q.antwort; })).forEach(function(ans){
+        var chip = document.createElement('div');
+        chip.className = 'chip'; chip.textContent = ans; chip.dataset.ans = ans; chip.draggable = true;
+        chip.addEventListener('dragstart', function(e){ draggedChip = chip; e.dataTransfer.setData('text/plain',''); });
+        chip.addEventListener('dragend', function(){ colorAllQaChips(); });
+        chip.addEventListener('click', function(){
+            if (chip.classList.contains('selected')){ chip.classList.remove('selected'); return; }
+            document.querySelectorAll('#sec-1 .chip.selected').forEach(function(c){ c.classList.remove('selected'); });
+            chip.classList.add('selected');
+        });
+        bank.appendChild(chip);
+    });
+    container.appendChild(bank);
+    var grid = document.createElement('div'); grid.className = 'qa-grid';
+    QA_DATA.forEach(function(q){
+        var frageCell = document.createElement('div');
+        frageCell.className = 'qa-frage-cell'; frageCell.textContent = q.frage;
+        grid.appendChild(frageCell);
+        var zone = document.createElement('div');
+        zone.className = 'drop-zone'; zone.dataset.ans = q.antwort; zone.style.minHeight = '44px';
+        zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', function(){ zone.classList.remove('drag-over'); });
+        zone.addEventListener('drop', function(e){
+            e.preventDefault(); zone.classList.remove('drag-over');
+            if (!draggedChip) return;
+            var existing = zone.querySelector('.chip');
+            if (existing) document.getElementById('qaBank').appendChild(existing);
+            zone.appendChild(draggedChip); draggedChip = null; colorAllQaChips();
+        });
+        zone.addEventListener('click', function(){
+            var sel = document.querySelector('#sec-1 .chip.selected');
+            if (sel) {
+                var existing = zone.querySelector('.chip');
+                if (existing) document.getElementById('qaBank').appendChild(existing);
+                zone.appendChild(sel); sel.classList.remove('selected'); colorAllQaChips();
+            }
+        });
+        grid.appendChild(zone);
+    });
+    container.appendChild(grid);
+}
+function showQaLoesung() {
+    document.querySelectorAll('#sec-1 .drop-zone').forEach(function(zone){
+        var ans = zone.dataset.ans;
+        var chip = zone.querySelector('.chip');
+        if (chip && chip.dataset.ans === ans) return;
+        // find chip in bank or other zones
+        var target = document.querySelector('#sec-1 .chip[data-ans="' + CSS.escape(ans) + '"]');
+        if (!target) return;
+        var existing = zone.querySelector('.chip');
+        if (existing) document.getElementById('qaBank').appendChild(existing);
+        zone.appendChild(target);
+    });
+    colorAllQaChips();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SATZBAU
+// ══════════════════════════════════════════════════════════════════
+var sbInitialized = false;
+var sbDragged = null;
+var satzbauData = [
+    { parts: ['das', 'Croissant', 'riecht', 'sehr', 'lecker'], valid: [['das', 'Croissant', 'riecht', 'sehr', 'lecker']], punct: '.' },
+    { parts: ['die', 'Soße', 'schmeckt', 'etwas', 'scharf'], valid: [['die', 'Soße', 'schmeckt', 'etwas', 'scharf']], punct: '.' },
+    { parts: ['er', 'genießt', 'sein', 'Frühstück', 'sehr'], valid: [['er', 'genießt', 'sein', 'Frühstück', 'sehr']], punct: '.' },
+    { parts: ['ich', 'bin', 'gegen', 'Nüsse', 'allergisch'], valid: [['ich', 'bin', 'gegen', 'Nüsse', 'allergisch']], punct: '.' },
+    { parts: ['das', 'Obst', 'ist', 'verdorben'], valid: [['das', 'Obst', 'ist', 'verdorben']], punct: '.' },
+    { parts: ['dank', 'der', 'Zunge', 'können', 'wir', 'Geschmäcker', 'wahrnehmen'], valid: [['dank', 'der', 'Zunge', 'können', 'wir', 'Geschmäcker', 'wahrnehmen']], punct: '.' },
+    { parts: ['magst', 'du', 'bitteren', 'Kaffee'], valid: [['magst', 'du', 'bitteren', 'Kaffee']], punct: '?' },
+];
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) { c = document.createElement('div'); c.id = 'sb-insert-cursor'; c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;'; }
+    return c;
+}
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i=0;i<chips.length;i++){ var r=chips[i].getBoundingClientRect(); if (clientX < r.left+r.width/2) return chips[i]; }
+    return null;
+}
+function sbCapitalize(str){ return str.charAt(0).toUpperCase()+str.slice(1); }
+function sbUpdateCapitalization(row) {
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c,i){
+        var orig = c.dataset.orig;
+        var isProper = orig.charAt(0)===orig.charAt(0).toUpperCase() && orig.charAt(0)!==orig.charAt(0).toLowerCase();
+        c.textContent = isProper ? orig : (i===0 ? sbCapitalize(orig) : orig);
+    });
+}
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip'; chip.textContent = word; chip.dataset.orig = word; chip.draggable = true;
+    chip.addEventListener('dragstart', function(e){ sbDragged=chip; e.dataTransfer.setData('text/plain',''); setTimeout(function(){ chip.style.opacity='0.4'; },0); });
+    chip.addEventListener('dragend', function(){ chip.style.opacity=''; sbDragged=null; var c=document.getElementById('sb-insert-cursor'); if(c&&c.parentNode) c.parentNode.removeChild(c); });
+    return chip;
+}
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e){ e.preventDefault(); if(!sbDragged) return; var cursor=getSbCursor(); var before=getSbInsertPos(zone,e.clientX); if(before) zone.insertBefore(cursor,before); else zone.appendChild(cursor); });
+    zone.addEventListener('dragleave', function(e){ if(!zone.contains(e.relatedTarget)){ var c=document.getElementById('sb-insert-cursor'); if(c&&c.parentNode===zone) zone.removeChild(c); } });
+    zone.addEventListener('drop', function(e){
+        e.preventDefault(); if(!sbDragged) return;
+        var cursor=document.getElementById('sb-insert-cursor');
+        if(cursor&&cursor.parentNode===zone){ zone.insertBefore(sbDragged,cursor); zone.removeChild(cursor); } else { zone.appendChild(sbDragged); }
+        sbDragged=null;
+        sbUpdateCapitalization(document.getElementById('sb-row-'+idx));
+        sbCheckAuto(idx);
+    });
+}
+function sbColorRow(idx) {
+    var row=document.getElementById('sb-row-'+idx);
+    var chips=Array.from(row.querySelectorAll('.chip'));
+    var order=chips.map(function(c){ return c.dataset.orig; });
+    var ok=satzbauData[idx].valid.some(function(v){ return JSON.stringify(v)===JSON.stringify(order); });
+    chips.forEach(function(c){ c.classList.remove('correct','incorrect'); c.classList.add(ok?'correct':'incorrect'); });
+    var existing=row.querySelector('.sb-punkt'); if(existing) existing.parentNode.removeChild(existing);
+    if(ok){ var punkt=document.createElement('span'); punkt.className='sb-punkt'; punkt.textContent=satzbauData[idx].punct||'.'; row.appendChild(punkt); }
+    return ok;
+}
+function sbCheckAuto(idx) {
+    var bank=document.getElementById('sb-bank-'+idx), row=document.getElementById('sb-row-'+idx), fb=document.getElementById('sb-fb-'+idx);
+    if(bank.querySelectorAll('.chip').length>0){ row.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('correct','incorrect'); }); row.classList.remove('correct','incorrect'); fb.textContent=''; return; }
+    setTimeout(function(){
+        timerAutoStart(4);
+        var ok=sbColorRow(idx);
+        if(ok){ row.classList.add('correct'); row.classList.remove('incorrect'); fb.className='satzbau-feedback correct'; fb.textContent='✓ Korrekt!'; sbCheckAllDone(); }
+        else { row.classList.add('incorrect'); row.classList.remove('correct'); fb.className='satzbau-feedback incorrect'; fb.textContent='✗ Falsche Reihenfolge – verschiebe die Chips!'; }
+    }, 500);
+}
+function sbCheckAllDone() {
+    var allOk=satzbauData.every(function(_,i){ var row=document.getElementById('sb-row-'+i); return row&&row.classList.contains('correct'); });
+    if(allOk) timerStop(4);
+}
+function sbShowSolution(idx) {
+    var bank=document.getElementById('sb-bank-'+idx), row=document.getElementById('sb-row-'+idx), fb=document.getElementById('sb-fb-'+idx);
+    var solution=satzbauData[idx].valid[0];
+    var allChips={};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c){ allChips[c.dataset.orig]=c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c){ allChips[c.dataset.orig]=c; });
+    while(bank.firstChild) bank.removeChild(bank.firstChild);
+    while(row.firstChild) row.removeChild(row.firstChild);
+    solution.forEach(function(word,i){ var chip=allChips[word]; if(chip){ chip.textContent=(i===0)?sbCapitalize(word):word; chip.classList.remove('correct','incorrect'); row.appendChild(chip); } });
+    fb.textContent='';
+    setTimeout(function(){ sbCheckAuto(idx); }, 100);
+}
+function initSatzbau() {
+    var container=document.getElementById('satzbauContainer');
+    container.innerHTML='';
+    satzbauData.forEach(function(ex,idx){
+        var block=document.createElement('div'); block.className='sb-block';
+        block.innerHTML='<div class="sb-num">Satz '+(idx+1)+'</div>'
+            +'<div class="chips-container" id="sb-bank-'+idx+'"></div>'
+            +'<div class="sentence-builder" id="sb-row-'+idx+'"></div>'
+            +'<div class="satzbau-feedback" id="sb-fb-'+idx+'"></div>'
+            +'<button class="solution-btn" onclick="sbShowSolution('+idx+')">Lösung anzeigen</button>';
+        container.appendChild(block);
+        var bank=document.getElementById('sb-bank-'+idx), row=document.getElementById('sb-row-'+idx);
+        var parts=ex.parts.slice();
+        for(var i=parts.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=parts[i]; parts[i]=parts[j]; parts[j]=t; }
+        parts.forEach(function(word){ bank.appendChild(sbMakeChip(word)); });
+        sbRegisterZone(bank,idx); sbRegisterZone(row,idx);
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// WORTSCHATZ
+// ══════════════════════════════════════════════════════════════════
+var wsInitialized = false;
+var WS_DATA = [
+    { imgId: 'riechen',       en: 'to smell',            art: '',    de: 'riechen',       plural: '' },
+    { imgId: 'geruch',        en: 'smell, scent',        art: 'der', de: 'Geruch',        plural: 'Ger\u0308uche' },
+    { imgId: 'schmecken',     en: 'to taste',            art: '',    de: 'schmecken',     plural: '' },
+    { imgId: 'geschmack',     en: 'taste, flavor',       art: 'der', de: 'Geschmack',     plural: 'Geschm\u0308acker' },
+    { imgId: 'probieren',     en: 'to try (food)',       art: '',    de: 'probieren',     plural: '' },
+    { imgId: 'kosten',        en: 'to taste/try',        art: '',    de: 'kosten',        plural: '' },
+    { imgId: 'zunge',         en: 'tongue',              art: 'die', de: 'Zunge',         plural: 'Zungen' },
+    { imgId: 'suess',         en: 'sweet',               art: '',    de: 'süß',           plural: '' },
+    { imgId: 'sauer',         en: 'sour',                art: '',    de: 'sauer',         plural: '' },
+    { imgId: 'salzig',        en: 'salty',               art: '',    de: 'salzig',        plural: '' },
+    { imgId: 'scharf',        en: 'spicy, hot',          art: '',    de: 'scharf',        plural: '' },
+    { imgId: 'bitter',        en: 'bitter',              art: '',    de: 'bitter',        plural: '' },
+    { imgId: 'fruchtig',      en: 'fruity',              art: '',    de: 'fruchtig',      plural: '' },
+    { imgId: 'ungewoehnlich', en: 'unusual',             art: '',    de: 'ungewöhnlich',  plural: '' },
+    { imgId: 'verderben',     en: 'to spoil, go bad',    art: '',    de: 'verderben',     plural: '' },
+    { imgId: 'geniessen',     en: 'to enjoy',            art: '',    de: 'genießen',      plural: '' },
+    { imgId: 'portion',       en: 'portion, serving',    art: 'die', de: 'Portion',       plural: 'Portionen' },
+    { imgId: 'vegetarier',    en: 'vegetarian',          art: 'der', de: 'Vegetarier',    plural: 'Vegetarier' },
+];
+
+function makeWsInp(ans, placeholder, width) {
+    var inp = document.createElement('input');
+    inp.type = 'text'; inp.className = 'ws-inp';
+    inp.placeholder = placeholder;
+    inp.style.width = width + 'px';
+    inp.dataset.ans = ans.toLowerCase();
+    inp.setAttribute('autocomplete','off');
+    inp.addEventListener('input', function(){
+        timerAutoStart(5);
+        var val = inp.value.trim().toLowerCase();
+        var a = inp.dataset.ans;
+        inp.classList.remove('ok','no');
+        if (!val) return;
+        if (val === a) { inp.classList.add('ok'); checkAllWs(); return; }
+        if (a.startsWith(val)) return;
+        inp.classList.add('no');
+    });
+    return inp;
+}
+function checkAllWs() {
+    var alle = document.querySelectorAll('#sec-5 .ws-inp');
+    var allOk = Array.from(alle).every(function(i){ return i.classList.contains('ok'); });
+    if (allOk) timerStop(5);
+}
+function initWortschatz() {
+    var tbody = document.getElementById('wsBody');
+    tbody.innerHTML = '';
+    WS_DATA.forEach(function(item, idx){
+        var tr = document.createElement('tr');
+        // Bild-Zelle
+        var tdImg = document.createElement('td');
+        var img = document.createElement('img');
+        img.className = 'ws-img'; img.alt = item.de;
+        var src = window._imgData2011v && window._imgData2011v[item.imgId] ? window._imgData2011v[item.imgId] : '';
+        img.src = src;
+        tdImg.appendChild(img); tr.appendChild(tdImg);
+        // Englisch
+        var tdEn = document.createElement('td');
+        tdEn.innerHTML = '<span class="ws-en">' + item.en + '</span>';
+        tr.appendChild(tdEn);
+        // Artikel
+        var tdArt = document.createElement('td');
+        if (!item.art) { tdArt.innerHTML = '<span style="color:#bbb">—</span>'; }
+        else { tdArt.appendChild(makeWsInp(item.art, 'Artikel', 70)); }
+        tr.appendChild(tdArt);
+        // Wort
+        var tdWort = document.createElement('td');
+        tdWort.appendChild(makeWsInp(item.de, '', 140));
+        tr.appendChild(tdWort);
+        // Plural
+        var tdPlural = document.createElement('td');
+        if (!item.plural) { tdPlural.innerHTML = '<span style="color:#bbb">—</span>'; }
+        else { tdPlural.appendChild(makeWsInp(item.plural, '', 130)); }
+        tr.appendChild(tdPlural);
+        tbody.appendChild(tr);
+    });
+}
+function resetWortschatz() {
+    document.querySelectorAll('#sec-5 .ws-inp').forEach(function(inp){
+        inp.value=''; inp.classList.remove('ok','no');
+    });
+}
+function showWsLoesungen() {
+    document.querySelectorAll('#sec-5 .ws-inp').forEach(function(inp){
+        var ans = inp.dataset.ans || '';
+        inp.value = ans.charAt(0).toUpperCase() + ans.slice(1);
+        inp.classList.remove('no'); inp.classList.add('ok');
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function(){
+    setupLuecken();
+    initRF();
+});
+</script>
+</body>
+</html>

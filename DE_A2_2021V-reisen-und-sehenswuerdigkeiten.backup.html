@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2021V Reisen und Sehenswürdigkeiten</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #6c3483; min-height: 100vh; padding: 20px; }
+.container { max-width: 860px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); overflow: hidden; }
+h1 { background: #6c3483; color: #fff; padding: 18px 24px; font-size: 1.25rem; }
+h1 span { font-size: 0.9rem; opacity: 0.8; margin-left: 10px; }
+nav { display: flex; flex-wrap: wrap; background: #f3e5f5; border-bottom: 2px solid #6c3483; padding: 6px 8px 0; gap: 4px; }
+nav button { padding: 8px 13px; border: 1.5px solid #9b59b6; background: #fff; border-radius: 8px 8px 0 0; cursor: pointer; font-size: 0.82rem; font-weight: 600; color: #6c3483; transition: background 0.15s; margin-bottom: -2px; }
+nav button.active { background: #6c3483; color: #fff; border-color: #6c3483; }
+nav button:hover:not(.active) { background: #e8d5f5; }
+.tab { display: none; padding: 22px 24px 28px; }
+.tab.active { display: block; }
+.timer-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; font-size:0.82rem; color:#6c3483; }
+.timer-display { font-weight:700; font-size:1rem; min-width:52px; }
+.timer-btn { padding:4px 12px; border-radius:6px; border:none; background:#6c3483; color:#fff; cursor:pointer; font-size:0.8rem; }
+.timer-btn:hover { background:#9b59b6; }
+.best-time { font-size:0.78rem; color:#888; }
+
+/* VOCAB CARDS */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.vcard { border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.10); cursor: pointer; transition: transform 0.15s; }
+.vcard:hover { transform: translateY(-2px); }
+.vcard img { width: 100%; height: 110px; object-fit: cover; display: block; }
+.vcard-body { padding: 8px 10px 10px; background: #f3e5f5; }
+.vcard-de { font-weight: 700; font-size: 0.9rem; color: #4a235a; }
+.vcard-art { font-size: 0.78rem; color: #9b59b6; }
+.vcard-en { font-size: 0.78rem; color: #888; margin-top: 2px; display: none; }
+.vcard.flipped .vcard-en { display: block; }
+.vcard.flipped .vcard-body { background: #e8d5f5; }
+
+/* REDEMITTEL QA */
+.qa-grid { display: flex; flex-direction: column; gap: 10px; }
+.qa-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.qa-q { background: #6c3483; color: #fff; padding: 10px 14px; font-size: 0.88rem; display: flex; align-items: center; }
+.qa-a { background: #f3e5f5; color: #4a235a; padding: 10px 14px; font-size: 0.88rem; display: flex; align-items: center; cursor: pointer; }
+.qa-a .ans { display: none; }
+.qa-a.open .ans { display: inline; }
+.qa-a.open .placeholder { display: none; }
+.qa-a .placeholder { color: #bbb; font-style: italic; }
+
+/* LÜCKENTEXT */
+.luecken-text { font-size: 0.92rem; line-height: 2.2; color: #333; }
+.gap-inp { width: 140px; border: none; border-bottom: 2px solid #9b59b6; background: transparent; font-size: 0.9rem; font-family: inherit; color: #333; padding: 2px 4px; outline: none; text-align: center; }
+.gap-inp.correct { border-bottom-color: #27ae60; background: #e8f9ec; border-radius: 4px 4px 0 0; }
+.gap-inp.partial { border-bottom-color: #f39c12; }
+.gap-inp.wrong { border-bottom-color: #e74c3c; }
+.wortbank { background: #f3e5f5; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; }
+.wortbank strong { font-size: 0.82rem; color: #6c3483; display: block; margin-bottom: 6px; }
+.wb-chip { display: inline-block; background: #fff; border: 1.5px solid #9b59b6; border-radius: 12px; padding: 3px 10px; font-size: 0.82rem; color: #4a235a; margin: 3px; }
+
+/* TEXT & FRAGEN */
+.lese-text { background: #f9f9f9; border-radius: 8px; padding: 16px 18px; font-size: 0.9rem; line-height: 1.7; color: #333; margin-bottom: 18px; }
+.lese-text p { margin-bottom: 10px; }
+.rf-list { display: flex; flex-direction: column; gap: 8px; }
+.rf-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #f9f9f9; border-radius: 8px; font-size: 0.88rem; cursor: pointer; border: 1.5px solid #ddd; }
+.rf-item:hover { background: #f3e5f5; }
+.rf-btns { display: flex; gap: 6px; }
+.rf-btn { padding: 4px 14px; border-radius: 14px; border: 1.5px solid #9b59b6; background: #fff; color: #6c3483; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.rf-btn:hover { background: #f3e5f5; }
+.rf-btn.sel-r { background: #27ae60; color: #fff; border-color: #27ae60; }
+.rf-btn.sel-f { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+.rf-result { font-size: 0.8rem; font-weight: 700; min-width: 24px; }
+.rf-result.ok { color: #27ae60; }
+.rf-result.err { color: #e74c3c; }
+
+/* SATZBAU */
+.sb-aufgabe { background: #f9f9f9; border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+.sb-aufgabe .sb-info { font-size: 0.8rem; color: #888; margin-bottom: 6px; }
+.sb-drop { min-height: 38px; background: #fff; border: 2px dashed #9b59b6; border-radius: 6px; padding: 4px 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
+.sb-drop.drag-over { background: #f3e5f5; border-color: #6c3483; }
+.sb-chip { display: inline-flex; align-items: center; background: #e8d5f5; border: 1.5px solid #9b59b6; border-radius: 14px; padding: 4px 12px; font-size: 0.82rem; font-weight: 600; color: #4a235a; cursor: grab; user-select: none; }
+.sb-chip:active { cursor: grabbing; }
+.sb-chip-bank { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0; }
+.sb-result { font-size: 0.82rem; margin-top: 4px; min-height: 20px; font-weight: 600; }
+.sb-result.ok { color: #27ae60; }
+.sb-result.err { color: #e74c3c; }
+
+/* WORTSCHATZ */
+.ws-grid { display: flex; flex-direction: column; gap: 10px; }
+.ws-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: center; padding: 8px 12px; background: #f9f9f9; border-radius: 8px; }
+.ws-en { font-size: 0.85rem; color: #555; }
+.ws-inp-group { display: flex; gap: 6px; align-items: center; }
+.ws-inp { border: none; border-bottom: 2px solid #9b59b6; background: transparent; font-size: 0.85rem; font-family: inherit; padding: 2px 4px; outline: none; }
+.ws-inp.art { width: 52px; text-align: center; }
+.ws-inp.wort { width: 140px; }
+.ws-inp.plural { width: 100px; }
+.ws-inp.correct { border-bottom-color: #27ae60; background: #e8f9ec; border-radius: 3px 3px 0 0; }
+.ws-inp.partial { border-bottom-color: #f39c12; }
+
+footer { text-align: center; font-size: 0.75rem; color: #aaa; padding: 14px; border-top: 1px solid #eee; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>✈️ Reisen und Sehenswürdigkeiten <span>A2.2 · 2021V · Wortschatz</span></h1>
+<nav>
+  <button class="active" onclick="showTab(0,this)">📸 Wörter</button>
+  <button onclick="showTab(1,this)">💬 Redemittel</button>
+  <button onclick="showTab(2,this)">✏️ Lückentext</button>
+  <button onclick="showTab(3,this)">📖 Text &amp; Fragen</button>
+  <button onclick="showTab(4,this)">🧩 Satzbau</button>
+  <button onclick="showTab(5,this)">🔠 Wortschatz</button>
+</nav>
+
+<!-- TAB 0: WÖRTER -->
+<div class="tab active" id="tab0">
+  <div class="timer-row">⏱ <span class="timer-display" id="td0">0:00</span><button class="timer-btn" onclick="timerToggle(0)">Start</button><span class="best-time" id="tb0"></span></div>
+  <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">💡 Klicke auf eine Karte, um die englische Übersetzung zu sehen.</p>
+  <div class="vocab-grid">
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1603650/pexels-photo-1603650.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Sehenswürdigkeit">
+      <div class="vcard-body"><div class="vcard-de">die Sehenswürdigkeit</div><div class="vcard-art">Pl. die Sehenswürdigkeiten</div><div class="vcard-en">tourist attraction / sight</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Aussicht">
+      <div class="vcard-body"><div class="vcard-de">die Aussicht</div><div class="vcard-art">Pl. die Aussichten</div><div class="vcard-en">view / outlook</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3009706/pexels-photo-3009706.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Altstadt">
+      <div class="vcard-body"><div class="vcard-de">die Altstadt</div><div class="vcard-art">Pl. die Altstädte</div><div class="vcard-en">old town</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/33661381/pexels-photo-33661381.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Stadtführung">
+      <div class="vcard-body"><div class="vcard-de">die Stadtführung</div><div class="vcard-art">Pl. die Stadtführungen</div><div class="vcard-en">city tour / guided tour</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/31711202/pexels-photo-31711202.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Reiseleiter">
+      <div class="vcard-body"><div class="vcard-de">der Reiseleiter</div><div class="vcard-art">Pl. die Reiseleiter</div><div class="vcard-en">tour guide</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/4582567/pexels-photo-4582567.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Touristeninformation">
+      <div class="vcard-body"><div class="vcard-de">die Touristeninformation</div><div class="vcard-art">Pl. die Touristeninformationen</div><div class="vcard-en">tourist information office</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1746207/pexels-photo-1746207.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Eintrittspreis">
+      <div class="vcard-body"><div class="vcard-de">der Eintrittspreis</div><div class="vcard-art">Pl. die Eintrittspreise</div><div class="vcard-en">admission price / entry fee</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/7957747/pexels-photo-7957747.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Ermäßigung">
+      <div class="vcard-body"><div class="vcard-de">die Ermäßigung</div><div class="vcard-art">Pl. die Ermäßigungen</div><div class="vcard-en">discount / concession</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="gemütlich">
+      <div class="vcard-body"><div class="vcard-de">gemütlich</div><div class="vcard-art">Adj.</div><div class="vcard-en">cosy / comfortable</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/5326952/pexels-photo-5326952.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="überfüllt">
+      <div class="vcard-body"><div class="vcard-de">überfüllt</div><div class="vcard-art">Adj.</div><div class="vcard-en">overcrowded</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="sich lohnen">
+      <div class="vcard-body"><div class="vcard-de">sich lohnen</div><div class="vcard-art">Verb (reflexiv)</div><div class="vcard-en">to be worth it</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/2325446/pexels-photo-2325446.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="besichtigen">
+      <div class="vcard-body"><div class="vcard-de">besichtigen</div><div class="vcard-art">Verb</div><div class="vcard-en">to visit / to tour (a site)</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1587014/pexels-photo-1587014.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="sich beschweren">
+      <div class="vcard-body"><div class="vcard-de">sich beschweren</div><div class="vcard-art">Verb (reflexiv)</div><div class="vcard-en">to complain</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/2833379/pexels-photo-2833379.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="ausfallen">
+      <div class="vcard-body"><div class="vcard-de">ausfallen</div><div class="vcard-art">Verb (trennbar)</div><div class="vcard-en">to be cancelled / to fall out</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3888018/pexels-photo-3888018.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="verpassen">
+      <div class="vcard-body"><div class="vcard-de">verpassen</div><div class="vcard-art">Verb</div><div class="vcard-en">to miss (a train, flight)</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/29402988/pexels-photo-29402988.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Visum">
+      <div class="vcard-body"><div class="vcard-de">das Visum</div><div class="vcard-art">Pl. die Visa / Visen</div><div class="vcard-en">visa</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/33434082/pexels-photo-33434082.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Massentourismus">
+      <div class="vcard-body"><div class="vcard-de">der Massentourismus</div><div class="vcard-art">nur Singular</div><div class="vcard-en">mass tourism</div></div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=400&h=220&fit=crop" alt="Rucksacktourismus">
+      <div class="vcard-body"><div class="vcard-de">der Rucksacktourismus</div><div class="vcard-art">nur Singular</div><div class="vcard-en">backpacking / backpack tourism</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: REDEMITTEL -->
+<div class="tab" id="tab1">
+  <div class="timer-row">⏱ <span class="timer-display" id="td1">0:00</span><button class="timer-btn" onclick="timerToggle(1)">Start</button><span class="best-time" id="tb1"></span></div>
+  <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">💡 Klicke auf die rechte Seite, um die Antwort zu sehen.</p>
+  <div class="qa-grid">
+    <div class="qa-pair">
+      <div class="qa-q">Was lohnt sich in Berlin?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">…</span><span class="ans">Das Brandenburger Tor lohnt sich – es ist beeindruckend!</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Was möchtest du besichtigen?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">…</span><span class="ans">Ich möchte die Altstadt und ein Museum besichtigen.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Gibt es eine Ermäßigung für Studenten?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">…</span><span class="ans">Ja, Studenten bekommen eine Ermäßigung von 50%.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Was ist der Eintrittspreis?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">…</span><span class="ans">Der Eintrittspreis beträgt 13 Euro pro Person.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Wie war die Stadtführung?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">…</span><span class="ans">Die Stadtführung war sehr interessant. Der Reiseleiter war toll!</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Warum bist du unzufrieden?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">…</span><span class="ans">Ich möchte mich beschweren – das Zimmer ist zu ungemütlich.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Was ist passiert?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">…</span><span class="ans">Mein Flug ist ausgefallen und ich habe den Anschluss verpasst.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Brauche ich ein Visum?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">…</span><span class="ans">In der EU brauchst du kein Visum. Für die USA schon.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: LÜCKENTEXT -->
+<div class="tab" id="tab2">
+  <div class="timer-row">⏱ <span class="timer-display" id="td2">0:00</span><button class="timer-btn" onclick="timerToggle(2)">Start</button><span class="best-time" id="tb2"></span></div>
+  <div class="wortbank">
+    <strong>Wortbank:</strong>
+    <span class="wb-chip">Sehenswürdigkeiten</span><span class="wb-chip">besichtigen</span><span class="wb-chip">Stadtführung</span>
+    <span class="wb-chip">Reiseleiter</span><span class="wb-chip">Ermäßigung</span><span class="wb-chip">Eintrittspreis</span>
+    <span class="wb-chip">gemütlich</span><span class="wb-chip">Aussicht</span><span class="wb-chip">lohnt sich</span>
+    <span class="wb-chip">überfüllt</span><span class="wb-chip">ausgefallen</span><span class="wb-chip">verpasst</span>
+  </div>
+  <div class="luecken-text">
+    <p style="margin-bottom:12px;">Wir sind in Berlin! Die Stadt hat viele tolle
+    <input class="gap-inp" id="g1" data-ans="Sehenswürdigkeiten" oninput="liveCheck(this)" placeholder="">. Am ersten Tag machen wir eine
+    <input class="gap-inp" id="g2" data-ans="Stadtführung" oninput="liveCheck(this)" placeholder="">
+    durch die Altstadt.</p>
+
+    <p style="margin-bottom:12px;">Unser
+    <input class="gap-inp" id="g3" data-ans="Reiseleiter" oninput="liveCheck(this)" placeholder="">
+    heißt Max und er kennt die Stadt sehr gut. Er zeigt uns, was sich
+    <input class="gap-inp" id="g4" data-ans="lohnt sich" oninput="liveCheck(this)" placeholder="">
+    und was man unbedingt
+    <input class="gap-inp" id="g5" data-ans="besichtigen" oninput="liveCheck(this)" placeholder="">
+    sollte.</p>
+
+    <p style="margin-bottom:12px;">Der
+    <input class="gap-inp" id="g6" data-ans="Eintrittspreis" oninput="liveCheck(this)" placeholder="">
+    für das Museum beträgt 15 Euro. Kinder bekommen eine
+    <input class="gap-inp" id="g7" data-ans="Ermäßigung" oninput="liveCheck(this)" placeholder="">
+    und zahlen nur 8 Euro.</p>
+
+    <p style="margin-bottom:12px;">Unser Hotel ist sehr
+    <input class="gap-inp" id="g8" data-ans="gemütlich" oninput="liveCheck(this)" placeholder="">
+    und wir haben eine schöne
+    <input class="gap-inp" id="g9" data-ans="Aussicht" oninput="liveCheck(this)" placeholder="">
+    auf die Stadt.</p>
+
+    <p style="margin-bottom:12px;">Leider war der Strand sehr
+    <input class="gap-inp" id="g10" data-ans="überfüllt" oninput="liveCheck(this)" placeholder="">.
+    Am letzten Tag ist unser Zug
+    <input class="gap-inp" id="g11" data-ans="ausgefallen" oninput="liveCheck(this)" placeholder="">,
+    deshalb haben wir den Anschlussflug
+    <input class="gap-inp" id="g12" data-ans="verpasst" oninput="liveCheck(this)" placeholder="">.</p>
+  </div>
+</div>
+
+<!-- TAB 3: TEXT & FRAGEN -->
+<div class="tab" id="tab3">
+  <div class="timer-row">⏱ <span class="timer-display" id="td3">0:00</span><button class="timer-btn" onclick="timerToggle(3)">Start</button><span class="best-time" id="tb3"></span></div>
+  <div class="lese-text">
+    <p><strong>Die Müllers werden Rucksacktouristen</strong></p>
+    <p>Früher ist Familie Müller, wie viele andere Deutsche, in den Ferien nach Spanien oder in die Türkei geflogen. Dort blüht der Massentourismus. Das macht es sehr bequem: Sie brauchten kein Visum, der Reiseleiter hat Stadtführungen und Touren organisiert und sich um alle Beschwerden gekümmert. Sie mussten auch keine neue Sprache lernen, denn im Hotel haben sie nur Deutsche kennengelernt und auch alle Informationstafeln waren auf Deutsch.</p>
+    <p>Aber dieses Jahr möchte die Familie etwas Neues ausprobieren. Sie wollen <strong>Rucksacktouristen</strong> werden! Sie buchen keine Stadtführung und keinen Reiseleiter. Stattdessen suchen sie selbst nach <strong>Sehenswürdigkeiten</strong> und <strong>Eintrittspreisen</strong> im Internet. Sie suchen eine <strong>gemütliche</strong> und günstige Unterkunft mit schöner <strong>Aussicht</strong>.</p>
+    <p>Natürlich gibt es auch Probleme. Der Flug ist einmal <strong>ausgefallen</strong> und sie haben den Anschluss <strong>verpasst</strong>. Einmal war der Strand total <strong>überfüllt</strong>. Aber das macht nichts – das ist das Abenteuer des Rucksacktourismus! Am Ende sagen alle: Es hat sich <strong>gelohnt</strong>!</p>
+  </div>
+  <p style="font-size:0.85rem;font-weight:700;margin-bottom:10px;">Richtig (R) oder Falsch (F)?</p>
+  <div class="rf-list">
+    <div class="rf-item">
+      <span style="flex:1;">1. Familie Müller ist früher immer nach Spanien geflogen.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+    <div class="rf-item">
+      <span style="flex:1;">2. Im Massentourismus-Hotel haben sie viele Ausländer kennengelernt.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+    <div class="rf-item">
+      <span style="flex:1;">3. Dieses Jahr wollen die Müllers Rucksacktouristen werden.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+    <div class="rf-item">
+      <span style="flex:1;">4. Sie buchen einen Reiseleiter für ihre Rucksackreise.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+    <div class="rf-item">
+      <span style="flex:1;">5. Sie suchen die Sehenswürdigkeiten selbst im Internet.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+    <div class="rf-item">
+      <span style="flex:1;">6. Es gibt keine Probleme während der Rucksackreise.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+    <div class="rf-item">
+      <span style="flex:1;">7. Am Ende finden alle, dass die Reise sich gelohnt hat.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: SATZBAU -->
+<div class="tab" id="tab4">
+  <div class="timer-row">⏱ <span class="timer-display" id="td4">0:00</span><button class="timer-btn" onclick="timerToggle(4)">Start</button><span class="best-time" id="tb4"></span></div>
+  <p style="font-size:0.88rem;color:#555;margin-bottom:14px;">Bringe die Wörter in die richtige Reihenfolge!</p>
+  <div id="sbContainer"></div>
+</div>
+
+<!-- TAB 5: WORTSCHATZ -->
+<div class="tab" id="tab5">
+  <div class="timer-row">⏱ <span class="timer-display" id="td5">0:00</span><button class="timer-btn" onclick="timerToggle(5)">Start</button><span class="best-time" id="tb5"></span></div>
+  <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">Tippe Artikel, Wort und Plural auf Deutsch. 💡 ä=ae, ö=oe, ü=ue, ß=ss</p>
+  <div class="ws-grid" id="wsGrid"></div>
+</div>
+
+<footer>© Frank Burkert · DaF-Materialien · FrankBurkert@fabdaf.onmicrosoft.com</footer>
+</div>
+
+<script>
+function showTab(i,btn){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));document.querySelectorAll('nav button').forEach((b,j)=>b.classList.toggle('active',j===i));timerAutoStart(i);}
+const timers=[null,null,null,null,null,null],elapsed=[0,0,0,0,0,0],running=[false,false,false,false,false,false];
+function timerAutoStart(i){if(!running[i]){running[i]=true;timers[i]=setInterval(()=>tickTimer(i),1000);document.querySelectorAll('.timer-btn')[i].textContent='Stop';}}
+function timerToggle(i){if(running[i]){timerStop(i);}else{running[i]=true;timers[i]=setInterval(()=>tickTimer(i),1000);document.querySelectorAll('.timer-btn')[i].textContent='Stop';}}
+function timerStop(i){clearInterval(timers[i]);running[i]=false;document.querySelectorAll('.timer-btn')[i].textContent='Start';const k=`daf-2021v-best-${i}`;const b=localStorage.getItem(k);if(!b||elapsed[i]<parseInt(b)){localStorage.setItem(k,elapsed[i]);}showBest(i);}
+function tickTimer(i){elapsed[i]++;const m=Math.floor(elapsed[i]/60);const s=elapsed[i]%60;document.getElementById(`td${i}`).textContent=`${m}:${s<10?'0':''}${s}`;}
+function showBest(i){const k=`daf-2021v-best-${i}`;const b=localStorage.getItem(k);if(b){const m=Math.floor(parseInt(b)/60),s=parseInt(b)%60;document.getElementById(`tb${i}`).textContent=`Bestzeit: ${m}:${s<10?'0':''}${s}`;}}
+[0,1,2,3,4,5].forEach(showBest);
+function normalise(s){return s.trim().toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');}
+function liveCheck(inp){const val=normalise(inp.value);const ans=normalise(inp.dataset.ans);if(val===ans){inp.classList.add('correct');inp.classList.remove('partial','wrong');return;}if(ans.startsWith(val)&&val.length>0){inp.classList.add('partial');inp.classList.remove('correct','wrong');return;}inp.classList.remove('correct','partial');if(val.length>0)inp.classList.add('wrong');else inp.classList.remove('wrong');}
+function rfCheck(btn,chosen,correct){const row=btn.closest('.rf-item');row.querySelectorAll('.rf-btn').forEach(b=>{b.classList.remove('sel-r','sel-f');});btn.classList.add(chosen==='R'?'sel-r':'sel-f');const res=row.querySelector('.rf-result');if(chosen===correct){res.textContent='✅';res.className='rf-result ok';}else{res.textContent='❌';res.className='rf-result err';}}
+
+// SATZBAU
+const sbSaetze=[
+  {info:'sich lohnen',words:['Diese','Stadtführung','lohnt','sich','wirklich!']},
+  {info:'Verneinung: sich lohnen',words:['Es','hat','sich','leider','nicht','gelohnt.']},
+  {info:'Partizip II: besichtigen',words:['Wir','haben','die','Altstadt','besichtigt.']},
+  {info:'Modalverb: sich beschweren',words:['Ich','muss','mich','beim','Hotel','beschweren.']},
+  {info:'Trennbares Verb: ausfallen',words:['Der','Flug','ist','wegen','des','Sturms','ausgefallen.']},
+  {info:'Satzstellung: Ermäßigung',words:['Kinder','und','Senioren','bekommen','eine','Ermäßigung.']},
+  {info:'Indirekte Frage: Einreise',words:['Ich','weiß','nicht,','ob','ich','ein','Visum','brauche.']},
+];
+let sbDragged=null;
+function sbMakeChip(word){const chip=document.createElement('span');chip.className='sb-chip';chip.textContent=word;chip.draggable=true;chip.addEventListener('dragstart',e=>{sbDragged=chip;e.dataTransfer.effectAllowed='move';});chip.addEventListener('dragend',()=>sbDragged=null);return chip;}
+function sbRegisterZone(zone,bank,answerArr,resultEl){zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag-over');});zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag-over');if(!sbDragged)return;zone.appendChild(sbDragged);sbCheckAuto(zone,answerArr,resultEl);});bank.addEventListener('dragover',e=>{e.preventDefault();});bank.addEventListener('drop',e=>{e.preventDefault();if(!sbDragged)return;bank.appendChild(sbDragged);resultEl.textContent='';resultEl.className='sb-result';});}
+const sbTimers={};
+function sbCheckAuto(zone,answerArr,resultEl){clearTimeout(sbTimers[zone.id]);sbTimers[zone.id]=setTimeout(()=>{const placed=[...zone.querySelectorAll('.sb-chip')].map(c=>c.textContent);if(placed.length===answerArr.length){if(placed.join(' ')===answerArr.join(' ')){resultEl.textContent='✅ Richtig!';resultEl.className='sb-result ok';}else{resultEl.textContent='❌ Nicht ganz richtig.';resultEl.className='sb-result err';}}else{resultEl.textContent='';resultEl.className='sb-result';}},500);}
+function buildSatzbau(){const container=document.getElementById('sbContainer');sbSaetze.forEach((s,idx)=>{const div=document.createElement('div');div.className='sb-aufgabe';const info=document.createElement('div');info.className='sb-info';info.textContent=`${idx+1}. ${s.info}`;div.appendChild(info);const zone=document.createElement('div');zone.className='sb-drop';zone.id=`sbzone${idx}`;div.appendChild(zone);const result=document.createElement('div');result.className='sb-result';div.appendChild(result);const bank=document.createElement('div');bank.className='sb-chip-bank';bank.id=`sbbank${idx}`;const shuffled=[...s.words];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}shuffled.forEach(w=>bank.appendChild(sbMakeChip(w)));div.appendChild(bank);sbRegisterZone(zone,bank,s.words,result);container.appendChild(div);});}
+buildSatzbau();
+
+// WORTSCHATZ
+const wsData=[
+  {en:'tourist attraction',art:'die',wort:'Sehenswürdigkeit',plural:'Sehenswürdigkeiten'},
+  {en:'view / outlook',art:'die',wort:'Aussicht',plural:'Aussichten'},
+  {en:'old town',art:'die',wort:'Altstadt',plural:'Altstädte'},
+  {en:'city tour',art:'die',wort:'Stadtführung',plural:'Stadtführungen'},
+  {en:'tour guide',art:'der',wort:'Reiseleiter',plural:'Reiseleiter'},
+  {en:'tourist info office',art:'die',wort:'Touristeninformation',plural:'Touristeninformationen'},
+  {en:'admission price',art:'der',wort:'Eintrittspreis',plural:'Eintrittspreise'},
+  {en:'discount / concession',art:'die',wort:'Ermäßigung',plural:'Ermäßigungen'},
+  {en:'complaint',art:'die',wort:'Beschwerde',plural:'Beschwerden'},
+  {en:'visa',art:'das',wort:'Visum',plural:'Visa'},
+  {en:'entry (into a country)',art:'die',wort:'Einreise',plural:'Einreisen'},
+  {en:'mass tourism',art:'der',wort:'Massentourismus',plural:'—'},
+  {en:'information board',art:'die',wort:'Informationstafel',plural:'Informationstafeln'},
+  {en:'luggage',art:'das',wort:'Gepäck',plural:'—'},
+  {en:'travel destination',art:'das',wort:'Reiseziel',plural:'Reiseziele'},
+  {en:'accommodation',art:'die',wort:'Unterkunft',plural:'Unterkünfte'},
+  {en:'to be cancelled',art:'—',wort:'ausfallen',plural:'—'},
+  {en:'to miss (transport)',art:'—',wort:'verpassen',plural:'—'},
+];
+function makeWsInp(cls,placeholder,ans){const inp=document.createElement('input');inp.className=`ws-inp ${cls}`;inp.placeholder=placeholder;inp.dataset.ans=ans;inp.addEventListener('input',()=>{const v=normalise(inp.value);const a=normalise(ans);if(v===a){inp.classList.add('correct');inp.classList.remove('partial');}else if(a.startsWith(v)&&v.length>0){inp.classList.add('partial');inp.classList.remove('correct');}else{inp.classList.remove('correct','partial');}});return inp;}
+function buildWortschatz(){const grid=document.getElementById('wsGrid');wsData.forEach(d=>{const row=document.createElement('div');row.className='ws-row';const enDiv=document.createElement('div');enDiv.className='ws-en';enDiv.textContent=d.en;const grp=document.createElement('div');grp.className='ws-inp-group';if(d.art!=='—'){grp.appendChild(makeWsInp('art','Art.',d.art));grp.appendChild(makeWsInp('wort','Wort',d.wort));}else{const verbInp=makeWsInp('wort','Verb',d.wort);verbInp.style.width='180px';grp.appendChild(verbInp);}const pluralInp=makeWsInp('plural','Plural',d.plural);row.appendChild(enDiv);row.appendChild(grp);row.appendChild(pluralInp);grid.appendChild(row);});}
+buildWortschatz();
+timerAutoStart(0);
+</script>
+</body>
+</html>
