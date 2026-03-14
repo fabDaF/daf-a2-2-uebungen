@@ -422,12 +422,20 @@ function sbCheckAllDone() {
 }
 function sbShowSolution(idx) {
     var bank = document.getElementById('sb-bank-' + idx); var row = document.getElementById('sb-row-' + idx); var fb = document.getElementById('sb-fb-' + idx);
-    var solution = satzbauData[idx].valid[0]; var allChips = {};
-    Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
-    Array.from(row.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    var solution = satzbauData[idx].valid[0];
+    var allChips = Array.from(bank.querySelectorAll('.chip')).concat(Array.from(row.querySelectorAll('.chip')));
     while (bank.firstChild) bank.removeChild(bank.firstChild);
-    while (row.firstChild) row.removeChild(row.firstChild);
-    solution.forEach(function(word, i) { var chip = allChips[word]; if (chip) { chip.textContent = (i === 0) ? sbCapitalize(word) : word; chip.classList.remove('correct', 'incorrect'); row.appendChild(chip); } });
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        for (var j = 0; j < allChips.length; j++) {
+            if (allChips[j] && allChips[j].dataset.orig === word) {
+                var chip = allChips[j]; allChips[j] = null;
+                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+                chip.classList.remove('correct', 'incorrect');
+                row.appendChild(chip); break;
+            }
+        }
+    });
     fb.textContent = ''; setTimeout(function() { sbCheckAuto(idx); }, 100);
 }
 function sbResetOne(idx) {
