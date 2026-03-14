@@ -60,7 +60,8 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .luecken-inp:focus { border-bottom-color: #667eea; }
 .luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
 .luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
-.hint { font-size: 0.72em; color: #764ba2; font-style: italic; vertical-align: super; margin-left: 2px; }
+/* placeholder styling */
+.luecken-inp::placeholder { color: #bbb; font-style: italic; }
 .wortkasten { background: #f0f4ff; border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; font-size: 0.9em; color: #444; }
 .wortkasten strong { color: #667eea; }
 
@@ -216,18 +217,18 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
             <div class="wortkasten"><strong>Hinweis:</strong> Ergänze die richtige Form von <em>werden</em> (und ggf. Partizip II wo angegeben).</div>
             <h2>Abschnitt 1: Die richtige Form von <em>werden</em></h2>
             <div class="luecken-text">
-                <p>1. Das Essen <input class="luecken-inp" data-ans="wird" data-idx="0" style="width:60px" placeholder=""> normalerweise um 12 Uhr serviert.</p>
-                <p>2. Heute <input class="luecken-inp" data-ans="wird" data-idx="1" style="width:60px" placeholder=""> das Essen erst um 13 Uhr serviert.</p>
-                <p>3. Erst <input class="luecken-inp" data-ans="wird" data-idx="2" style="width:60px" placeholder=""> Mehl und Butter zusammengemischt.</p>
-                <p>4. Ich <input class="luecken-inp" data-ans="werde" data-idx="3" style="width:70px" placeholder=""> heute bekocht.</p>
-                <p>5. <input class="luecken-inp" data-ans="Wirst" data-idx="4" style="width:65px" placeholder=""> du manchmal bekocht?</p>
-                <p>6. Der Auflauf <input class="luecken-inp" data-ans="wird" data-idx="5" style="width:60px" placeholder=""> im Ofen gebacken.</p>
-                <p>7. Heute <input class="luecken-inp" data-ans="werden" data-idx="6" style="width:80px" placeholder=""> Mikrowellen häufig benutzt.</p>
+                <p>1. Das Essen <input class="luecken-inp" data-ans="wird" data-idx="0" style="width:80px" placeholder="werden"> normalerweise um 12 Uhr serviert.</p>
+                <p>2. Heute <input class="luecken-inp" data-ans="wird" data-idx="1" style="width:80px" placeholder="werden"> das Essen erst um 13 Uhr serviert.</p>
+                <p>3. Erst <input class="luecken-inp" data-ans="wird" data-idx="2" style="width:80px" placeholder="werden"> Mehl und Butter zusammengemischt.</p>
+                <p>4. Ich <input class="luecken-inp" data-ans="werde" data-idx="3" style="width:80px" placeholder="werden"> heute bekocht.</p>
+                <p>5. <input class="luecken-inp" data-ans="Wirst" data-idx="4" style="width:80px" placeholder="werden"> du manchmal bekocht?</p>
+                <p>6. Der Auflauf <input class="luecken-inp" data-ans="wird" data-idx="5" style="width:80px" placeholder="werden"> im Ofen gebacken.</p>
+                <p>7. Heute <input class="luecken-inp" data-ans="werden" data-idx="6" style="width:80px" placeholder="werden"> Mikrowellen häufig benutzt.</p>
             </div>
             <h2>Abschnitt 2: Passiv-Sätze bilden</h2>
             <div class="luecken-text">
-                <p>8. Der Tisch <input class="luecken-inp" data-ans="wird" data-idx="7" style="width:60px" placeholder=""> (von ihr) <input class="luecken-inp" data-ans="gedeckt" data-idx="8" style="width:80px" placeholder=""><span class="hint">decken</span>.</p>
-                <p>9. Die Spaghetti <input class="luecken-inp" data-ans="werden" data-idx="9" style="width:80px" placeholder=""> mit der Soße <input class="luecken-inp" data-ans="serviert" data-idx="10" style="width:85px" placeholder=""><span class="hint">servieren</span>.</p>
+                <p>8. Der Tisch <input class="luecken-inp" data-ans="wird" data-idx="7" style="width:80px" placeholder="werden"> (von ihr) <input class="luecken-inp" data-ans="gedeckt" data-idx="8" style="width:100px" placeholder="decken">.</p>
+                <p>9. Die Spaghetti <input class="luecken-inp" data-ans="werden" data-idx="9" style="width:80px" placeholder="werden"> mit der Soße <input class="luecken-inp" data-ans="serviert" data-idx="10" style="width:100px" placeholder="servieren">.</p>
             </div>
         </div>
     </div>

@@ -61,7 +61,8 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
 .wortkasten { background: #f0f4ff; border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; font-size: 0.9em; color: #444; }
 .wortkasten strong { color: #667eea; }
-.hint { font-size: 0.72em; color: #764ba2; font-style: italic; vertical-align: super; margin-left: 2px; }
+/* placeholder styling */
+.luecken-inp::placeholder { color: #bbb; font-style: italic; }
 
 /* ── ZUORDNUNG ──────────────────────────────────────────────── */
 .chip-bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f0f4ff; border-radius: 10px; min-height: 56px; margin-bottom: 18px; border: 2px dashed #c5cae9; }
@@ -220,12 +221,12 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
             </div>
             <h2>Abschnitt 1: dass oder ob?</h2>
             <div class="luecken-text">
-                <p>1. Ich weiß, <input class="luecken-inp" data-ans="dass" data-idx="0" style="width:60px" placeholder=""><span class="hint">Konjunktion</span> du Recht <input class="luecken-inp" data-ans="hast" data-idx="1" style="width:60px" placeholder=""><span class="hint">Verb (Ende)</span>.</p>
-                <p>2. Sie fragt, <input class="luecken-inp" data-ans="ob" data-idx="2" style="width:60px" placeholder=""><span class="hint">Konjunktion</span> ich Bananen <input class="luecken-inp" data-ans="mag" data-idx="3" style="width:60px" placeholder=""><span class="hint">Verb (Ende)</span>.</p>
-                <p>3. Er sagt, <input class="luecken-inp" data-ans="dass" data-idx="4" style="width:60px" placeholder=""><span class="hint">Konjunktion</span> er gut kochen <input class="luecken-inp" data-ans="kann" data-idx="5" style="width:60px" placeholder=""><span class="hint">Verb (Ende)</span>.</p>
-                <p>4. Du fragst, <input class="luecken-inp" data-ans="ob" data-idx="6" style="width:60px" placeholder=""><span class="hint">Konjunktion</span> er Gemüse im Kühlschrank <input class="luecken-inp" data-ans="hat" data-idx="7" style="width:60px" placeholder=""><span class="hint">Verb (Ende)</span>.</p>
-                <p>5. Sie meinen, <input class="luecken-inp" data-ans="dass" data-idx="8" style="width:60px" placeholder=""><span class="hint">Konjunktion</span> im Kino keine guten Filme <input class="luecken-inp" data-ans="laufen" data-idx="9" style="width:80px" placeholder=""><span class="hint">Verb (Ende)</span>.</p>
-                <p>6. Ich glaube, <input class="luecken-inp" data-ans="dass" data-idx="10" style="width:60px" placeholder=""><span class="hint">Konjunktion</span> du dich zu ungesund <input class="luecken-inp" data-ans="ernährst" data-idx="11" style="width:95px" placeholder=""><span class="hint">Verb (Ende)</span>.</p>
+                <p>1. Ich weiß, <input class="luecken-inp" data-ans="dass" data-idx="0" style="width:100px" placeholder="Konjunktion"> du Recht <input class="luecken-inp" data-ans="hast" data-idx="1" style="width:100px" placeholder="Verb">.</p>
+                <p>2. Sie fragt, <input class="luecken-inp" data-ans="ob" data-idx="2" style="width:100px" placeholder="Konjunktion"> ich Bananen <input class="luecken-inp" data-ans="mag" data-idx="3" style="width:100px" placeholder="Verb">.</p>
+                <p>3. Er sagt, <input class="luecken-inp" data-ans="dass" data-idx="4" style="width:100px" placeholder="Konjunktion"> er gut kochen <input class="luecken-inp" data-ans="kann" data-idx="5" style="width:100px" placeholder="Verb">.</p>
+                <p>4. Du fragst, <input class="luecken-inp" data-ans="ob" data-idx="6" style="width:100px" placeholder="Konjunktion"> er Gemüse im Kühlschrank <input class="luecken-inp" data-ans="hat" data-idx="7" style="width:100px" placeholder="Verb">.</p>
+                <p>5. Sie meinen, <input class="luecken-inp" data-ans="dass" data-idx="8" style="width:100px" placeholder="Konjunktion"> im Kino keine guten Filme <input class="luecken-inp" data-ans="laufen" data-idx="9" style="width:100px" placeholder="Verb">.</p>
+                <p>6. Ich glaube, <input class="luecken-inp" data-ans="dass" data-idx="10" style="width:100px" placeholder="Konjunktion"> du dich zu ungesund <input class="luecken-inp" data-ans="ernährst" data-idx="11" style="width:100px" placeholder="Verb">.</p>
             </div>
         </div>
     </div>
