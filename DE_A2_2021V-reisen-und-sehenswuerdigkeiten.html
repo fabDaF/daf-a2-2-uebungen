@@ -88,9 +88,9 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .chip:active { cursor: grabbing; }
 .chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
 .chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
-.sb-chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
-.sb-chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
-.sb-chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
 .sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
 
 /* WORTSCHATZ */
@@ -386,7 +386,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 <!-- TAB 4: SATZBAU -->
 <div class="section" id="tab4">
   <div class="control-bar">
-    <div class="btn-row"><button class="btn btn-show" onclick="document.querySelectorAll('.sb-row').forEach(function(r,i){sbShowSolution(i);})">Lösungen</button><button class="btn btn-reset" onclick="initSatzbau && initSatzbau(); timerAutoStart(4);">Neu starten</button></div>
+    <div class="btn-row"><button class="btn btn-show" onclick="for(var i=0;i<satzbauData.length;i++){sbShowSolution(i);}">Lösungen</button><button class="btn btn-reset" onclick="initSatzbau && initSatzbau(); timerAutoStart(4);">Neu starten</button></div>
     <div class="timer-display"><span class="current-time">⏱ <span id="timer-4">00:00</span></span><span class="best-time">🏆 <span id="best-4">--:--</span></span></div>
   </div>
   <p style="font-size:0.88rem;color:#555;margin-bottom:14px;">Bringe die Wörter in die richtige Reihenfolge!</p>
@@ -652,6 +652,11 @@ function initSatzbau() {
     satzbauData.forEach(function(ex, idx) {
         var item = document.createElement('div');
         item.className = 'satzbau-item';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
 
         var bank = document.createElement('div');
         bank.className = 'chips-container';
