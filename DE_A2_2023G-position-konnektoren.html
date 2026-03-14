@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Position Konnektoren – Interaktive DaF-Übung (A2.2)</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header p { font-size: 1.0em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+.sec-inner { padding: 28px 30px; }
+
+/* ── ENTDECKUNGS-TAB ───────────────────────────────────────────── */
+.entdeck-intro { background: #f3e5f5; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; border-left: 5px solid #9c27b0; font-size: 0.97rem; line-height: 1.75; }
+.entdeck-intro h3 { color: #6a1b9a; margin-bottom: 10px; font-size: 1.05rem; }
+.hl { background: #e1bee7; border-radius: 4px; padding: 0 4px; color: #4a148c; font-weight: 700; }
+.mc-step { display: none; background: #fafbff; border-radius: 12px; padding: 18px 22px; margin-bottom: 16px; border: 1px solid #c5cae9; }
+.mc-step.active { display: block; }
+.mc-step h4 { color: #3949ab; margin-bottom: 12px; font-size: 0.97rem; }
+.mc-options { display: flex; flex-direction: column; gap: 8px; }
+.mc-btn { padding: 9px 16px; border: 2px solid #c5cae9; border-radius: 8px; background: #fff; cursor: pointer; text-align: left; font-size: 0.92rem; transition: all .2s; }
+.mc-btn:hover { border-color: #667eea; background: #f3f4ff; }
+.mc-btn.correct { border-color: #43a047; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.mc-btn.wrong { border-color: #e53935; background: #ffebee; color: #c62828; }
+.mc-feedback { margin-top: 10px; font-size: 0.88rem; min-height: 1.3em; }
+.mc-feedback.ok { color: #2e7d32; font-weight: 700; }
+.mc-feedback.err { color: #c62828; }
+.progress-dots { display: flex; gap: 8px; margin-bottom: 20px; }
+.pdot { width: 14px; height: 14px; border-radius: 50%; background: #c5cae9; transition: background .3s; }
+.pdot.done { background: #667eea; }
+.regel-karte { display: none; background: linear-gradient(135deg, #e8eaf6, #ede7f6); border-radius: 14px; padding: 22px 26px; border-left: 5px solid #3949ab; margin-top: 10px; }
+.regel-karte h3 { color: #1a237e; margin-bottom: 12px; font-size: 1.05rem; }
+.regel-karte ul { margin-left: 18px; }
+.regel-karte li { color: #333; line-height: 1.8; font-size: 0.95rem; }
+.regel-karte .rk-example { background: #fff; border-radius: 8px; padding: 10px 14px; margin-top: 12px; border-left: 3px solid #7c4dff; font-size: 0.9rem; color: #333; }
+.regel-karte .rk-example b { color: #3949ab; }
+
+/* ── REGEL-TAB ─────────────────────────────────────────────────── */
+.regel-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92em; }
+.regel-table th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 10px 14px; text-align: left; }
+.regel-table td { padding: 10px 14px; border-bottom: 1px solid #eee; }
+.regel-table tr:nth-child(even) { background: #f8f9ff; }
+.regel-highlight { background: #e8eaf6; border-radius: 10px; padding: 16px 20px; margin: 16px 0; border-left: 4px solid #667eea; }
+.regel-highlight h4 { color: #3949ab; margin-bottom: 8px; }
+.regel-highlight p { font-size: 0.93em; color: #444; line-height: 1.7; }
+
+/* ── LÜCKENTEXT ────────────────────────────────────────────────── */
+.luecken-block { padding: 28px 30px; }
+.luecken-text { line-height: 2.2; font-size: 0.95em; color: #444; }
+.luecken-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 14px; border-radius: 10px; border-left: 4px solid #667eea; position: relative; }
+.luecken-badge { position: absolute; top: 10px; right: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 0.7em; padding: 3px 10px; border-radius: 12px; font-weight: 600; }
+.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.luecken-inp:focus { border-bottom-color: #667eea; }
+.luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+.correction-hint { color: #27ae60; font-weight: 600; font-size: 0.85em; margin-left: 4px; white-space: nowrap; }
+.wortkasten { background: #f0f4ff; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; font-size: 0.9em; color: #444; }
+.wortkasten strong { color: #667eea; }
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* ── SATZBAU ───────────────────────────────────────────────────── */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.chip { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+.sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
+
+/* ── MULTIPLE CHOICE ───────────────────────────────────────────── */
+.mc-exercise { background: #f8f9ff; padding: 16px 20px; margin-bottom: 14px; border-radius: 10px; border-left: 4px solid #667eea; }
+.mc-exercise .mc-question { font-size: 0.95em; color: #333; margin-bottom: 10px; line-height: 1.7; }
+.mc-exercise .mc-opts { display: flex; flex-direction: column; gap: 6px; }
+.mc-exercise .mc-opt { padding: 8px 14px; border: 2px solid #c5cae9; border-radius: 8px; background: #fff; cursor: pointer; font-size: 0.9em; transition: all .2s; }
+.mc-exercise .mc-opt:hover { border-color: #667eea; background: #f3f4ff; }
+.mc-exercise .mc-opt.correct { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.mc-exercise .mc-opt.wrong { border-color: #e74c3c; background: #ffebee; color: #c62828; }
+.mc-exercise .mc-exfb { margin-top: 8px; font-size: 0.85em; min-height: 1.2em; }
+.mc-exercise .mc-exfb.ok { color: #2e7d32; font-weight: 700; }
+.mc-exercise .mc-exfb.err { color: #c62828; }
+
+/* ── CONTROL BAR & TIMER ──────────────────────────────────────── */
+.control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+.sec-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
+
+/* ── FOOTER ────────────────────────────────────────────────────── */
+.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #aaa; }
+.author-footer a { color: #aaa; text-decoration: none; }
+.author-name { font-weight: 600; }
+
+/* ── RESPONSIVE ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Position Konnektoren</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2023G &nbsp;|&nbsp; Grammatik: Subjunktionen &amp; Adverbien</p>
+        <div class="big-emoji">🔗</div>
+    </div>
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">🔍</span><span class="nav-label">Entdecken</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">📋</span><span class="nav-label">Regel</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🎯</span><span class="nav-label">Multiple Choice</span></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 0 — ENTDECKEN (induktive Regelentdeckung)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section active" id="sec0">
+        <div class="sec-inner">
+            <div class="entdeck-intro">
+                <h3>Lies die Sätze und achte auf die markierten Wörter:</h3>
+                <p>
+                    1. Ich freue mich, <span class="hl">dass</span> die Sonne <span class="hl">scheint</span>.<br>
+                    2. Der Reiseleiter ist wütend, <span class="hl">weil</span> sich die Urlauber beschwert <span class="hl">haben</span>.<br>
+                    3. Ich mache viele Fotos, <span class="hl">wenn</span> wir morgen im Louvre <span class="hl">sind</span>.<br>
+                    4. Thomas ist das erste Mal geflogen, <span class="hl">als</span> er 12 Jahre alt <span class="hl">war</span>.<br>
+                    5. Meine Tochter ist 16, <span class="hl">deshalb</span> <span class="hl">bekommt</span> sie keine Ermäßigung.<br>
+                    6. Ich vergesse vieles, <span class="hl">darum</span> <span class="hl">schreibe</span> ich immer ein Reisetagebuch.
+                </p>
+            </div>
+
+            <div class="progress-dots">
+                <div class="pdot" id="pdot0"></div>
+                <div class="pdot" id="pdot1"></div>
+                <div class="pdot" id="pdot2"></div>
+                <div class="pdot" id="pdot3"></div>
+            </div>
+
+            <!-- MC Schritt 0 -->
+            <div class="mc-step active" id="mc-step0">
+                <h4>Schritt 1: Wo steht das Verb in den Sätzen 1–4?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">An Position 2, direkt nach dem Konnektor</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,true)">Am Ende des Nebensatzes</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">An Position 1, am Satzanfang</button>
+                </div>
+                <div class="mc-feedback" id="mcfb0"></div>
+            </div>
+
+            <!-- MC Schritt 1 -->
+            <div class="mc-step" id="mc-step1">
+                <h4>Schritt 2: Welche Wörter leiten die Nebensätze in 1–4 ein?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">deshalb, darum, denn</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,true)">dass, weil, wenn, als</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">und, oder, aber</button>
+                </div>
+                <div class="mc-feedback" id="mcfb1"></div>
+            </div>
+
+            <!-- MC Schritt 2 -->
+            <div class="mc-step" id="mc-step2">
+                <h4>Schritt 3: Schau dir die Sätze 5 und 6 an. Wo steht das Verb nach „deshalb“ und „darum“?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">Am Ende des Satzes</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,true)">An Position 2, direkt nach dem Adverb</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">An Position 3</button>
+                </div>
+                <div class="mc-feedback" id="mcfb2"></div>
+            </div>
+
+            <!-- MC Schritt 3 -->
+            <div class="mc-step" id="mc-step3">
+                <h4>Schritt 4: Was ist der Unterschied zwischen „weil“ und „deshalb“?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Es gibt keinen Unterschied — beide haben das Verb am Ende</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Beide haben das Verb an Position 2</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,true)">Nach „weil“ steht das Verb am Ende (Nebensatz), nach „deshalb“ an Position 2 (Hauptsatz)</button>
+                </div>
+                <div class="mc-feedback" id="mcfb3"></div>
+            </div>
+
+            <!-- Regelkarte -->
+            <div class="regel-karte" id="regelkarte">
+                <h3>Die Regel:</h3>
+                <ul>
+                    <li><b>Subjunktionen</b> (dass, weil, wenn, als, ob) leiten <b>Nebensätze</b> ein → das konjugierte Verb steht <b>am Ende</b>.</li>
+                    <li><b>Adverbien</b> (deshalb, darum, deswegen) verbinden <b>Hauptsätze</b> → das Verb bleibt an <b>Position 2</b>.</li>
+                    <li>Wenn der <b>Nebensatz vor dem Hauptsatz</b> steht, beginnt der Hauptsatz mit dem <b>Verb</b> (Inversion).</li>
+                </ul>
+                <div class="rk-example">
+                    <b>Nebensatz + Hauptsatz:</b> <i>Weil es regnet, <b>bleibe</b> ich zu Hause.</i><br>
+                    <b>Hauptsatz + Hauptsatz:</b> <i>Es regnet, <b>deshalb</b> bleibe ich zu Hause.</i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 1 — REGEL (Übersicht Konnektoren)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec1">
+        <div class="sec-inner">
+            <div class="sec-title">📋 Konnektoren — Übersicht</div>
+
+            <div class="regel-highlight">
+                <h4>Subjunktionen → Nebensatz (Verb am Ende)</h4>
+                <p>Subjunktionen verbinden einen Hauptsatz mit einem Nebensatz. Im Nebensatz steht das konjugierte Verb <b>am Ende</b>.</p>
+            </div>
+
+            <table class="regel-table">
+                <tr><th>Subjunktion</th><th>Bedeutung</th><th>Beispiel</th></tr>
+                <tr><td><b>dass</b></td><td>Subjekt-/Objektsatz</td><td>Ich freue mich, <b>dass</b> die Sonne <b>scheint</b>.</td></tr>
+                <tr><td><b>weil</b></td><td>Grund</td><td>Er ist müde, <b>weil</b> er schlecht geschlafen <b>hat</b>.</td></tr>
+                <tr><td><b>wenn</b></td><td>Bedingung / Zeit (Gegenwart, Zukunft)</td><td>Ich rufe dich an, <b>wenn</b> ich Zeit <b>habe</b>.</td></tr>
+                <tr><td><b>als</b></td><td>Zeit (Vergangenheit, einmalig)</td><td>Er war glücklich, <b>als</b> er die Nachricht <b>bekam</b>.</td></tr>
+                <tr><td><b>ob</b></td><td>Indirekte Ja/Nein-Frage</td><td>Ich weiß nicht, <b>ob</b> er morgen <b>kommt</b>.</td></tr>
+            </table>
+
+            <div class="regel-highlight" style="margin-top: 24px;">
+                <h4>Adverbien → Hauptsatz (Verb an Position 2)</h4>
+                <p>Die Adverbien <b>deshalb, darum, deswegen</b> verbinden zwei Hauptsätze. Das Verb steht an <b>Position 2</b>, direkt nach dem Adverb.</p>
+            </div>
+
+            <table class="regel-table">
+                <tr><th>Adverb</th><th>Bedeutung</th><th>Beispiel</th></tr>
+                <tr><td><b>deshalb</b></td><td>Folge / Konsequenz</td><td>Es regnet, <b>deshalb</b> <b>bleibe</b> ich zu Hause.</td></tr>
+                <tr><td><b>darum</b></td><td>Folge / Konsequenz</td><td>Ich vergesse vieles, <b>darum</b> <b>schreibe</b> ich es auf.</td></tr>
+                <tr><td><b>deswegen</b></td><td>Folge / Konsequenz</td><td>Sie ist krank, <b>deswegen</b> <b>geht</b> sie zum Arzt.</td></tr>
+            </table>
+
+            <div class="regel-highlight" style="margin-top: 24px;">
+                <h4>Nebensatz vor dem Hauptsatz (Inversion)</h4>
+                <p>Wenn der Nebensatz <b>zuerst</b> steht, bildet er die <b>1. Position</b>. Das Verb im Hauptsatz steht dann direkt nach dem Komma an <b>Position 2</b>.</p>
+            </div>
+
+            <table class="regel-table">
+                <tr><th>Nebensatz (Position 1)</th><th>Hauptsatz (Verb Position 2)</th></tr>
+                <tr><td><b>Dass</b> wir morgen nach Thailand fliegen,</td><td><b>freut</b> mich.</td></tr>
+                <tr><td><b>Weil</b> sich die Urlauber beschwert haben,</td><td><b>ist</b> der Reiseleiter wütend.</td></tr>
+                <tr><td><b>Wenn</b> wir morgen im Louvre sind,</td><td><b>mache</b> ich viele Fotos.</td></tr>
+                <tr><td><b>Als</b> er 12 Jahre alt war,</td><td><b>ist</b> Thomas das erste Mal geflogen.</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 2 — LÜCKENTEXT (min. 12 Sätze)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec2">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showLueckenLoesung()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetLuecken()">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-2">0:00</span></span>
+                    <span>🏆 <span id="best-2">–</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ergänze die Lücken mit der passenden Subjunktion oder dem passenden Adverb.<br>
+                <strong>Wortkasten:</strong> dass · weil · wenn · als · ob · deshalb · darum · deswegen
+            </div>
+            <div id="lueckenContainer"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 3 — SATZBAU (6–8 Sätze, Drag & Drop)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec3">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="satzbauData.forEach(function(_,i){sbShowSolution(i);})">Lösungen</button>
+                    <button class="btn btn-reset" onclick="initSatzbau(); timerResetOne(3);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-3">0:00</span></span>
+                    <span>🏆 <span id="best-3">–</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Bringe die Wörter in die richtige Reihenfolge. Achte auf die Verbposition!
+            </div>
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 4 — MULTIPLE CHOICE
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec4">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showMcLoesung()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetMcExercises()">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-4">0:00</span></span>
+                    <span>🏆 <span id="best-4">–</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Wähle die richtige Antwort. Ist der Satz korrekt oder falsch? Welcher Konnektor passt?
+            </div>
+            <div id="mcExContainer"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════════════════ */
+function showTab(n) {
+    document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
+    document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===n); });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIMER SYSTEM (A2.2 Konvention: var timers = {})
+   ═══════════════════════════════════════════════════════════════ */
+var timers = {};
+function timerKey(tab) { return 'daf-2023g-best-' + tab; }
+function timerFmt(s) { return Math.floor(s/60) + ':' + (s%60<10?'0':'') + (s%60); }
+
+function timerAutoStart(tab) {
+    if (timers[tab]) return;
+    timers[tab] = { s: 0, iv: setInterval(function() {
+        timers[tab].s++;
+        var el = document.getElementById('timer-' + tab);
+        if (el) el.textContent = timerFmt(timers[tab].s);
+    }, 1000) };
+}
+
+function timerStop(tab) {
+    if (!timers[tab]) return;
+    clearInterval(timers[tab].iv);
+    var cur = timers[tab].s;
+    var best = localStorage.getItem(timerKey(tab));
+    if (!best || cur < parseInt(best)) {
+        localStorage.setItem(timerKey(tab), cur);
+        var el = document.getElementById('best-' + tab);
+        if (el) el.textContent = '🏆 ' + timerFmt(cur);
+    }
+}
+
+function timerResetOne(tab) {
+    if (timers[tab]) { clearInterval(timers[tab].iv); delete timers[tab]; }
+    var el = document.getElementById('timer-' + tab);
+    if (el) el.textContent = '0:00';
+}
+
+function loadBestTimes() {
+    [2,3,4].forEach(function(tab) {
+        var best = localStorage.getItem(timerKey(tab));
+        if (best) { var el = document.getElementById('best-' + tab); if(el) el.textContent = '🏆 ' + timerFmt(parseInt(best)); }
+    });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ENTDECKUNGS-TAB (MC-System)
+   ═══════════════════════════════════════════════════════════════ */
+var mcDone = [false, false, false, false];
+
+function mcCheck(step, btn, correct) {
+    var btns = btn.parentElement.querySelectorAll('.mc-btn');
+    btns.forEach(function(b) { b.disabled = true; b.classList.remove('correct','wrong'); });
+    var fb = document.getElementById('mcfb' + step);
+    if (correct) {
+        btn.classList.add('correct');
+        fb.textContent = '\u2713 Richtig! Weiter zum nächsten Schritt.';
+        fb.className = 'mc-feedback ok';
+        mcDone[step] = true;
+        document.getElementById('pdot' + step).classList.add('done');
+        setTimeout(function() {
+            var next = document.getElementById('mc-step' + (step + 1));
+            if (next) { next.classList.add('active'); }
+            else { document.getElementById('regelkarte').style.display = 'block'; }
+        }, 700);
+    } else {
+        btn.classList.add('wrong');
+        fb.textContent = '\u2717 Nicht ganz — schau nochmal genau hin und versuche es erneut.';
+        fb.className = 'mc-feedback err';
+        setTimeout(function() {
+            btns.forEach(function(b) { b.disabled = false; b.classList.remove('wrong','correct'); });
+            fb.textContent = '';
+            fb.className = 'mc-feedback';
+        }, 1400);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LÜCKENTEXT (Tab 2)
+   ═══════════════════════════════════════════════════════════════ */
+var LUECKEN_DATA = [
+    { id:1, text: 'Ich bin nervös, ___ ich morgen das erste Mal fliege.', ans: 'weil', size: 80 },
+    { id:2, text: 'Aber mein Vater hatte auch Angst, ___ er das erste Mal geflogen ist.', ans: 'als', size: 60 },
+    { id:3, text: 'Kannst du mir sagen, ___ heute die Stadtführung ist?', ans: 'ob', size: 50 },
+    { id:4, text: '___ ich länger als zwei Wochen von Zuhause weg bin, bekomme ich Heimweh.', ans: 'wenn', size: 80 },
+    { id:5, text: 'Ich denke, ___ man sich manchmal ins Ungewisse wagen muss.', ans: 'dass', size: 70 },
+    { id:6, text: 'Ich würde gern wissen, ___ du willst mit mir zusammen die Altstadt besichtigen.', ans: 'ob', size: 50 },
+    { id:7, text: 'Meine Tochter ist 16 Jahre alt, ___ bekommt sie keine Ermäßigung.', ans: 'deshalb', size: 100 },
+    { id:8, text: 'Ich vergesse vieles, ___ schreibe ich immer ein Reisetagebuch.', ans: 'darum', size: 90 },
+    { id:9, text: 'Ich reise viel, ___ ich habe Fernweh.', ans: 'denn', size: 70 },
+    { id:10, text: 'Er war überrascht, ___ er die günstige Reise gefunden hat.', ans: 'als', size: 60 },
+    { id:11, text: 'Ich frage mich, ___ wir den Flieger noch schaffen.', ans: 'ob', size: 50 },
+    { id:12, text: 'Sie ist krank, ___ geht sie heute zum Arzt.', ans: 'deswegen', size: 110 }
+];
+
+function initLuecken() {
+    var container = document.getElementById('lueckenContainer');
+    container.innerHTML = '';
+    LUECKEN_DATA.forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'luecken-item';
+        var badge = document.createElement('span');
+        badge.className = 'luecken-badge';
+        badge.textContent = '#' + item.id;
+        card.appendChild(badge);
+        var parts = item.text.split('___');
+        var span = document.createElement('span');
+        span.className = 'luecken-text';
+        span.appendChild(document.createTextNode(parts[0]));
+        var inp = document.createElement('input');
+        inp.type = 'text';
+        inp.className = 'luecken-inp';
+        inp.style.width = item.size + 'px';
+        inp.dataset.ans = item.ans;
+        inp.placeholder = '';
+        inp.setAttribute('autocomplete', 'off');
+        inp.addEventListener('input', function() {
+            timerAutoStart(2);
+            liveCheck(inp);
+            checkLueckenAllOk();
+        });
+        span.appendChild(inp);
+        if (parts[1]) span.appendChild(document.createTextNode(parts[1]));
+        card.appendChild(span);
+        container.appendChild(card);
+    });
+}
+
+function liveCheck(inp) {
+    var val = inp.value.trim().toLowerCase();
+    var ans = (inp.dataset.ans || '').toLowerCase();
+    inp.classList.remove('ok', 'no');
+    if (!val) return;
+    if (val === ans) { inp.classList.add('ok'); return; }
+    if (ans.indexOf(val) === 0) return;
+    inp.classList.add('no');
+}
+
+function showHint(inp) {
+    var next = inp.nextElementSibling;
+    if (next && next.classList.contains('correction-hint')) next.remove();
+    if (!inp.classList.contains('ok')) {
+        var hint = document.createElement('span');
+        hint.className = 'correction-hint';
+        hint.textContent = inp.dataset.ans;
+        inp.insertAdjacentElement('afterend', hint);
+    }
+    inp.value = inp.dataset.ans;
+    inp.classList.add('ok');
+    inp.classList.remove('no');
+}
+
+function checkLueckenAllOk() {
+    var inputs = document.querySelectorAll('#sec2 .luecken-inp');
+    var allOk = inputs.length > 0 && Array.from(inputs).every(function(i) { return i.classList.contains('ok'); });
+    if (allOk) timerStop(2);
+}
+
+function showLueckenLoesung() {
+    document.querySelectorAll('#sec2 .luecken-inp').forEach(function(inp) { showHint(inp); });
+    timerStop(2);
+}
+
+function resetLuecken() {
+    document.querySelectorAll('#sec2 .luecken-inp').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('ok', 'no');
+        var next = inp.nextElementSibling;
+        if (next && next.classList.contains('correction-hint')) next.remove();
+    });
+    timerResetOne(2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SATZBAU (Tab 3) — Skill: satzbau-drag-drop
+   ═══════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    {
+        parts: ['ich', 'freue', 'mich', ',', 'dass', 'die', 'Sonne', 'scheint'],
+        valid: [['ich', 'freue', 'mich', ',', 'dass', 'die', 'Sonne', 'scheint']],
+        punct: '.'
+    },
+    {
+        parts: ['weil', 'es', 'regnet', ',', 'bleibe', 'ich', 'zu', 'Hause'],
+        valid: [['weil', 'es', 'regnet', ',', 'bleibe', 'ich', 'zu', 'Hause']],
+        punct: '.'
+    },
+    {
+        parts: ['er', 'war', 'glücklich', ',', 'als', 'er', 'die', 'Nachricht', 'bekam'],
+        valid: [['er', 'war', 'glücklich', ',', 'als', 'er', 'die', 'Nachricht', 'bekam']],
+        punct: '.'
+    },
+    {
+        parts: ['sie', 'ist', 'krank', ',', 'deshalb', 'geht', 'sie', 'zum', 'Arzt'],
+        valid: [['sie', 'ist', 'krank', ',', 'deshalb', 'geht', 'sie', 'zum', 'Arzt']],
+        punct: '.'
+    },
+    {
+        parts: ['ich', 'weiß', 'nicht', ',', 'ob', 'der', 'Urlaub', 'schön', 'war'],
+        valid: [['ich', 'weiß', 'nicht', ',', 'ob', 'der', 'Urlaub', 'schön', 'war']],
+        punct: '.'
+    },
+    {
+        parts: ['wenn', 'ich', 'Geld', 'habe', ',', 'fliege', 'ich', 'auf', 'die', 'Seychellen'],
+        valid: [['wenn', 'ich', 'Geld', 'habe', ',', 'fliege', 'ich', 'auf', 'die', 'Seychellen']],
+        punct: '.'
+    },
+    {
+        parts: ['ich', 'vergesse', 'vieles', ',', 'darum', 'schreibe', 'ich', 'ein', 'Reisetagebuch'],
+        valid: [['ich', 'vergesse', 'vieles', ',', 'darum', 'schreibe', 'ich', 'ein', 'Reisetagebuch']],
+        punct: '.'
+    },
+    {
+        parts: ['als', 'Kai', '10', 'Jahre', 'alt', 'war', ',', 'war', 'er', 'auf', 'dem', 'Fernsehturm'],
+        valid: [['als', 'Kai', '10', 'Jahre', 'alt', 'war', ',', 'war', 'er', 'auf', 'dem', 'Fernsehturm']],
+        punct: '.'
+    }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase() && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) { c.textContent = orig; }
+        else { c.textContent = (i === 0) ? sbCapitalize(orig) : orig; }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    if (word === ',' || word === ';') chip.classList.add('punct-chip');
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else { zone.appendChild(sbDragged); }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('correct', 'incorrect'); });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '✓ Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '✗ Falsche Reihenfolge – verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = {};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        var chip = allChips[word];
+        if (chip) {
+            if (word !== ',' && word !== ';') {
+                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+            }
+            chip.classList.remove('correct', 'incorrect');
+            row.appendChild(chip);
+        }
+    });
+    fb.textContent = '';
+    setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = 'Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '↺ Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() { initSatzbau(); }
+
+/* ═══════════════════════════════════════════════════════════════
+   MULTIPLE CHOICE (Tab 4) — Richtig/Falsch + Konnektor-Wahl
+   ═══════════════════════════════════════════════════════════════ */
+var MC_DATA = [
+    { id:1, q:'Wenn ich meinen Bus verpasse, komme ich zu spät zum Flughafen.', opts:['Richtig','Falsch'], correct:0, explain:'Korrekt: „wenn“ + Verb am Ende → Nebensatz vor Hauptsatz → Inversion.' },
+    { id:2, q:'Ich weiß nicht, wenn ich rechtzeitig am Flughafen bin.', opts:['Richtig','Falsch'], correct:1, explain:'Falsch: Hier muss „ob“ stehen (indirekte Ja/Nein-Frage), nicht „wenn“.' },
+    { id:3, q:'Ich frage mich, ob wir den Flieger noch schaffen.', opts:['Richtig','Falsch'], correct:0, explain:'Korrekt: „ob“ leitet eine indirekte Frage ein, Verb am Ende.' },
+    { id:4, q:'Ob sich das Museum lohnt, würde mich interessieren.', opts:['Richtig','Falsch'], correct:0, explain:'Korrekt: Nebensatz mit „ob“ vor dem Hauptsatz, Verb an Position 2.' },
+    { id:5, q:'Ich freue mich, ob du kommst.', opts:['Richtig','Falsch'], correct:1, explain:'Falsch: „sich freuen“ braucht „dass“ (kein Zweifel), nicht „ob“.' },
+    { id:6, q:'Welcher Konnektor passt? — Es regnet stark, ___ nehme ich einen Regenschirm mit.', opts:['weil','deshalb','dass'], correct:1, explain:'„deshalb“ verbindet zwei Hauptsätze (Folge). Verb an Position 2.' },
+    { id:7, q:'Welcher Konnektor passt? — Ich bin glücklich, ___ ich morgen in den Urlaub fahre.', opts:['deshalb','ob','weil'], correct:2, explain:'„weil“ leitet einen Nebensatz ein (Grund). Verb am Ende.' },
+    { id:8, q:'Welcher Konnektor passt? — ___ er ein Kind war, reiste er oft mit seinen Eltern.', opts:['Wenn','Als','Weil'], correct:1, explain:'„als“ für einmaliges Ereignis in der Vergangenheit.' },
+    { id:9, q:'Welcher Konnektor passt? — Ich möchte wissen, ___ das Hotel ein Schwimmbad hat.', opts:['dass','ob','weil'], correct:1, explain:'„ob“ für eine indirekte Ja/Nein-Frage (Unsicherheit).' },
+    { id:10, q:'Welcher Konnektor passt? — ___ das Wetter morgen gut ist, gehen wir wandern.', opts:['Als','Wenn','Deshalb'], correct:1, explain:'„wenn“ für Bedingung/Zukunft. Verb am Ende im Nebensatz.' }
+];
+
+function initMcExercises() {
+    var container = document.getElementById('mcExContainer');
+    container.innerHTML = '';
+    MC_DATA.forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'mc-exercise';
+        card.dataset.id = item.id;
+        var q = document.createElement('div');
+        q.className = 'mc-question';
+        q.innerHTML = '<strong>#' + item.id + '</strong> ' + item.q;
+        card.appendChild(q);
+        var opts = document.createElement('div');
+        opts.className = 'mc-opts';
+        item.opts.forEach(function(opt, oi) {
+            var btn = document.createElement('button');
+            btn.className = 'mc-opt';
+            btn.textContent = opt;
+            btn.addEventListener('click', function() {
+                timerAutoStart(4);
+                var allBtns = opts.querySelectorAll('.mc-opt');
+                allBtns.forEach(function(b) { b.disabled = true; b.classList.remove('correct','wrong'); });
+                var fb = card.querySelector('.mc-exfb');
+                if (oi === item.correct) {
+                    btn.classList.add('correct');
+                    fb.className = 'mc-exfb ok';
+                    fb.textContent = '✓ ' + item.explain;
+                    checkMcAllOk();
+                } else {
+                    btn.classList.add('wrong');
+                    fb.className = 'mc-exfb err';
+                    fb.textContent = '✗ ' + item.explain;
+                    setTimeout(function() {
+                        allBtns.forEach(function(b) { b.disabled = false; b.classList.remove('wrong','correct'); });
+                        fb.textContent = '';
+                        fb.className = 'mc-exfb';
+                    }, 2000);
+                }
+            });
+            opts.appendChild(btn);
+        });
+        card.appendChild(opts);
+        var fb = document.createElement('div');
+        fb.className = 'mc-exfb';
+        card.appendChild(fb);
+        container.appendChild(card);
+    });
+}
+
+function checkMcAllOk() {
+    var allCards = document.querySelectorAll('#sec4 .mc-exercise');
+    var allOk = Array.from(allCards).every(function(card) {
+        return card.querySelector('.mc-opt.correct') !== null;
+    });
+    if (allOk) timerStop(4);
+}
+
+function showMcLoesung() {
+    MC_DATA.forEach(function(item) {
+        var cards = document.querySelectorAll('#sec4 .mc-exercise');
+        cards.forEach(function(card) {
+            if (parseInt(card.dataset.id) === item.id) {
+                var btns = card.querySelectorAll('.mc-opt');
+                btns.forEach(function(b, i) {
+                    b.disabled = true;
+                    b.classList.remove('correct','wrong');
+                    if (i === item.correct) b.classList.add('correct');
+                });
+                var fb = card.querySelector('.mc-exfb');
+                fb.className = 'mc-exfb ok';
+                fb.textContent = '✓ ' + item.explain;
+            }
+        });
+    });
+    timerStop(4);
+}
+
+function resetMcExercises() {
+    initMcExercises();
+    timerResetOne(4);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INITIALISIERUNG
+   ═══════════════════════════════════════════════════════════════ */
+initLuecken();
+initSatzbau();
+initMcExercises();
+loadBestTimes();
+</script>
+</body>
+</html>
