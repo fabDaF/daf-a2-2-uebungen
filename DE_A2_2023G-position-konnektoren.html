@@ -438,12 +438,12 @@ var LUECKEN_DATA = [
     { id:4, text: '___ ich länger als zwei Wochen von Zuhause weg bin, bekomme ich Heimweh.', ans: 'wenn', size: 80 },
     { id:5, text: 'Ich denke, ___ man sich manchmal ins Ungewisse wagen muss.', ans: 'dass', size: 70 },
     { id:6, text: 'Ich würde gern wissen, ___ du mit mir zusammen die Altstadt besichtigen willst.', ans: 'ob', size: 50 },
-    { id:7, text: 'Die Kinder sind schon erwachsen, ___ bekommt die Familie keine Ermäßigung.', ans: 'deshalb', size: 100 },
-    { id:8, text: 'Ich vergesse vieles, ___ schreibe ich immer ein Reisetagebuch.', ans: 'darum', size: 90 },
+    { id:7, text: 'Die Kinder sind schon erwachsen, ___ bekommt die Familie keine Ermäßigung.', ans: 'deshalb', alts: ['darum','deswegen'], size: 100 },
+    { id:8, text: 'Ich vergesse vieles, ___ schreibe ich immer ein Reisetagebuch.', ans: 'darum', alts: ['deshalb','deswegen'], size: 90 },
     { id:9, text: 'Ich reise viel, ___ ich habe Fernweh.', ans: 'denn', size: 70 },
     { id:10, text: 'Er war überrascht, ___ er die günstige Reise gefunden hat.', ans: 'als', size: 60 },
     { id:11, text: 'Ich frage mich, ___ wir den Flieger noch schaffen.', ans: 'ob', size: 50 },
-    { id:12, text: 'Sie ist krank, ___ geht sie heute zum Arzt.', ans: 'deswegen', size: 110 }
+    { id:12, text: 'Sie ist krank, ___ geht sie heute zum Arzt.', ans: 'deswegen', alts: ['deshalb','darum'], size: 110 }
 ];
 
 function initLuecken() {
@@ -465,6 +465,7 @@ function initLuecken() {
         inp.className = 'luecken-inp';
         inp.style.width = item.size + 'px';
         inp.dataset.ans = item.ans;
+        if (item.alts) inp.dataset.alts = item.alts.join('|');
         inp.placeholder = '';
         inp.setAttribute('autocomplete', 'off');
         inp.addEventListener('input', function() {
@@ -482,10 +483,14 @@ function initLuecken() {
 function liveCheck(inp) {
     var val = inp.value.trim().toLowerCase();
     var ans = (inp.dataset.ans || '').toLowerCase();
+    var alts = inp.dataset.alts ? inp.dataset.alts.toLowerCase().split('|') : [];
+    var allValid = [ans].concat(alts);
     inp.classList.remove('ok', 'no');
     if (!val) return;
-    if (val === ans) { inp.classList.add('ok'); return; }
-    if (ans.indexOf(val) === 0) return;
+    if (allValid.indexOf(val) !== -1) { inp.classList.add('ok'); return; }
+    for (var i = 0; i < allValid.length; i++) {
+        if (allValid[i].indexOf(val) === 0) return;
+    }
     inp.classList.add('no');
 }
 
