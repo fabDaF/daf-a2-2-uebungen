@@ -435,7 +435,7 @@ var LUECKEN_DATA = [
     { id:1, text: 'Ich bin nervös, ___ ich morgen das erste Mal fliege.', ans: 'weil', size: 80 },
     { id:2, text: 'Aber mein Vater hatte auch Angst, ___ er das erste Mal geflogen ist.', ans: 'als', size: 60 },
     { id:3, text: 'Kannst du mir sagen, ___ heute die Stadtführung ist?', ans: 'ob', size: 50 },
-    { id:4, text: '___ ich länger als zwei Wochen von Zuhause weg bin, bekomme ich Heimweh.', ans: 'wenn', size: 80 },
+    { id:4, text: '___ ich länger als zwei Wochen von Zuhause weg bin, bekomme ich Heimweh.', ans: 'Wenn', size: 80 },
     { id:5, text: 'Ich denke, ___ man sich manchmal ins Ungewisse wagen muss.', ans: 'dass', size: 70 },
     { id:6, text: 'Ich würde gern wissen, ___ du mit mir zusammen die Altstadt besichtigen willst.', ans: 'ob', size: 50 },
     { id:7, text: 'Die Kinder sind schon erwachsen, ___ bekommt die Familie keine Ermäßigung.', ans: 'deshalb', alts: ['darum','deswegen'], size: 100 },
@@ -481,15 +481,20 @@ function initLuecken() {
 }
 
 function liveCheck(inp) {
-    var val = inp.value.trim().toLowerCase();
-    var ans = (inp.dataset.ans || '').toLowerCase();
-    var alts = inp.dataset.alts ? inp.dataset.alts.toLowerCase().split('|') : [];
+    var val = inp.value.trim();
+    var ans = inp.dataset.ans || '';
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
     var allValid = [ans].concat(alts);
+    /* Case-sensitive wenn Antwort mit Großbuchstabe beginnt (Satzanfang),
+       sonst case-insensitive (Lücke mitten im Satz) */
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase() && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpValid = allValid.map(function(a) { return caseSensitive ? a : a.toLowerCase(); });
     inp.classList.remove('ok', 'no');
-    if (!val) return;
-    if (allValid.indexOf(val) !== -1) { inp.classList.add('ok'); return; }
-    for (var i = 0; i < allValid.length; i++) {
-        if (allValid[i].indexOf(val) === 0) return;
+    if (!cmpVal) return;
+    if (cmpValid.indexOf(cmpVal) !== -1) { inp.classList.add('ok'); return; }
+    for (var i = 0; i < cmpValid.length; i++) {
+        if (cmpValid[i].indexOf(cmpVal) === 0) return;
     }
     inp.classList.add('no');
 }
