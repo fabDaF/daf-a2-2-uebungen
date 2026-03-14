@@ -6,14 +6,14 @@
     <title>Indirekte Rede – Interaktive DaF-Grammatik (A2.2)</title>
     <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
 .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
 .header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
 .header p { font-size: 1.0em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
 .header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
 .nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
-.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .nav-btn:last-child { border-right: none; }
 .nav-btn:hover { background: #e8ecff; color: #667eea; }
 .nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
@@ -55,7 +55,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .luecken-block h2 { font-size: 1.05em; color: #667eea; margin: 22px 0 10px; }
 .luecken-block h2:first-child { margin-top: 0; }
 .luecken-text { line-height: 2.4; font-size: 0.95em; color: #444; }
-.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
 .luecken-inp:focus { border-bottom-color: #667eea; }
 .luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
 .luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
@@ -72,7 +72,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .cat-ob .zuord-cat-hdr { background: #fce4ec; color: #c62828; }
 .zuord-drop { min-height: 90px; padding: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
 .zuord-drop.drag-over { background: #e8ecff; }
-.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.88em; transition: all 0.2s; user-select: none; }
+.chip { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.88em; transition: all 0.2s; user-select: none; }
 .chip.selected { background: #667eea; color: white; }
 .chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
 .chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
@@ -83,43 +83,43 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
 .sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
 .sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
-.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
 .satzbau-feedback.correct { color: #27ae60; }
 .satzbau-feedback.incorrect { color: #e74c3c; }
 
 /* ── TIMER ──────────────────────────────────────────────────── */
-.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
 .btn-row { display: flex; gap: 6px; }
-.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
 .btn:hover { border-color: #667eea; color: #667eea; }
-.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+.timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
 
 .section-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
-.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #999; }
-.author-footer a { color: #667eea; text-decoration: none; }
+.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #aaa; }
+.author-footer a { color: #aaa; text-decoration: none; }
 .author-name { font-weight: 600; }
+.satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
 @media (max-width: 600px) {
     body { padding: 8px; }
     .nav { flex-wrap: wrap; }
     .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
     .nav-btn:last-child { border-right: 1px solid #ddd; }
 }
-    .satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
 </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <h1>Indirekte Rede</h1>
-        <p>Grammatik: dass- &amp; ob-Sätze · Relativpronomen — A2.2 · Einheit 1</p>
-        <span class="big-emoji">📖</span>
+        <p style="font-family: Georgia, serif;">Grammatik: dass- &amp; ob-Sätze — A2.2 · Einheit 1</p>
+        <div class="big-emoji">📖</div>
     </div>
-    <nav class="nav">
-        <button class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📖</span><span class="nav-label">Entdeckung</span></button>
-        <button class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></button>
-        <button class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">🔀</span><span class="nav-label">dass / ob</span></button>
-        <button class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></button>
-    </nav>
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📖</span><span class="nav-label">Entdeckung</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">🔀</span><span class="nav-label">dass / ob</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+    </div><!-- /nav -->
 
     <!-- ═══════════════════════════════════════════════════════
          TAB 0 — ENTDECKUNG
@@ -206,8 +206,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     <div class="section" id="sec1">
         <div class="control-bar">
             <div class="btn-row">
-                <button class="btn btn-show" onclick="document.querySelectorAll('.luecken-inp:not(.ok)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('ok');})">Lösungen</button>
-                <button class="btn btn-reset" onclick="document.querySelectorAll('.luecken-inp').forEach(function(i){i.value='';i.classList.remove('ok','no');});timerAutoStart(1);">Neu starten</button>
+                <button class="btn btn-show" onclick="lt1Correct=lt1Total; document.querySelectorAll('.luecken-inp:not(.ok)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('ok');i.disabled=true;}); timerStop(1)">Lösungen</button>
+                <button class="btn btn-reset" onclick="lt1Correct=0; document.querySelectorAll('.luecken-inp').forEach(function(i){i.value='';i.classList.remove('ok','no');i.disabled=false;}); if(timers[1]){clearInterval(timers[1].iv);timers[1]={s:0,running:false,iv:null};document.getElementById('timer-1').textContent='00:00';}">Neu starten</button>
             </div>
             <div class="timer-display">
                 <span class="current-time">⏱ <span id="timer-1">00:00</span></span>
@@ -267,7 +267,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     <div class="section" id="sec3">
         <div class="control-bar">
             <div class="btn-row">
-                <button class="btn btn-show" onclick="document.querySelectorAll('.sb-row').forEach(function(r,i){sbShowSolution(i);})">Lösungen</button>
+                <button class="btn btn-show" onclick="satzbauData.forEach(function(_,i){sbShowSolution(i);})">Lösungen</button>
                 <button class="btn btn-reset" onclick="initSatzbau(); timerAutoStart(3);">Neu starten</button>
             </div>
             <div class="timer-display">
@@ -306,16 +306,16 @@ function timerAutoStart(t){
     if(timers[t]&&timers[t].running) return;
     if(!timers[t]) timers[t]={s:0,running:false,iv:null};
     timers[t].running=true;
-    timers[t].iv=setInterval(function(){ timers[t].s++; var e=document.getElementById('timer'+t); if(e) e.textContent=timerFmt(timers[t].s); },1000);
+    timers[t].iv=setInterval(function(){ timers[t].s++; var e=document.getElementById('timer-'+t); if(e) e.textContent=timerFmt(timers[t].s); },1000);
 }
 function timerStop(t){
     if(!timers[t]||!timers[t].running) return;
     clearInterval(timers[t].iv); timers[t].running=false;
     var best=localStorage.getItem(timerKey(t)); var cur=timers[t].s;
     if(!best||cur<parseInt(best)){ localStorage.setItem(timerKey(t),cur); best=cur; }
-    var e=document.getElementById('best'+t); if(e) e.textContent='🏆 '+timerFmt(parseInt(best));
+    var e=document.getElementById('best-'+t); if(e) e.textContent='🏆 '+timerFmt(parseInt(best));
 }
-function timerLoadBest(t){ var b=localStorage.getItem(timerKey(t)); if(b){var e=document.getElementById('best'+t);if(e)e.textContent='🏆 '+timerFmt(parseInt(b));} }
+function timerLoadBest(t){ var b=localStorage.getItem(timerKey(t)); if(b){var e=document.getElementById('best-'+t);if(e)e.textContent='🏆 '+timerFmt(parseInt(b));} }
 [1,2,3].forEach(function(t){ timerLoadBest(t); });
 
 /* ════════════════════════════════════════════════════════════
@@ -354,7 +354,7 @@ var lt1Total=12, lt1Correct=0;
 function liveCheck(inp){
     timerAutoStart(1);
     var val=inp.value.trim(), ans=inp.dataset.ans;
-    if(val===ans){ inp.classList.add('ok'); inp.classList.remove('no'); inp.disabled=true; lt1Correct++; document.getElementById('score1').textContent=lt1Correct+' / '+lt1Total; if(lt1Correct===lt1Total) timerStop(1); return; }
+    if(val===ans){ inp.classList.add('ok'); inp.classList.remove('no'); inp.disabled=true; lt1Correct++; if(lt1Correct===lt1Total) timerStop(1); return; }
     if(ans.startsWith(val)&&val.length>0){ inp.classList.remove('ok','no'); return; }
     if(val.length>0) inp.classList.add('no'); else inp.classList.remove('ok','no');
 }
@@ -397,10 +397,11 @@ function zPlace(c,z){
     if(!c||c.classList.contains('correct')) return;
     timerAutoStart(2); c.classList.remove('selected'); zSelected=null; zDragged=null;
     var correct=c.dataset.cat===z.dataset.cat;
-    if(correct){ z.appendChild(c); c.classList.add('correct'); c.draggable=false; zCorrect++; document.getElementById('score2').textContent=zCorrect+' / '+zTotal; if(zCorrect===zTotal) timerStop(2); }
+    if(correct){ z.appendChild(c); c.classList.add('correct'); c.draggable=false; zCorrect++; if(zCorrect===zTotal) timerStop(2); }
     else{ c.classList.add('incorrect'); setTimeout(function(){ c.classList.remove('incorrect'); },700); }
 }
 buildZuord();
+function initZuordnung(){ zCorrect=0; zSelected=null; zDragged=null; document.querySelectorAll('.zuord-drop').forEach(function(z){z.innerHTML='';}); buildZuord(); }
 
 /* ════════════════════════════════════════════════════════════
    TAB 3 — SATZBAU (satzbau-drag-drop Skill)

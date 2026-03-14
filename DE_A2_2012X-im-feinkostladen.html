@@ -6,14 +6,14 @@
     <title>Im Feinkostladen – Interaktive DaF-Übung (A2.2)</title>
     <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
 .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
 .header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
 .header p { font-size: 1.0em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
 .header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
 .nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
-.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .nav-btn:last-child { border-right: none; }
 .nav-btn:hover { background: #e8ecff; color: #667eea; }
 .nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
@@ -29,7 +29,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .qa-frage-cell { background: #f8f9fa; border-radius: 8px; padding: 10px 14px; font-size: 0.9em; color: #444; display: flex; align-items: center; border-left: 3px solid #667eea; }
 .drop-zone { background: #fafafa; border: 2px dashed #ccc; border-radius: 8px; min-height: 44px; padding: 6px 10px; display: flex; align-items: center; transition: background 0.2s; }
 .drop-zone.drag-over { background: #e8ecff; border-color: #667eea; }
-.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
 .chip.selected { background: #667eea; color: white; }
 .chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
 .chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
@@ -38,7 +38,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .luecken-block { padding: 28px 30px; }
 .luecken-block h2 { font-size: 1.05em; color: #667eea; margin: 22px 0 10px; }
 .luecken-text { line-height: 2.2; font-size: 0.95em; color: #444; }
-.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
 .luecken-inp:focus { border-bottom-color: #667eea; }
 .luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
 .luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
@@ -63,7 +63,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
 .sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
 .sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
-.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
 .satzbau-feedback.correct { color: #27ae60; }
 .satzbau-feedback.incorrect { color: #e74c3c; }
 
@@ -73,7 +73,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .vocab-en { font-weight: 600; color: #764ba2; min-width: 140px; font-size: 0.95em; }
 .vocab-arrow { color: #ccc; font-size: 1.2em; }
 .vocab-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.vocab-inputs input { border: none; border-bottom: 2px solid #667eea; background: #fff; padding: 4px 8px; font-family: inherit; font-size: 0.95em; outline: none; transition: all 0.2s; }
+.vocab-inputs input { border: none; border-bottom: 2px solid #667eea; background: #fff; padding: 4px 8px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95em; outline: none; transition: all 0.2s; }
 .vocab-inputs input:focus { border-bottom-color: #764ba2; background: #f0f7ff; }
 .vocab-inputs input.correct { border-bottom-color: #27ae60; background: #e8f8f0; }
 .vocab-inputs input.wrong { border-bottom-color: #e74c3c; background: #fdeaea; }
@@ -91,11 +91,11 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .wort { width: 150px; }
 
 /* ── TIMER ──────────────────────────────────────────────────────── */
-.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
 .btn-row { display: flex; gap: 6px; }
-.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
 .btn:hover { border-color: #667eea; color: #667eea; }
-.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+.timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
 
 
 /* ── MISC ───────────────────────────────────────────────────────── */
@@ -108,8 +108,8 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .dialog-line:last-child { margin-bottom: 0; }
 .dialog-speaker { font-weight: 700; color: #764ba2; white-space: nowrap; min-width: 80px; }
 .dialog-text { color: #444; line-height: 1.6; }
-.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #999; }
-.author-footer a { color: #667eea; text-decoration: none; }
+.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #aaa; }
+.author-footer a { color: #aaa; text-decoration: none; }
 .author-name { font-weight: 600; }
     .satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
 </style>
@@ -119,15 +119,15 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     <div class="header">
         <h1>Im Feinkostladen</h1>
         <p>Kommunikation &amp; Wortschatz — A2.2 · Einheit 1</p>
-        <span class="big-emoji">🛒</span>
+        <div class="big-emoji">🛒</div>
     </div>
-    <nav class="nav">
-        <button class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">💬</span><span class="nav-label">Redemittel</span></button>
-        <button class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></button>
-        <button class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">🔀</span><span class="nav-label">Zuordnung</span></button>
-        <button class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></button>
-        <button class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></button>
-    </nav>
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">💬</span><span class="nav-label">Redemittel</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">🔀</span><span class="nav-label">Zuordnung</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div><!-- /nav -->
 
     <!-- ═══════════════════════════════════════════════════════
          TAB 0 — REDEMITTEL (Im Feinkostladen — Fragen & Antworten)
@@ -283,7 +283,7 @@ function timerAutoStart(tab) {
     timers[tab].running = true;
     timers[tab].iv = setInterval(function(){
         timers[tab].s++;
-        var el = document.getElementById('timer'+tab);
+        var el = document.getElementById('timer-'+tab);
         if (el) el.textContent = timerFmt(timers[tab].s);
     }, 1000);
 }
@@ -297,12 +297,12 @@ function timerStop(tab) {
         localStorage.setItem(timerKey(tab), cur);
         best = cur;
     }
-    var el = document.getElementById('best'+tab);
+    var el = document.getElementById('best-'+tab);
     if (el) el.textContent = '🏆 ' + timerFmt(parseInt(best));
 }
 function timerLoadBest(tab) {
     var best = localStorage.getItem(timerKey(tab));
-    if (best) { var el = document.getElementById('best'+tab); if(el) el.textContent = '🏆 ' + timerFmt(parseInt(best)); }
+    if (best) { var el = document.getElementById('best-'+tab); if(el) el.textContent = '🏆 ' + timerFmt(parseInt(best)); }
 }
 [1,2,3,4].forEach(function(t){ timerLoadBest(t); });
 
@@ -779,9 +779,9 @@ initSatzbau();
 var WORTSCHATZ = [
     { id: 1, type:"v", en:"to eat healthily", de:"sich gesund ernähren" },
     { id: 2, type:"v", en:"to eat unhealthily", de:"sich ungesund ernähren" },
-    { id: 3, type:"n", en:"organic products", artikel:"die", de:"Bio-Produkte", plural:"—" },
-    { id: 4, type:"v", en:"vegetarian", de:"vegetarisch" },
-    { id: 5, type:"v", en:"vegan", de:"vegan" },
+    { id: 3, type:"n", en:"organic product", artikel:"das", de:"Bio-Produkt", plural:"Bio-Produkte" },
+    { id: 4, type:"adj", en:"vegetarian", de:"vegetarisch" },
+    { id: 5, type:"adj", en:"vegan", de:"vegan" },
     { id: 6, type:"n", en:"eating habit", artikel:"die", de:"Essgewohnheit", plural:"Essgewohnheiten" },
     { id: 7, type:"n", en:"nutrition plan", artikel:"der", de:"Ernährungsplan", plural:"Ernährungspläne" },
     { id: 8, type:"v", en:"to follow (a plan)", de:"folgen" },
@@ -792,15 +792,15 @@ var WORTSCHATZ = [
     { id:13, type:"v", en:"to warm up (in oven)", de:"aufbacken" },
     { id:14, type:"v", en:"to warm up (microwave)", de:"aufwärmen" },
     { id:15, type:"v", en:"to store, preserve", de:"aufbewahren" },
-    { id:16, type:"n", en:"additives", artikel:"die", de:"Zusatzstoffe", plural:"—" },
-    { id:17, type:"v", en:"shelf life; fresh until", de:"haltbar" },
+    { id:16, type:"n", en:"additive", artikel:"der", de:"Zusatzstoff", plural:"Zusatzstoffe" },
+    { id:17, type:"adj", en:"shelf life; fresh until", de:"haltbar" },
     { id:18, type:"n", en:"sugar", artikel:"der", de:"Zucker", plural:"—" },
-    { id:19, type:"n", en:"vitamins", artikel:"die", de:"Vitamine", plural:"—" },
-    { id:20, type:"v", en:"lactose-free", de:"laktosefrei" },
-    { id:21, type:"v", en:"gluten-free", de:"glutenfrei" },
-    { id:22, type:"n", en:"regional products", artikel:"die", de:"regionalen Produkte", plural:"—" },
-    { id:23, type:"v", en:"too much", de:"zu viel" },
-    { id:24, type:"v", en:"too little / too few", de:"zu wenig" },
+    { id:19, type:"n", en:"vitamin", artikel:"das", de:"Vitamin", plural:"Vitamine" },
+    { id:20, type:"adj", en:"lactose-free", de:"laktosefrei" },
+    { id:21, type:"adj", en:"gluten-free", de:"glutenfrei" },
+    { id:22, type:"n", en:"regional product", artikel:"das", de:"regionale Produkt", plural:"regionale Produkte" },
+    { id:23, type:"adj", en:"too much", de:"zu viel" },
+    { id:24, type:"adj", en:"too little / too few", de:"zu wenig" },
     { id:25, type:"n", en:"nutrition", artikel:"die", de:"Ernährung", plural:"—" },
 ];
 

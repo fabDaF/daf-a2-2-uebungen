@@ -6,14 +6,14 @@
     <title>Ein neuer Ernährungsplan – Interaktive DaF-Übung (A2.2)</title>
     <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
 .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
 .header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
 .header p { font-size: 1.0em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
 .header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
 .nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
-.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .nav-btn:last-child { border-right: none; }
 .nav-btn:hover { background: #e8ecff; color: #667eea; }
 .nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
@@ -46,7 +46,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .luecken-block h2 { font-size: 1.05em; color: #667eea; margin: 22px 0 10px; }
 .luecken-block h2:first-child { margin-top: 0; }
 .luecken-text { line-height: 2.4; font-size: 0.95em; color: #444; background: #f8f9fa; border-radius: 10px; padding: 18px 22px; }
-.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
 .luecken-inp:focus { border-bottom-color: #667eea; }
 .luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
 .luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
@@ -59,24 +59,24 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
 .sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
 .sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
-.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
 .satzbau-feedback.correct { color: #27ae60; }
 .satzbau-feedback.incorrect { color: #e74c3c; }
-.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
 .chip.selected { background: #667eea; color: white; }
 .chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
 .chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
 
 /* ── TIMER ──────────────────────────────────────────────────── */
-.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
 .btn-row { display: flex; gap: 6px; }
-.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
 .btn:hover { border-color: #667eea; color: #667eea; }
-.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+.timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
 
 .section-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
-.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #999; }
-.author-footer a { color: #667eea; text-decoration: none; }
+.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #aaa; }
+.author-footer a { color: #aaa; text-decoration: none; }
 .author-name { font-weight: 600; }
 @media (max-width: 600px) {
     body { padding: 8px; }
@@ -92,14 +92,14 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     <div class="header">
         <h1>Ein neuer Ernährungsplan</h1>
         <p>Leseverstehen &amp; Übungen — A2.2 · Einheit 1</p>
-        <span class="big-emoji">🥗</span>
+        <div class="big-emoji">🥗</div>
     </div>
-    <nav class="nav">
-        <button class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📖</span><span class="nav-label">Text</span></button>
-        <button class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">✅</span><span class="nav-label">Richtig/Falsch</span></button>
-        <button class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></button>
-        <button class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></button>
-    </nav>
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📖</span><span class="nav-label">Text</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">✅</span><span class="nav-label">Richtig/Falsch</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+    </div><!-- /nav -->
 
     <!-- ═══════════════════════════════════════════════════════
          TAB 0 — TEXT
@@ -212,9 +212,9 @@ function showTab(n) {
 var timers={};
 function timerKey(t){return'daf-2014r-best-'+t;}
 function timerFmt(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);}
-function timerAutoStart(t){ if(timers[t]&&timers[t].running) return; if(!timers[t]) timers[t]={s:0,running:false,iv:null}; timers[t].running=true; timers[t].iv=setInterval(function(){ timers[t].s++; var e=document.getElementById('timer'+t); if(e)e.textContent=timerFmt(timers[t].s); },1000); }
-function timerStop(t){ if(!timers[t]||!timers[t].running) return; clearInterval(timers[t].iv); timers[t].running=false; var best=localStorage.getItem(timerKey(t)); var cur=timers[t].s; if(!best||cur<parseInt(best)){localStorage.setItem(timerKey(t),cur);best=cur;} var e=document.getElementById('best'+t); if(e)e.textContent='🏆 '+timerFmt(parseInt(best)); }
-function timerLoadBest(t){ var b=localStorage.getItem(timerKey(t)); if(b){var e=document.getElementById('best'+t);if(e)e.textContent='🏆 '+timerFmt(parseInt(b));} }
+function timerAutoStart(t){ if(timers[t]&&timers[t].running) return; if(!timers[t]) timers[t]={s:0,running:false,iv:null}; timers[t].running=true; timers[t].iv=setInterval(function(){ timers[t].s++; var e=document.getElementById('timer-'+t); if(e)e.textContent=timerFmt(timers[t].s); },1000); }
+function timerStop(t){ if(!timers[t]||!timers[t].running) return; clearInterval(timers[t].iv); timers[t].running=false; var best=localStorage.getItem(timerKey(t)); var cur=timers[t].s; if(!best||cur<parseInt(best)){localStorage.setItem(timerKey(t),cur);best=cur;} var e=document.getElementById('best-'+t); if(e)e.textContent='🏆 '+timerFmt(parseInt(best)); }
+function timerLoadBest(t){ var b=localStorage.getItem(timerKey(t)); if(b){var e=document.getElementById('best-'+t);if(e)e.textContent='🏆 '+timerFmt(parseInt(b));} }
 [1,2,3].forEach(function(t){timerLoadBest(t);});
 
 /* ════════════════════════════════════════════════════════════

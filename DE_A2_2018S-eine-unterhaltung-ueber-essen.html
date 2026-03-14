@@ -6,7 +6,7 @@
 <title>A2.2 – 2018S Eine Unterhaltung über Essen</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
   .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
   .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
   .header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
@@ -15,7 +15,7 @@
 
   /* NAV */
   .nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
-  .nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .nav-btn:last-child { border-right: none; }
   .nav-btn:hover { background: #e8ecff; color: #667eea; }
   .nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
@@ -26,11 +26,11 @@
   .section.active { display: block; }
 
   /* TIMER */
-  .control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+  .control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
   .btn-row { display: flex; gap: 6px; }
-  .btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+  .btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
   .btn:hover { border-color: #667eea; color: #667eea; }
-  .timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+  .timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
   .best-time { font-size:0.78rem; color:#888; }
 
   /* AUSSPRACHE */
@@ -96,10 +96,10 @@
   .sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
   .sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
   .sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
-  .satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+  .satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
   .satzbau-feedback.correct { color: #27ae60; }
   .satzbau-feedback.incorrect { color: #e74c3c; }
-          .chip { display: inline-flex; align-items: center; background: #e8d5f5; border: 1.5px solid #9b59b6; border-radius: 14px; padding: 4px 12px; font-size: 0.82rem; font-weight: 600; color: #4a235a; cursor: grab; user-select: none; }
+          .chip { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: inline-flex; align-items: center; background: #e8d5f5; border: 1.5px solid #9b59b6; border-radius: 14px; padding: 4px 12px; font-size: 0.82rem; font-weight: 600; color: #4a235a; cursor: grab; user-select: none; }
   .chip:active { cursor: grabbing; }
   .chip.correct { background: #c8e6c9; border-color: #27ae60; color: #1b5e20; }
   .chip.incorrect { background: #ffcdd2; border-color: #e74c3c; color: #b71c1c; }
@@ -488,7 +488,7 @@ function timerAutoStart(i) {
   running[i] = true;
   timers[i] = setInterval(() => {
     elapsed[i]++;
-    document.getElementById('timer'+i).textContent = timerFmt(elapsed[i]);
+    document.getElementById('timer-'+i).textContent = timerFmt(elapsed[i]);
   }, 1000);
 }
 function timerStop(i) {
@@ -502,7 +502,7 @@ function timerStop(i) {
 }
 function timerLoadBest(i) {
   const b = localStorage.getItem(timerKey(i));
-  if (b) document.getElementById('best'+i).textContent = 'Bestzeit: ' + timerFmt(parseInt(b));
+  if (b) document.getElementById('best-'+i).textContent = 'Bestzeit: ' + timerFmt(parseInt(b));
 }
 [0,1,2,3].forEach(timerLoadBest);
 
