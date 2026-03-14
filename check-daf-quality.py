@@ -495,6 +495,57 @@ def check_genus(html, css, js, results):
 
     results['info'].append((cat, 'Genus-Tab erkannt'))
 
+def check_mc_buttons(html, css, js, results):
+    """Prüfe Multiple-Choice-Buttons (Skill: daf-uebungsformen, Abschnitt MC)."""
+    cat = 'MC-Buttons'
+
+    # Erkenne MC-Tab anhand typischer Marker
+    has_mc = ('mc-opt' in css or 'mc-opt' in html or 'MC_DATA' in js)
+    if not has_mc:
+        return
+
+    results['info'].append((cat, 'Multiple-Choice-Tab erkannt'))
+
+    # 1. flex-direction: column ist VERBOTEN für .mc-opts
+    if re.search(r'\.mc-opt[s]?\s*\{[^}]*flex-direction\s*:\s*column', css):
+        results['fail'].append((cat, 'mc-opts hat flex-direction:column — VERBOTEN (muss flex-wrap:wrap sein)'))
+    elif re.search(r'\.mc-opt[s]?\s*\{[^}]*flex-wrap\s*:\s*wrap', css) or 'flex-wrap: wrap' in css:
+        results['pass'].append((cat, 'mc-opts Layout korrekt: flex-wrap:wrap'))
+    else:
+        results['warn'].append((cat, 'mc-opts: kein flex-wrap:wrap erkannt'))
+
+    # 2. font-size der Buttons: muss px sein (nicht em/rem), maximal 12px
+    mc_opt_match = re.search(r'\.mc-opt\b[^{]*\{([^}]*)\}', css)
+    if mc_opt_match:
+        mc_opt_css = mc_opt_match.group(1)
+        fs_match = re.search(r'font-size\s*:\s*([^;]+)', mc_opt_css)
+        if fs_match:
+            fs_val = fs_match.group(1).strip()
+            if 'em' in fs_val or 'rem' in fs_val:
+                results['fail'].append((cat, f'mc-opt font-size ist {fs_val} (relativ) — muss fester px-Wert ≤12px sein'))
+            elif 'px' in fs_val:
+                px = float(re.search(r'([\d.]+)', fs_val).group(1))
+                if px > 12:
+                    results['fail'].append((cat, f'mc-opt font-size ist {fs_val} — zu groß (max 12px)'))
+                else:
+                    results['pass'].append((cat, f'mc-opt font-size korrekt: {fs_val}'))
+            else:
+                results['warn'].append((cat, f'mc-opt font-size nicht erkannt: {fs_val}'))
+        else:
+            results['warn'].append((cat, 'mc-opt: kein font-size definiert'))
+
+    # 3. border-radius: Pill-Form (≥16px)
+    if mc_opt_match:
+        mc_opt_css = mc_opt_match.group(1)
+        br_match = re.search(r'border-radius\s*:\s*([\d.]+)px', mc_opt_css)
+        if br_match:
+            br_val = float(br_match.group(1))
+            if br_val >= 16:
+                results['pass'].append((cat, f'mc-opt Pill-Form: border-radius {br_val}px'))
+            else:
+                results['warn'].append((cat, f'mc-opt border-radius {br_val}px — empfohlen ≥16px (Pill-Form)'))
+
+
 def check_anfuehrungszeichen(html, results):
     """Prüfe deutsche Anführungszeichen."""
     cat = 'Anführungszeichen'
@@ -619,6 +670,7 @@ def check_file(filepath):
     check_wortschatz(html, css, js, results)
     check_lueckentext(html, css, js, results)
     check_genus(html, css, js, results)
+    check_mc_buttons(html, css, js, results)
     check_anfuehrungszeichen(html, results)
     check_pluralendungen(html, js, results)
     check_control_bar(html, css, js, results)
