@@ -66,6 +66,10 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .chip.selected { background: #667eea; color: white; }
 .chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
 .chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
 
 /* ── TIMER ──────────────────────────────────────────────────── */
 .control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
@@ -177,7 +181,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
     <div class="section" id="sec3">
         <div class="control-bar">
             <div class="btn-row">
-                <button class="btn btn-show" onclick="document.querySelectorAll('.sb-row').forEach(function(r,i){sbShowSolution(i);})">Lösungen</button>
+                <button class="btn btn-show" onclick="for(var i=0;i<satzbauData.length;i++){sbShowSolution(i);}">Lösungen</button>
                 <button class="btn btn-reset" onclick="initSatzbau(); timerAutoStart(3);">Neu starten</button>
             </div>
             <div class="timer-display">
@@ -297,6 +301,7 @@ function sbCapitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); 
 function sbUpdateCapitalization(row) {
     Array.from(row.querySelectorAll('.chip')).forEach(function(c, i) {
         var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
         var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase() && orig.charAt(0) !== orig.charAt(0).toLowerCase();
         c.textContent = isProper ? orig : (i === 0 ? sbCapitalize(orig) : orig);
     });
@@ -357,7 +362,9 @@ function sbShowSolution(idx) {
         for (var j = 0; j < allChips.length; j++) {
             if (allChips[j] && allChips[j].dataset.orig === word) {
                 var chip = allChips[j]; allChips[j] = null;
-                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+                if (word !== ',' && word !== ';') {
+                    chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+                }
                 chip.classList.remove('correct', 'incorrect');
                 row.appendChild(chip); break;
             }
@@ -390,6 +397,11 @@ function initSatzbau() {
     satzbauData.forEach(function(ex, idx) {
         var item = document.createElement('div');
         item.className = 'satzbau-item';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
 
         var bank = document.createElement('div');
         bank.className = 'chips-container';

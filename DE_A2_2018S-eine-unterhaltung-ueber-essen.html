@@ -99,10 +99,11 @@
   .satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
   .satzbau-feedback.correct { color: #27ae60; }
   .satzbau-feedback.incorrect { color: #e74c3c; }
-          .chip { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: inline-flex; align-items: center; background: #e8d5f5; border: 1.5px solid #9b59b6; border-radius: 14px; padding: 4px 12px; font-size: 0.82rem; font-weight: 600; color: #4a235a; cursor: grab; user-select: none; }
+          .chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
   .chip:active { cursor: grabbing; }
-  .chip.correct { background: #c8e6c9; border-color: #27ae60; color: #1b5e20; }
-  .chip.incorrect { background: #ffcdd2; border-color: #e74c3c; color: #b71c1c; }
+  .chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+  .chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
 
   .author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
   .author-footer a { color: #aaa; }
@@ -737,6 +738,11 @@ function initSatzbau() {
     satzbauData.forEach(function(ex, idx) {
         var item = document.createElement('div');
         item.className = 'satzbau-item';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
 
         var bank = document.createElement('div');
         bank.className = 'chips-container';
