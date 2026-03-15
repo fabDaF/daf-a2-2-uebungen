@@ -63,10 +63,11 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 /* ── TEXT & FRAGEN ──────────────────────────────────────────────── */
 .text-block { padding: 28px 30px; }
 .sec-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
-.lese-text { background: #f8f9fa; border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; line-height: 1.85; font-size: 0.95em; color: #444; }
+.lese-text { background: #f8f9fa; border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; line-height: 1.8; font-size: 1.05em; color: #1a1a1a; max-width: 600px; margin-left: auto; margin-right: auto; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
 .lese-text p { margin-bottom: 12px; }
 .lese-text p:last-child { margin-bottom: 0; }
-.rf-list { list-style: none; }
+.lese-text .vocab-hl { background: #ffe9a0; border-radius: 3px; padding: 1px 3px; font-weight: 600; cursor: help; }
+.rf-list { list-style: none; max-width: 650px; margin-left: auto; margin-right: auto; }
 .rf-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.92em; color: #444; }
 .rf-item:last-child { border-bottom: none; }
 .rf-stmt { flex: 1; }
@@ -407,7 +408,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
                 <p>Tom geht jeden Samstag auf den Markt. Er liebt es, frisches Obst und Gemüse zu kosten. Heute riecht alles besonders gut – die Erdbeeren duften süß und fruchtig. Der Käse sieht ungewöhnlich aus, aber Tom probiert ihn trotzdem. Er schmeckt leicht bitter, aber sehr aromatisch. Tom kauft eine große Portion für das Abendessen.</p>
             </div>
 
-            <h2 style="font-size:1.1em; color:#667eea; margin-bottom:14px;">Richtig oder falsch?</h2>
+            <h2 style="font-size:1.1em; color:#667eea; margin-bottom:14px; max-width:650px; margin-left:auto; margin-right:auto;">Richtig oder falsch?</h2>
             <ul class="rf-list" id="rfList"></ul>
             <div class="btn-row">
                 <button class="btn btn-reset" onclick="resetRF()">↺ Neustart</button>
@@ -1030,12 +1031,67 @@ function resetVocab() {
 
 initVocab();
 
+// ===== VOKABEL-HIGHLIGHTING IM LESETEXT =====
+function highlightVocabInText() {
+    var storyText = document.querySelector('.story-text') || document.querySelector('.lese-text');
+    if (!storyText) return;
+    var words = [];
+    if (typeof VORENTLASTUNG !== 'undefined' && VORENTLASTUNG.length) {
+        words = VORENTLASTUNG.map(function(item) {
+            var term = item.term.replace(/^(der|die|das)\s+/i, '');
+            return term.split(',')[0].trim();
+        });
+    } else if (typeof VOCAB !== 'undefined' && VOCAB.length) {
+        words = VOCAB.map(function(item) { return item.word; });
+    } else if (typeof WORTSCHATZ !== 'undefined' && WORTSCHATZ.length) {
+        words = WORTSCHATZ.map(function(item) { return item.de; });
+    } else if (typeof WORT_DATA !== 'undefined' && WORT_DATA.length) {
+        words = WORT_DATA.map(function(item) { return item.wort; });
+    }
+    words = words.filter(function(w) { return w && w.length > 3; });
+    if (words.length === 0) return;
+    function walkAndHighlight(node) {
+        if (node.nodeType === 3) {
+            var text = node.nodeValue;
+            var replaced = text;
+            words.forEach(function(word) {
+                var escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var regex = new RegExp('(?<![a-zA-ZäöüÄÖÜß])(' + escaped + ')(?![a-zA-ZäöüÄÖÜß])', 'g');
+                replaced = replaced.replace(regex, '\x01$1\x02');
+            });
+            if (replaced !== text) {
+                var span = document.createElement('span');
+                var parts = replaced.split(/\x01|\x02/);
+                var isHighlight = false;
+                parts.forEach(function(part) {
+                    if (!part) { isHighlight = !isHighlight; return; }
+                    if (isHighlight) {
+                        var hl = document.createElement('span');
+                        hl.className = 'vocab-hl';
+                        hl.title = '\u{1F4D6} Vokabel aus dem Wörter-Tab';
+                        hl.textContent = part;
+                        span.appendChild(hl);
+                    } else {
+                        span.appendChild(document.createTextNode(part));
+                    }
+                    isHighlight = !isHighlight;
+                });
+                node.parentNode.replaceChild(span, node);
+            }
+        } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT') {
+            Array.from(node.childNodes).forEach(walkAndHighlight);
+        }
+    }
+    walkAndHighlight(storyText);
+}
+
 // ══════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function(){
     setupLuecken();
     initRF();
+    highlightVocabInText();
 });
 </script>
 </body>

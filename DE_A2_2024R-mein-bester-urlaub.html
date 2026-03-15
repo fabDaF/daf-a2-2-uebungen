@@ -24,10 +24,11 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .sec-inner { padding: 28px 30px; }
 
 /* ── STORY TEXT ─────────────────────────────────────────── */
-.story-text { font-family: Georgia, 'Times New Roman', serif; background: #f8f9fa; border-radius: 10px; padding: 22px 26px; margin-bottom: 12px; line-height: 1.9; font-size: 0.95em; color: #444; }
+.story-text { font-family: Georgia, 'Times New Roman', serif; background: #f8f9fa; border-radius: 10px; padding: 22px 26px; margin-bottom: 12px; line-height: 1.9; font-size: 0.95em; color: #444; max-width: 600px; margin-left: auto; margin-right: auto; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
 .story-text p { margin-bottom: 12px; }
 .story-text p:last-child { margin-bottom: 0; }
 .story-source { font-size: 0.85em; color: #999; margin-top: 12px; text-align: right; }
+.story-text .vocab-hl { background: #ffe9a0; border-radius: 3px; padding: 1px 3px; font-weight: 600; cursor: help; }
 
 /* ── VORENTLASTUNG CARDS ────────────────────────────────── */
 .vorentlastung-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
@@ -37,7 +38,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .luecken-item-def { font-size: 0.9em; color: #666; line-height: 1.5; }
 
 /* ── RICHTIG / FALSCH ───────────────────────────────────── */
-.rf-list { list-style: none; }
+.rf-list { list-style: none; max-width: 650px; margin-left: auto; margin-right: auto; }
 .rf-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.92em; color: #444; }
 .rf-item:last-child { border-bottom: none; }
 .rf-stmt { flex: 1; line-height: 1.5; }
@@ -94,7 +95,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .btn:hover { border-color: #667eea; color: #667eea; }
 .timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
 
-.sec-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
+.sec-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; text-align: center; }
 .author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #aaa; }
 .author-footer a { color: #aaa; text-decoration: none; }
 .author-name { font-weight: 600; }
@@ -728,6 +729,48 @@ function initWortschatz() {
 }
 
 initWortschatz();
+
+function highlightVocabInText() {
+    var storyText = document.querySelector('.story-text') || document.querySelector('.lese-text');
+    if (!storyText) return;
+    var words = [];
+    if (typeof VORENTLASTUNG !== 'undefined' && VORENTLASTUNG.length) {
+        words = VORENTLASTUNG.map(function(item) { var term = item.term.replace(/^(der|die|das)\s+/i, ''); return term.split(',')[0].trim(); });
+    } else if (typeof VOCAB !== 'undefined' && VOCAB.length) {
+        words = VOCAB.map(function(item) { return item.word; });
+    } else if (typeof WORTSCHATZ !== 'undefined' && WORTSCHATZ.length) {
+        words = WORTSCHATZ.map(function(item) { return item.de; });
+    } else if (typeof WORT_DATA !== 'undefined' && WORT_DATA.length) {
+        words = WORT_DATA.map(function(item) { return item.wort; });
+    }
+    words = words.filter(function(w) { return w && w.length > 3; });
+    if (words.length === 0) return;
+    function walkAndHighlight(node) {
+        if (node.nodeType === 3) {
+            var text = node.nodeValue; var replaced = text;
+            words.forEach(function(word) {
+                var escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var regex = new RegExp('(?<![a-zA-ZäöüÄÖÜß])(' + escaped + ')(?![a-zA-ZäöüÄÖÜß])', 'g');
+                replaced = replaced.replace(regex, '\x01$1\x02');
+            });
+            if (replaced !== text) {
+                var span = document.createElement('span');
+                var parts = replaced.split(/\x01|\x02/);
+                var isHighlight = false;
+                parts.forEach(function(part) {
+                    if (!part) { isHighlight = !isHighlight; return; }
+                    if (isHighlight) { var hl = document.createElement('span'); hl.className = 'vocab-hl'; hl.title = '\u{1F4D6} Vokabel aus dem Wörter-Tab'; hl.textContent = part; span.appendChild(hl); }
+                    else { span.appendChild(document.createTextNode(part)); }
+                    isHighlight = !isHighlight;
+                });
+                node.parentNode.replaceChild(span, node);
+            }
+        } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT') { Array.from(node.childNodes).forEach(walkAndHighlight); }
+    }
+    walkAndHighlight(storyText);
+}
+
+highlightVocabInText();
 </script>
 </body>
 </html>

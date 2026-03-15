@@ -61,9 +61,10 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .wb-chip { display: inline-block; background: #fff; border: 1.5px solid #9b59b6; border-radius: 12px; padding: 3px 10px; font-size: 0.82rem; color: #4a235a; margin: 3px; }
 
 /* TEXT & FRAGEN */
-.lese-text { background: #f9f9f9; border-radius: 8px; padding: 16px 18px; font-size: 0.9rem; line-height: 1.7; color: #333; margin-bottom: 18px; }
+.lese-text { background: #f9f9f9; border-radius: 8px; padding: 16px 18px; font-size: 1.05em; line-height: 1.8; color: #1a1a1a; margin-bottom: 18px; max-width: 600px; margin-left: auto; margin-right: auto; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
 .lese-text p { margin-bottom: 10px; }
-.rf-list { display: flex; flex-direction: column; gap: 8px; }
+.lese-text .vocab-hl { background: #ffe9a0; border-radius: 3px; padding: 1px 3px; font-weight: 600; cursor: help; }
+.rf-list { display: flex; flex-direction: column; gap: 8px; max-width: 650px; margin-left: auto; margin-right: auto; }
 .rf-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #f9f9f9; border-radius: 8px; font-size: 0.88rem; cursor: pointer; border: 1.5px solid #ddd; }
 .rf-item:hover { background: #f3e5f5; }
 .rf-btns { display: flex; gap: 6px; }
@@ -322,7 +323,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
     <p>Aber dieses Jahr möchte die Familie etwas Neues ausprobieren. Sie wollen <strong>Rucksacktouristen</strong> werden! Sie buchen keine Stadtführung und keinen Reiseleiter. Stattdessen suchen sie selbst nach <strong>Sehenswürdigkeiten</strong> und <strong>Eintrittspreisen</strong> im Internet. Sie suchen eine <strong>gemütliche</strong> und günstige Unterkunft mit schöner <strong>Aussicht</strong>.</p>
     <p>Natürlich gibt es auch Probleme. Der Flug ist einmal <strong>ausgefallen</strong> und sie haben den Anschluss <strong>verpasst</strong>. Einmal war der Strand total <strong>überfüllt</strong>. Aber das macht nichts – das ist das Abenteuer des Rucksacktourismus! Am Ende sagen alle: Es hat sich <strong>gelohnt</strong>!</p>
   </div>
-  <p style="font-size:0.85rem;font-weight:700;margin-bottom:10px;">Richtig (R) oder Falsch (F)?</p>
+  <p style="font-size:0.85rem;font-weight:700;margin-bottom:10px;max-width:650px;margin-left:auto;margin-right:auto;">Richtig (R) oder Falsch (F)?</p>
   <div class="rf-list">
     <div class="rf-item">
       <span style="flex:1;">1. Familie Müller ist früher immer nach Spanien geflogen.</span>
@@ -854,6 +855,48 @@ function resetVocab() {
 
 initVocab();
 timerAutoStart(0);
+
+function highlightVocabInText() {
+    var storyText = document.querySelector('.story-text') || document.querySelector('.lese-text');
+    if (!storyText) return;
+    var words = [];
+    if (typeof VORENTLASTUNG !== 'undefined' && VORENTLASTUNG.length) {
+        words = VORENTLASTUNG.map(function(item) { var term = item.term.replace(/^(der|die|das)\s+/i, ''); return term.split(',')[0].trim(); });
+    } else if (typeof VOCAB !== 'undefined' && VOCAB.length) {
+        words = VOCAB.map(function(item) { return item.word; });
+    } else if (typeof WORTSCHATZ !== 'undefined' && WORTSCHATZ.length) {
+        words = WORTSCHATZ.map(function(item) { return item.de; });
+    } else if (typeof WORT_DATA !== 'undefined' && WORT_DATA.length) {
+        words = WORT_DATA.map(function(item) { return item.wort; });
+    }
+    words = words.filter(function(w) { return w && w.length > 3; });
+    if (words.length === 0) return;
+    function walkAndHighlight(node) {
+        if (node.nodeType === 3) {
+            var text = node.nodeValue; var replaced = text;
+            words.forEach(function(word) {
+                var escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var regex = new RegExp('(?<![a-zA-ZäöüÄÖÜß])(' + escaped + ')(?![a-zA-ZäöüÄÖÜß])', 'g');
+                replaced = replaced.replace(regex, '\x01$1\x02');
+            });
+            if (replaced !== text) {
+                var span = document.createElement('span');
+                var parts = replaced.split(/\x01|\x02/);
+                var isHighlight = false;
+                parts.forEach(function(part) {
+                    if (!part) { isHighlight = !isHighlight; return; }
+                    if (isHighlight) { var hl = document.createElement('span'); hl.className = 'vocab-hl'; hl.title = '\u{1F4D6} Vokabel aus dem Wörter-Tab'; hl.textContent = part; span.appendChild(hl); }
+                    else { span.appendChild(document.createTextNode(part)); }
+                    isHighlight = !isHighlight;
+                });
+                node.parentNode.replaceChild(span, node);
+            }
+        } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT') { Array.from(node.childNodes).forEach(walkAndHighlight); }
+    }
+    walkAndHighlight(storyText);
+}
+
+highlightVocabInText();
 </script>
 </body>
 </html>
