@@ -219,14 +219,14 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 
             <div class="luecken-text" id="lueckenContainer">
                 <p style="margin-bottom:14px;">1. Familie Meier hat <input class="luecken-inp" style="width:60px" data-ans="für" placeholder=""> ein Jahr eine Weltreise geplant.</p>
-                <p style="margin-bottom:14px;">2. <input class="luecken-inp" style="width:60px" data-ans="bei" placeholder=""> schlechtem Wetter sind sie trotzdem weitergeflogen.</p>
+                <p style="margin-bottom:14px;">2. <input class="luecken-inp" style="width:60px" data-ans="Bei" placeholder=""> schlechtem Wetter sind sie trotzdem weitergeflogen.</p>
                 <p style="margin-bottom:14px;">3. Die Reise dauerte <input class="luecken-inp" style="width:60px" data-ans="von" placeholder=""> Januar <input class="luecken-inp" style="width:60px" data-ans="bis" placeholder=""> Dezember.</p>
-                <p style="margin-bottom:14px;">4. <input class="luecken-inp" style="width:40px" data-ans="in" placeholder=""> Asien haben sie viele Tempel besucht.</p>
+                <p style="margin-bottom:14px;">4. <input class="luecken-inp" style="width:40px" data-ans="In" placeholder=""> Asien haben sie viele Tempel besucht.</p>
                 <p style="margin-bottom:14px;">5. Der Flug startete <input class="luecken-inp" style="width:50px" data-ans="um" placeholder=""> 6 Uhr morgens.</p>
-                <p style="margin-bottom:14px;">6. <input class="luecken-inp" style="width:70px" data-ans="nach" placeholder=""> der langen Reise waren alle sehr müde.</p>
-                <p style="margin-bottom:14px;">7. <input class="luecken-inp" style="width:60px" data-ans="auf" placeholder=""> der Reise haben sie neue Freunde gefunden.</p>
+                <p style="margin-bottom:14px;">6. <input class="luecken-inp" style="width:70px" data-ans="Nach" placeholder=""> der langen Reise waren alle sehr müde.</p>
+                <p style="margin-bottom:14px;">7. <input class="luecken-inp" style="width:60px" data-ans="Auf" placeholder=""> der Reise haben sie neue Freunde gefunden.</p>
                 <p style="margin-bottom:14px;">8. Sie sind <input class="luecken-inp" style="width:70px" data-ans="durch" placeholder=""> viele verschiedene Länder gereist.</p>
-                <p style="margin-bottom:14px;">9. <input class="luecken-inp" style="width:50px" data-ans="im" placeholder=""> Sommer war es in Südostasien besonders heiß.</p>
+                <p style="margin-bottom:14px;">9. <input class="luecken-inp" style="width:50px" data-ans="Im" placeholder=""> Sommer war es in Südostasien besonders heiß.</p>
                 <p style="margin-bottom:14px;">10. Das Hotel lag <input class="luecken-inp" style="width:90px" data-ans="gegenüber" placeholder=""> dem Bahnhof.</p>
             </div>
         </div>
@@ -384,14 +384,17 @@ function timerLoadBest(tab) {
    TAB 1 — LÜCKENTEXT
    ════════════════════════════════════════════════════════════ */
 function liveCheck(inp) {
-    var val = inp.value.trim().toLowerCase();
-    var ans = (inp.dataset.ans || '').toLowerCase();
+    var ans = inp.dataset.ans || '';
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase() && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var val = inp.value.trim();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpAns = caseSensitive ? ans : ans.toLowerCase();
     inp.classList.remove('ok', 'no');
-    if (!val) return;
-    if (val === ans) {
+    if (!cmpVal) return;
+    if (cmpVal === cmpAns) {
         inp.classList.add('ok');
         checkLueckenAllOk();
-    } else if (ans.indexOf(val) === 0) {
+    } else if (cmpAns.indexOf(cmpVal) === 0) {
         /* gültiger Präfix — neutral */
     } else {
         inp.classList.add('no');
