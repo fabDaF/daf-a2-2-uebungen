@@ -546,6 +546,24 @@ def check_lueckentext(html, css, js, results):
                 f'Lücke am Satzanfang muss großgeschrieben sein'))
         else:
             results['pass'].append((cat, 'Großschreibung am Satzanfang korrekt (alle Lücken geprüft)'))
+    else:
+        # Inline-HTML-Lückentext: <p>2. <input ... data-ans="bei"> ...</p>
+        # Lücke am Satzanfang = <input> ist erstes Kind nach Satznummer oder am Absatzbeginn
+        # Pattern: nach <p...> kommt optional Satznummer + Leerzeichen, dann direkt <input
+        inline_satzanfang = re.findall(
+            r'<p[^>]*>\s*(?:\d+\.\s*)?<input[^>]*data-ans=["\']([^"\']+)["\']',
+            html
+        )
+        lowercase_errors = []
+        for ans in inline_satzanfang:
+            if ans and ans[0].islower() and ans[0] != ans[0].upper():
+                lowercase_errors.append(ans)
+        if lowercase_errors:
+            results['fail'].append((cat,
+                f'Kleinschreibung am Satzanfang (Inline-HTML): {", ".join(lowercase_errors)} — '
+                f'Lücke am Satzanfang muss großgeschrieben sein'))
+        elif inline_satzanfang:
+            results['pass'].append((cat, 'Großschreibung am Satzanfang korrekt (Inline-HTML geprüft)'))
 
 def check_genus(html, css, js, results):
     """Prüfungen des Genus-Tabs (Drag-and-Drop der/die/das)."""
