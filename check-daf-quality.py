@@ -480,6 +480,73 @@ def check_lueckentext(html, css, js, results):
     elif '.no' in css:
         results['pass'].append((cat, 'CSS .no vorhanden (generisch)'))
 
+    # Großschreibung am Satzanfang prüfen
+    # Suche LUECKEN_DATA oder ähnliche Lückentext-Datenstrukturen
+    source = js if 'LUECKEN_DATA' in js or 'lueckenData' in js else html
+    luecken_match = re.search(r'var\s+(?:LUECKEN_DATA|lueckenData|LUECKEN)\s*=\s*\[(.*?)\];', source, re.DOTALL)
+    if luecken_match:
+        luecken_block = luecken_match.group(1)
+        # Finde Einträge wo text mit '_' beginnt (Lücke am Satzanfang)
+        # Pattern: text: '_ ...' oder text: "_ ..."
+        satzanfang_entries = re.findall(
+            r"text\s*:\s*['\"]_([^'\"]*)['\"].*?ans\s*:\s*['\"]([^'\"]*)['\"]",
+            luecken_block, re.DOTALL
+        )
+        # Auch Pattern: segments mit erstem Segment als Lücke
+        segment_entries = re.findall(
+            r"\{\s*b\s*:\s*['\"]([^'\"]+)['\"]",
+            luecken_block
+        )
+        # Prüfe direkt: ans-Felder die am Satzanfang stehen und kleingeschrieben sind
+        lowercase_errors = []
+        for m in satzanfang_entries:
+            ans = m[1]
+            if ans and ans[0].islower() and ans[0] != ans[0].upper():
+                lowercase_errors.append(ans)
+
+        # Prüfe auch das einfachere Pattern: text beginnt direkt mit Unterstrich
+        simple_entries = re.findall(
+            r"text\s*:\s*['\"](\s*_[^'\"]*)['\"].*?ans\s*:\s*['\"]([^'\"]*)['\"]",
+            luecken_block, re.DOTALL
+        )
+        for m in simple_entries:
+            text_val = m[0].strip()
+            ans = m[1]
+            if text_val.startswith('_') and ans and ans[0].islower() and ans[0] != ans[0].upper():
+                if ans not in lowercase_errors:
+                    lowercase_errors.append(ans)
+
+        # Prüfe auch segments-basiertes Pattern: erstes Segment ist Lücke
+        items = re.findall(r'\{[^}]*segments\s*:\s*\[(.*?)\]', luecken_block, re.DOTALL)
+        for item in items:
+            segs = re.findall(r'\{([^}]*)\}', item)
+            if segs:
+                first_seg = segs[0]
+                # Ist das erste Segment eine Lücke (hat 'b' key)?
+                b_match = re.search(r"b\s*:\s*['\"]([^'\"]+)['\"]", first_seg)
+                t_match = re.search(r"t\s*:\s*['\"]([^'\"]*)['\"]", first_seg)
+                if b_match and not t_match:
+                    # Erstes Segment ist Lücke → ans muss großgeschrieben sein
+                    ans = b_match.group(1)
+                    if ans and ans[0].islower() and ans[0] != ans[0].upper():
+                        if ans not in lowercase_errors:
+                            lowercase_errors.append(ans)
+                elif t_match and b_match:
+                    # Wenn t vor b kommt und t leer ist → Satzanfang
+                    t_val = t_match.group(1).strip()
+                    if t_val == '':
+                        ans = b_match.group(1)
+                        if ans and ans[0].islower() and ans[0] != ans[0].upper():
+                            if ans not in lowercase_errors:
+                                lowercase_errors.append(ans)
+
+        if lowercase_errors:
+            results['fail'].append((cat,
+                f'Kleinschreibung am Satzanfang: {", ".join(lowercase_errors)} — '
+                f'Lücke am Satzanfang muss großgeschrieben sein'))
+        else:
+            results['pass'].append((cat, 'Großschreibung am Satzanfang korrekt (alle Lücken geprüft)'))
+
 def check_genus(html, css, js, results):
     """Prüfungen des Genus-Tabs (Drag-and-Drop der/die/das)."""
     cat = 'Genus'
