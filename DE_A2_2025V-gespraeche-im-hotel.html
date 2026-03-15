@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2025V Gespräche im Hotel</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle, .header p { font-size: 1.0em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; padding: 22px 24px 28px; }
+.section.active { display: block; }
+.control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+.best-time { font-size:0.78rem; color:#888; }
+
+/* VOCAB CARDS */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.vcard { border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.10); cursor: pointer; transition: transform 0.15s; }
+.vcard:hover { transform: translateY(-2px); }
+.vcard img { width: 100%; height: 110px; object-fit: cover; display: block; }
+.vcard-body { padding: 8px 10px 10px; background: #f3e5f5; }
+.vcard-de { font-weight: 700; font-size: 0.9rem; color: #4a235a; }
+.vcard-art { font-size: 0.78rem; color: #9b59b6; }
+.vcard-en { font-size: 0.78rem; color: #888; margin-top: 2px; display: none; }
+.vcard.flipped .vcard-en { display: block; }
+.vcard.flipped .vcard-body { background: #e8d5f5; }
+
+/* REDEMITTEL QA */
+.qa-grid { display: flex; flex-direction: column; gap: 10px; }
+.qa-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.qa-q { background: #6c3483; color: #fff; padding: 10px 14px; font-size: 0.88rem; display: flex; align-items: center; }
+.qa-a { background: #f3e5f5; color: #4a235a; padding: 10px 14px; font-size: 0.88rem; display: flex; align-items: center; cursor: pointer; }
+.qa-a .ans { display: none; }
+.qa-a.open .ans { display: inline; }
+.qa-a.open .placeholder { display: none; }
+.qa-a .placeholder { color: #bbb; font-style: italic; }
+
+/* LÜCKENTEXT */
+.luecken-text { font-size: 0.92rem; line-height: 2.2; color: #333; }
+.gap-inp { width: 140px; border: none; border-bottom: 2px solid #9b59b6; background: transparent; font-size: 0.9rem; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #333; padding: 2px 4px; outline: none; text-align: center; }
+.gap-inp.correct { border-bottom-color: #27ae60; background: #e8f9ec; border-radius: 4px 4px 0 0; }
+.gap-inp.partial { border-bottom-color: #f39c12; }
+.gap-inp.wrong { border-bottom-color: #e74c3c; }
+.wortbank { background: #f3e5f5; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; }
+.wortbank strong { font-size: 0.82rem; color: #6c3483; display: block; margin-bottom: 6px; }
+.wb-chip { display: inline-block; background: #fff; border: 1.5px solid #9b59b6; border-radius: 12px; padding: 3px 10px; font-size: 0.82rem; color: #4a235a; margin: 3px; }
+
+/* TEXT & FRAGEN */
+.lese-text { background: #f9f9f9; border-radius: 8px; padding: 16px 18px; font-size: 0.9rem; line-height: 1.7; color: #333; margin-bottom: 18px; }
+.lese-text p { margin-bottom: 10px; }
+.rf-list { display: flex; flex-direction: column; gap: 8px; }
+.rf-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #f9f9f9; border-radius: 8px; font-size: 0.88rem; cursor: pointer; border: 1.5px solid #ddd; }
+.rf-item:hover { background: #f3e5f5; }
+.rf-btns { display: flex; gap: 6px; }
+.rf-btn { padding: 4px 14px; border-radius: 14px; border: 1.5px solid #9b59b6; background: #fff; color: #6c3483; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.rf-btn:hover { background: #f3e5f5; }
+.rf-btn.sel-r { background: #27ae60; color: #fff; border-color: #27ae60; }
+.rf-btn.sel-f { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+.rf-result { font-size: 0.8rem; font-weight: 700; min-width: 24px; }
+.rf-result.ok { color: #27ae60; }
+.rf-result.err { color: #e74c3c; }
+
+/* SATZBAU */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip:active { cursor: grabbing; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
+
+/* WORTSCHATZ */
+.vocab-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vocab-en { font-weight: 600; color: #764ba2; min-width: 140px; font-size: 0.95em; }
+.vocab-arrow { color: #ccc; font-size: 1.2em; }
+.vocab-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vocab-hint { font-size: 0.75rem; color: #999; margin-left: 8px; font-style: italic; }
+.vocab-inp { border: none; border-bottom: 1.5px solid #667eea; background: transparent; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; padding: 2px 4px; font-size: 0.9rem; outline: none; }
+.vocab-inp.correct { border-bottom-color: #27ae60; background: #e8f9ec; border-radius: 3px 3px 0 0; }
+.vocab-inp.wrong { border-bottom-color: #e74c3c; }
+
+/* HELP BOX */
+.help-box { background: #f0f8ff; border-left: 4px solid #667eea; padding: 10px 14px; margin-bottom: 16px; border-radius: 4px; font-size: 0.88rem; }
+.help-box strong { color: #667eea; }
+
+/* AUTHOR FOOTER */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  body { padding: 8px; }
+  .nav { flex-wrap: wrap; }
+  .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+  .nav-btn:last-child { border-right: 1px solid #ddd; }
+  .qa-pair { grid-template-columns: 1fr; }
+  .vocab-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .header h1 { font-size: 1.8em; }
+  .section { padding: 16px 18px 20px; }
+  .vocab-item { flex-direction: column; align-items: flex-start; }
+}
+
+/* SATZBAU ITEM */
+.satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Gespräche im Hotel</h1>
+        <p class="subtitle">A2.2 – Lektion 2025V &nbsp;|&nbsp; Wortschatz: Hotel &amp; Reisebuchung</p>
+        <div class="big-emoji">🏨</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📸</span><span class="nav-label">Wörter</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">💬</span><span class="nav-label">Redemittel</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">📖</span><span class="nav-label">Text &amp; Fragen</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(5)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+<!-- TAB 0: WÖRTER -->
+<div class="section active" id="tab0">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="timerAutoStart(0);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-0">00:00</span></span><span class="best-time">🏆 <span id="best-0">--:--</span></span></div>
+  </div>
+  <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">💡 Klicke auf eine Karte, um die englische Übersetzung zu sehen.</p>
+  <div class="vocab-grid">
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1174732/pexels-photo-1174732.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Sommerurlaub">
+      <div class="vcard-body">
+        <div class="vcard-de">Sommerurlaub</div>
+        <div class="vcard-art">der</div>
+        <div class="vcard-example">Das ganze Jahr freue ich mich auf den Sommerurlaub.</div>
+        <div class="vcard-en">summer vacation</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Abenteuerurlaub">
+      <div class="vcard-body">
+        <div class="vcard-de">Abenteuerurlaub</div>
+        <div class="vcard-art">der</div>
+        <div class="vcard-example">Nur am Strand liegen ist langweilig, deswegen mache ich Abenteuerurlaub.</div>
+        <div class="vcard-en">adventure holiday</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Hotelpool">
+      <div class="vcard-body">
+        <div class="vcard-de">Hotelpool</div>
+        <div class="vcard-art">der</div>
+        <div class="vcard-example">Die Kinder haben Spaß am Hotelpool.</div>
+        <div class="vcard-en">hotel pool</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3769138/pexels-photo-3769138.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="buchen">
+      <div class="vcard-body">
+        <div class="vcard-de">buchen</div>
+        <div class="vcard-art">V</div>
+        <div class="vcard-example">Meinen Flug buche ich immer im Internet, weil das billiger ist.</div>
+        <div class="vcard-en">to book</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3943882/pexels-photo-3943882.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Frühbucher-Rabatt">
+      <div class="vcard-body">
+        <div class="vcard-de">Frühbucher-Rabatt</div>
+        <div class="vcard-art">der</div>
+        <div class="vcard-example">Wer früh bucht, bekommt einen großen Frühbucher-Rabatt.</div>
+        <div class="vcard-en">early bird discount</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Pension">
+      <div class="vcard-body">
+        <div class="vcard-de">Pension</div>
+        <div class="vcard-art">die</div>
+        <div class="vcard-example">Meine Pension in Italien hatte sogar einen Pool.</div>
+        <div class="vcard-en">guesthouse</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Übernachtung">
+      <div class="vcard-body">
+        <div class="vcard-de">Übernachtung</div>
+        <div class="vcard-art">die</div>
+        <div class="vcard-example">Zwei Übernachtungen mit Frühstück kosten hier 1500€.</div>
+        <div class="vcard-en">overnight stay</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/5175620/pexels-photo-5175620.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Frühstücksbuffet">
+      <div class="vcard-body">
+        <div class="vcard-de">Frühstücksbuffet</div>
+        <div class="vcard-art">das</div>
+        <div class="vcard-example">Am Frühstücksbuffet gibt es viele Leckereien.</div>
+        <div class="vcard-en">breakfast buffet</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="All-inclusive-Angebot">
+      <div class="vcard-body">
+        <div class="vcard-de">All-inclusive-Angebot</div>
+        <div class="vcard-art">das</div>
+        <div class="vcard-example">Ich mag All-inclusive-Angebote, weil man nicht mehr extra bezahlen muss.</div>
+        <div class="vcard-en">all-inclusive offer</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1095601/pexels-photo-1095601.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Zeitzone">
+      <div class="vcard-body">
+        <div class="vcard-de">Zeitzone</div>
+        <div class="vcard-art">die</div>
+        <div class="vcard-example">Dubai, London und New York liegen in verschiedenen Zeitzonen.</div>
+        <div class="vcard-en">time zone</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/935777/pexels-photo-935777.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="ausschlafen">
+      <div class="vcard-body">
+        <div class="vcard-de">ausschlafen</div>
+        <div class="vcard-art">V</div>
+        <div class="vcard-example">Morgen schlafe ich bis 10 Uhr aus.</div>
+        <div class="vcard-en">to sleep in</div>
+      </div>
+    </div>
+
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Ferienort">
+      <div class="vcard-body">
+        <div class="vcard-de">Ferienort</div>
+        <div class="vcard-art">der</div>
+        <div class="vcard-example">Der ägyptische Ferienort Hurghada ist bei deutschen Urlaubern sehr beliebt.</div>
+        <div class="vcard-en">holiday resort</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: REDEMITTEL -->
+<div class="section" id="tab1">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="showTab(1); timerAutoStart(1);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-1">00:00</span></span><span class="best-time">🏆 <span id="best-1">--:--</span></span></div>
+  </div>
+  <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">💡 Klicke auf die Antwort-Box, um die Antwort zu sehen.</p>
+  <div class="qa-grid">
+    <div class="qa-pair">
+      <div class="qa-q">Guten Tag, was kann ich für Sie tun?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">[Klick für Antwort]</span><span class="ans">Guten Tag, ich habe ein Zimmer auf den Namen Schmidt reserviert.</span></div>
+    </div>
+
+    <div class="qa-pair">
+      <div class="qa-q">Willkommen in unserem Haus. Ihr Zimmer hat die Nummer 222. Es ist im 2. Stock, neben dem Fahrstuhl. Hier ist Ihr Schlüssel.</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">[Klick für Antwort]</span><span class="ans">Vielen Dank. Hat mein Zimmer auch eine gute Aussicht?</span></div>
+    </div>
+
+    <div class="qa-pair">
+      <div class="qa-q">Natürlich, Sie haben einen tollen Blick auf den Park gegenüber.</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">[Klick für Antwort]</span><span class="ans">Wunderbar, genau das wollte ich!</span></div>
+    </div>
+
+    <div class="qa-pair">
+      <div class="qa-q">Es freut mich, dass es Ihnen gefällt. Können Sie mir sagen, wann es morgens Frühstück gibt?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">[Klick für Antwort]</span><span class="ans">Unser Frühstücksbuffet ist von 8 bis 10 Uhr geöffnet. Möchten Sie noch etwas wissen?</span></div>
+    </div>
+
+    <div class="qa-pair">
+      <div class="qa-q">Perfekt, ich stehe gern früh auf. Ich würde gern noch wissen, ob es auch einen Pool gibt.</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">[Klick für Antwort]</span><span class="ans">Selbstverständlich. Der Pool befindet sich im Keller.</span></div>
+    </div>
+
+    <div class="qa-pair">
+      <div class="qa-q">Ich habe noch eine Frage: Ich habe ein All-inclusive-Angebot gebucht. Bekomme ich ein Armband, sodass ich an der Bar erkannt werde?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">[Klick für Antwort]</span><span class="ans">Das Band finden Sie in Ihrem Zimmer auf dem Nachttisch. Wie kann ich Ihnen noch helfen?</span></div>
+    </div>
+
+    <div class="qa-pair">
+      <div class="qa-q">Das war alles. Vielen Dank!</div>
+      <div class="qa-a" onclick="this.classList.toggle('open')"><span class="placeholder">[Klick für Antwort]</span><span class="ans">Gerne! Auf Wiedersehen.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: LÜCKENTEXT -->
+<div class="section" id="tab2">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="showTab(2); initLuecken(); timerAutoStart(2);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-2">00:00</span></span><span class="best-time">🏆 <span id="best-2">--:--</span></span></div>
+  </div>
+
+  <h3 style="font-size:1em; margin-bottom:12px;">Lückentext 1 — Welches Wort ist gesucht?</h3>
+  <div class="wortbank">
+    <strong>Wortbank:</strong>
+    <span class="wb-chip">Übernachtungen</span>
+    <span class="wb-chip">Frühbucher-Rabatt</span>
+    <span class="wb-chip">Frühstücksbuffet</span>
+    <span class="wb-chip">bucht</span>
+    <span class="wb-chip">Pension</span>
+  </div>
+
+  <div class="luecken-text">
+    <p>1. Ich wollte dieses Jahr nicht in einem Hotel wohnen, deshalb bin ich jetzt in einer <input class="gap-inp" type="text" placeholder="" data-ans="Pension" oninput="liveCheck(this)">.</p>
+    <p>2. Im Reisebüro ___ fast niemand mehr seinen Urlaub. <input class="gap-inp" type="text" placeholder="" data-ans="bucht" oninput="liveCheck(this)">.</p>
+    <p>3. Ich freue mich jeden Morgen auf das leckere <input class="gap-inp" type="text" placeholder="" data-ans="Frühstücksbuffet" oninput="liveCheck(this)">.</p>
+    <p>4. Die <input class="gap-inp" type="text" placeholder="" data-ans="Übernachtungen" oninput="liveCheck(this)"> sind hier wirklich teuer. Eine Nacht kostet 120€.</p>
+    <p>5. Je eher man bucht, desto größer ist der <input class="gap-inp" type="text" placeholder="" data-ans="Frühbucher-Rabatt" oninput="liveCheck(this)">.</p>
+  </div>
+
+  <h3 style="font-size:1em; margin:24px 0 12px 0;">Lückentext 2 — Hotel oder Urlaub?</h3>
+  <div class="wortbank">
+    <strong>Wortbank:</strong>
+    <span class="wb-chip">Sommerurlaub</span>
+    <span class="wb-chip">Abenteuerurlaub</span>
+    <span class="wb-chip">Hotelpool</span>
+    <span class="wb-chip">buchen</span>
+    <span class="wb-chip">schlafe</span>
+  </div>
+
+  <div class="luecken-text">
+    <p>6. Im <input class="gap-inp" type="text" placeholder="" data-ans="Sommerurlaub" oninput="liveCheck(this)"> kann man sich wunderbar bräunen.</p>
+    <p>7. Nur am Strand liegen ist langweilig, deswegen mache ich lieber <input class="gap-inp" type="text" placeholder="" data-ans="Abenteuerurlaub" oninput="liveCheck(this)">.</p>
+    <p>8. Am <input class="gap-inp" type="text" placeholder="" data-ans="Hotelpool" oninput="liveCheck(this)"> liege ich am liebsten auf meiner Liege.</p>
+    <p>9. Dieses Jahr möchte ich meinen Sommerurlaub online <input class="gap-inp" type="text" placeholder="" data-ans="buchen" oninput="liveCheck(this)">.</p>
+    <p>10. Morgen <input class="gap-inp" type="text" placeholder="" data-ans="schlafe" oninput="liveCheck(this)"> ich endlich mal richtig aus.</p>
+  </div>
+</div>
+
+<!-- TAB 3: TEXT & FRAGEN -->
+<div class="section" id="tab3">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="showTab(3); initRichtigFalsch(); timerAutoStart(3);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-3">00:00</span></span><span class="best-time">🏆 <span id="best-3">--:--</span></span></div>
+  </div>
+
+  <div class="lese-text">
+    <p>Lena plant ihren Sommerurlaub. Sie möchte dieses Jahr nach Griechenland fliegen. Im Internet sucht sie ein gutes Hotel mit Pool. Sie findet ein schönes Angebot: ein All-inclusive-Hotel direkt am Strand. Drei Übernachtungen mit Frühstücksbuffet kosten nur 450€. Das ist ein guter Preis, weil sie einen Frühbucher-Rabatt bekommt. Lena bucht sofort online. Sie freut sich schon auf das warme Wetter, den Hotelpool und das gute Essen. Ihr Flug geht am Samstag um 6 Uhr morgens. Das bedeutet, dass sie am Freitag nicht ausschlafen kann. Aber das macht ihr nichts aus — Urlaub ist Urlaub!</p>
+  </div>
+
+  <p style="font-size:0.88rem; color:#555; margin-bottom:12px; font-weight:600;">Richtig oder Falsch?</p>
+
+  <div class="rf-list">
+    <div class="rf-item">
+      <span style="flex:1;">1. Lena fährt dieses Jahr nach Italien.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+
+    <div class="rf-item">
+      <span style="flex:1;">2. Sie bucht ein All-inclusive-Hotel.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+
+    <div class="rf-item">
+      <span style="flex:1;">3. Drei Nächte kosten 450€.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+
+    <div class="rf-item">
+      <span style="flex:1;">4. Lena bekommt keinen Rabatt.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+
+    <div class="rf-item">
+      <span style="flex:1;">5. Ihr Flug geht am Samstagmorgen.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+
+    <div class="rf-item">
+      <span style="flex:1;">6. Lena kann am Freitag lange schlafen.</span>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F')">R</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F')">F</button>
+      </div>
+      <span class="rf-result"></span>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: SATZBAU -->
+<div class="section" id="tab4">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-show" onclick="for(var i=0;i<satzbauData.length;i++){sbShowSolution(i);}">Lösungen</button><button class="btn btn-reset" onclick="initSatzbau && initSatzbau(); timerAutoStart(4);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-4">00:00</span></span><span class="best-time">🏆 <span id="best-4">--:--</span></span></div>
+  </div>
+  <p style="font-size:0.88rem;color:#555;margin-bottom:14px;">Bringe die Wörter in die richtige Reihenfolge!</p>
+  <div id="satzbauContainer"></div>
+</div>
+
+<!-- TAB 5: WORTSCHATZ -->
+<div class="section" id="tab5">
+  <h2 style="font-size:1.2em; margin-bottom:14px;">📚 Wortschatz</h2>
+  <div class="control-bar">
+    <div class="btn-row">
+      <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
+      <button class="btn btn-reset" onclick="resetVocab(); timerAutoStart(5);">Neu starten</button>
+    </div>
+    <div class="timer-display">
+      <span class="current-time">⏱ <span id="timer-5">00:00</span></span>
+      <span class="best-time">🏆 <span id="best-5">--:--</span></span>
+    </div>
+  </div>
+  <div class="help-box">
+    <strong>Aufgabe:</strong> Übersetze die Wörter ins Deutsche. Bei Nomen: Artikel + Wort + Plural!
+  </div>
+  <div id="vocabContainer"></div>
+</div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+function showTab(i){document.querySelectorAll('.section').forEach(function(s,j){s.classList.toggle('active',j===i);});document.querySelectorAll('.nav-btn').forEach(function(b,j){b.classList.toggle('active',j===i);});}
+const timers=[null,null,null,null,null,null],elapsed=[0,0,0,0,0,0],running=[false,false,false,false,false,false];
+function timerKey(t){return 'daf-2025v-best-'+t;}
+function timerFmt(sec){const m=Math.floor(sec/60),s=sec%60;return m+':'+(s<10?'0':'')+s;}
+function timerAutoStart(i){
+  if(running[i])return;
+  running[i]=true;
+  timers[i]=setInterval(function(){elapsed[i]++;document.getElementById('timer-'+i).textContent=timerFmt(elapsed[i]);},1000);
+}
+function timerStop(i){
+  if(!running[i])return;
+  clearInterval(timers[i]);running[i]=false;
+  var k=timerKey(i);var prev=localStorage.getItem(k);
+  if(!prev||elapsed[i]<parseInt(prev))localStorage.setItem(k,elapsed[i]);
+  timerLoadBest(i);
+}
+function timerLoadBest(i){var b=localStorage.getItem(timerKey(i));if(b)document.getElementById('best-'+i).textContent='Bestzeit: '+timerFmt(parseInt(b));}
+[0,1,2,3,4,5].forEach(timerLoadBest);
+
+function liveCheck(inp){
+    var ans = inp.dataset.ans || '';
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase()
+                     && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var val = inp.value.trim();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpAns = caseSensitive ? ans : ans.toLowerCase();
+    inp.classList.remove('correct', 'wrong');
+    if (!cmpVal) return;
+    if (cmpVal === cmpAns) {
+        inp.classList.add('correct');
+        timerAutoStart(2);
+        checkLueckenAllOk();
+        return;
+    }
+    if (cmpAns.indexOf(cmpVal) === 0) {
+        timerAutoStart(2);
+        return;
+    }
+    inp.classList.add('wrong');
+}
+
+function checkLueckenAllOk(){
+  var all=document.querySelectorAll('#tab2 .gap-inp');
+  var ok=true;
+  all.forEach(function(inp){if(!inp.classList.contains('correct'))ok=false;});
+  if(ok)timerStop(2);
+}
+
+function rfCheck(btn,chosen,correct){const row=btn.closest('.rf-item');row.querySelectorAll('.rf-btn').forEach(b=>{b.classList.remove('sel-r','sel-f');});btn.classList.add(chosen==='R'?'sel-r':'sel-f');const res=row.querySelector('.rf-result');if(chosen===correct){res.textContent='✅';res.className='rf-result ok';}else{res.textContent='❌';res.className='rf-result err';}}
+
+function initLuecken(){}
+function initRichtigFalsch(){}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 4 — SATZBAU (satzbau-drag-drop Skill)
+   ════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    { parts: ['das', 'ganze', 'Jahr', 'freue', 'ich', 'mich', 'auf', 'den', 'Sommerurlaub'], valid: [['das', 'ganze', 'Jahr', 'freue', 'ich', 'mich', 'auf', 'den', 'Sommerurlaub']], punct: '.' },
+    { parts: ['ich', 'habe', 'ein', 'Zimmer', 'auf', 'den', 'Namen', 'Schmidt', 'reserviert'], valid: [['ich', 'habe', 'ein', 'Zimmer', 'auf', 'den', 'Namen', 'Schmidt', 'reserviert']], punct: '.' },
+    { parts: ['unser', 'Frühstücksbuffet', 'ist', 'von', '8', 'bis', '10', 'Uhr', 'geöffnet'], valid: [['unser', 'Frühstücksbuffet', 'ist', 'von', '8', 'bis', '10', 'Uhr', 'geöffnet']], punct: '.' },
+    { parts: ['wir', 'möchten', 'unseren', 'Sommerurlaub', 'online', 'buchen'], valid: [['wir', 'möchten', 'unseren', 'Sommerurlaub', 'online', 'buchen']], punct: '.' },
+    { parts: ['der', 'Ferienort', 'ist', 'bei', 'deutschen', 'Urlaubern', 'sehr', 'beliebt'], valid: [['der', 'Ferienort', 'ist', 'bei', 'deutschen', 'Urlaubern', 'sehr', 'beliebt']], punct: '.' },
+    { parts: ['morgen', 'schlafe', 'ich', 'bis', '10', 'Uhr', 'aus'], valid: [['morgen', 'schlafe', 'ich', 'bis', '10', 'Uhr', 'aus']], punct: '.' },
+    { parts: ['die', 'Übernachtungen', 'in', 'diesem', 'Hotel', 'sind', 'wirklich', 'teuer'], valid: [['die', 'Übernachtungen', 'in', 'diesem', 'Hotel', 'sind', 'wirklich', 'teuer']], punct: '.' }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.width = '2px';
+        c.style.height = '28px';
+        c.style.background = '#667eea';
+        c.style.display = 'none';
+        c.style.alignSelf = 'center';
+        document.addEventListener('dragover', function() {
+            var sb = document.querySelector('.sentence-builder');
+            if (sb && sbDragged) sb.appendChild(c);
+        });
+    }
+    return c;
+}
+
+function getSbInsertPos(sb) {
+    if (!sbDragged) return null;
+    var chips = sb.querySelectorAll('.chip');
+    var dropX = event.clientX;
+    for (var i = 0; i < chips.length; i++) {
+        var rect = chips[i].getBoundingClientRect();
+        if (dropX < rect.left + rect.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(w) {
+    return w.charAt(0).toUpperCase() + w.slice(1);
+}
+
+function sbUpdateCapitalization(sb, parts) {
+    var chips = sb.querySelectorAll('.chip:not(.punct-chip)');
+    if (chips.length > 0) chips[0].textContent = sbCapitalize(chips[0].textContent);
+    for (var i = 1; i < chips.length; i++) {
+        var idx = parts.indexOf(chips[i].textContent.toLowerCase());
+        if (idx > 0) chips[i].textContent = parts[idx];
+    }
+}
+
+function sbMakeChip(txt, isPunct) {
+    var chip = document.createElement('div');
+    chip.className = isPunct ? 'chip punct-chip' : 'chip';
+    chip.textContent = txt;
+    chip.draggable = true;
+    chip.ondragstart = function(e) {
+        sbDragged = this;
+        e.dataTransfer.effectAllowed = 'move';
+    };
+    chip.ondragend = function() { sbDragged = null; };
+    return chip;
+}
+
+function sbRegisterZone(sb) {
+    sb.ondrop = function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var insertBefore = getSbInsertPos(this);
+        if (insertBefore) {
+            this.insertBefore(sbDragged, insertBefore);
+        } else {
+            this.insertBefore(sbDragged, this.querySelector('.sb-punkt'));
+        }
+        sbUpdateCapitalization(this, satzbauData[this.dataset.index].parts);
+        sbCheckAuto(this);
+    };
+    sb.ondragover = function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    };
+}
+
+function sbColorRow(sb, correct) {
+    if (correct) {
+        sb.classList.remove('incorrect');
+        sb.classList.add('correct');
+    } else {
+        sb.classList.remove('correct');
+        sb.classList.add('incorrect');
+    }
+}
+
+function sbCheckAuto(sb) {
+    var idx = sb.dataset.index;
+    var data = satzbauData[idx];
+    var chips = sb.querySelectorAll('.chip:not(.punct-chip)');
+    var current = [];
+    chips.forEach(function(c) { current.push(c.textContent.toLowerCase()); });
+    var valid = data.valid;
+    var correct = false;
+    for (var i = 0; i < valid.length; i++) {
+        if (current.join(' ') === valid[i].join(' ')) { correct = true; break; }
+    }
+    sbColorRow(sb, correct);
+    var fb = sb.nextElementSibling;
+    if (fb) {
+        if (correct) {
+            fb.textContent = '✅ Sehr gut!';
+            fb.className = 'satzbau-feedback correct';
+            timerAutoStart(4);
+        } else {
+            fb.textContent = '';
+            fb.className = 'satzbau-feedback';
+        }
+    }
+    sbCheckAllDone();
+}
+
+function sbCheckAllDone() {
+    var allSb = document.querySelectorAll('.satzbau-item .sentence-builder');
+    var allCorrect = true;
+    allSb.forEach(function(sb) { if (!sb.classList.contains('correct')) allCorrect = false; });
+    if (allCorrect) timerStop(4);
+}
+
+function sbShowSolution(i) {
+    var item = document.querySelectorAll('.satzbau-item')[i];
+    if (!item) return;
+    var sb = item.querySelector('.sentence-builder');
+    var data = satzbauData[i];
+    sb.innerHTML = '';
+    data.valid[0].forEach(function(w) {
+        sb.appendChild(sbMakeChip(sbCapitalize(w), false));
+    });
+    sb.appendChild(sbMakeChip(data.punct, true));
+    var punkt = document.createElement('span');
+    punkt.className = 'sb-punkt';
+    punkt.textContent = '✓';
+    sb.appendChild(punkt);
+    sbColorRow(sb, true);
+}
+
+function sbResetOne(i) {
+    var item = document.querySelectorAll('.satzbau-item')[i];
+    if (!item) return;
+    var data = satzbauData[i];
+    var sb = item.querySelector('.sentence-builder');
+    var chips = item.querySelector('.chips-container');
+    sb.innerHTML = '';
+    var parts = data.parts.slice();
+    for (var j = 0; j < parts.length; j++) {
+        parts[j] = parts[j].charAt(0).toUpperCase() + parts[j].slice(1);
+    }
+    parts.sort(function() { return Math.random() - 0.5; });
+    parts.forEach(function(w) { chips.appendChild(sbMakeChip(w, false)); });
+    sb.appendChild(sbMakeChip(data.punct, true));
+    var punkt = document.createElement('span');
+    punkt.className = 'sb-punkt';
+    punkt.textContent = '✓';
+    sb.appendChild(punkt);
+    sbColorRow(sb, false);
+    var fb = sb.nextElementSibling;
+    if (fb) { fb.textContent = ''; fb.className = 'satzbau-feedback'; }
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(data, i) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+
+        var label = document.createElement('div');
+        label.className = 'sb-label';
+        label.textContent = 'Satz ' + (i + 1) + ':';
+        item.appendChild(label);
+
+        var chips = document.createElement('div');
+        chips.className = 'chips-container';
+        var parts = data.parts.slice();
+        parts.sort(function() { return Math.random() - 0.5; });
+        parts.forEach(function(w) { chips.appendChild(sbMakeChip(w, false)); });
+        item.appendChild(chips);
+
+        var sb = document.createElement('div');
+        sb.className = 'sentence-builder';
+        sb.dataset.index = i;
+        sb.ondrop = function(e) {
+            e.preventDefault();
+            if (!sbDragged) return;
+            var insertBefore = getSbInsertPos(this);
+            if (insertBefore && insertBefore.className.indexOf('chip') !== -1) {
+                this.insertBefore(sbDragged, insertBefore);
+            } else {
+                var punkt = this.querySelector('.sb-punkt');
+                if (punkt) this.insertBefore(sbDragged, punkt);
+                else this.appendChild(sbDragged);
+            }
+            sbUpdateCapitalization(this, satzbauData[i].parts);
+            sbCheckAuto(this);
+        };
+        sb.ondragover = function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        };
+        item.appendChild(sb);
+
+        var sb_punkt = document.createElement('span');
+        sb_punkt.className = 'sb-punkt';
+        sb_punkt.textContent = '✓';
+        sb.appendChild(sb_punkt);
+
+        var feedback = document.createElement('div');
+        feedback.className = 'satzbau-feedback';
+        item.appendChild(feedback);
+
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = 'Zurücksetzen';
+        resetBtn.style.marginTop = '8px';
+        resetBtn.onclick = function() { sbResetOne(i); };
+        item.appendChild(resetBtn);
+
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() {
+    initSatzbau();
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 5 — WORTSCHATZ
+   ════════════════════════════════════════════════════════════ */
+var WORTSCHATZ = [
+    { id:1,  type:"n", en:"summer vacation",      artikel:"der", de:"Sommerurlaub",         plural:"Sommerurlaube" },
+    { id:2,  type:"n", en:"adventure holiday",     artikel:"der", de:"Abenteuerurlaub",      plural:"Abenteuerurlaube" },
+    { id:3,  type:"n", en:"hotel pool",            artikel:"der", de:"Hotelpool",            plural:"Hotelpools" },
+    { id:4,  type:"n", en:"early bird discount",   artikel:"der", de:"Frühbucher-Rabatt",   plural:"Frühbucher-Rabatte" },
+    { id:5,  type:"n", en:"guesthouse",            artikel:"die", de:"Pension",              plural:"Pensionen" },
+    { id:6,  type:"n", en:"overnight stay",        artikel:"die", de:"Übernachtung",        plural:"Übernachtungen" },
+    { id:7,  type:"n", en:"breakfast buffet",      artikel:"das", de:"Frühstücksbuffet",   plural:"Frühstücksbuffets" },
+    { id:8,  type:"n", en:"all-inclusive offer",   artikel:"das", de:"All-inclusive-Angebot", plural:"All-inclusive-Angebote" },
+    { id:9,  type:"n", en:"time zone",             artikel:"die", de:"Zeitzone",             plural:"Zeitzonen" },
+    { id:10, type:"n", en:"holiday resort",        artikel:"der", de:"Ferienort",            plural:"Ferienorte" },
+    { id:11, type:"v", en:"to book",               de:"buchen" },
+    { id:12, type:"v", en:"to sleep in",           de:"ausschlafen" }
+];
+
+function initVocab() {
+    var container = document.getElementById('vocabContainer');
+    container.innerHTML = '';
+    WORTSCHATZ.forEach(function(item) {
+        var vi = document.createElement('div');
+        vi.className = 'vocab-item';
+        vi.dataset.id = item.id;
+
+        var en = document.createElement('div');
+        en.className = 'vocab-en';
+        en.textContent = item.en;
+        vi.appendChild(en);
+
+        var arrow = document.createElement('div');
+        arrow.className = 'vocab-arrow';
+        arrow.textContent = '→';
+        vi.appendChild(arrow);
+
+        var inputs = document.createElement('div');
+        inputs.className = 'vocab-inputs';
+
+        if (item.type === 'n') {
+            var artInp = document.createElement('input');
+            artInp.className = 'vocab-inp';
+            artInp.placeholder = 'Artikel';
+            artInp.oninput = function() { vocabLiveCheck(this); };
+            inputs.appendChild(artInp);
+
+            var nomInp = document.createElement('input');
+            nomInp.className = 'vocab-inp';
+            nomInp.placeholder = 'Wort';
+            nomInp.dataset.vocab = item.de;
+            nomInp.oninput = function() { vocabLiveCheck(this); };
+            inputs.appendChild(nomInp);
+
+            var pluralInp = document.createElement('input');
+            pluralInp.className = 'vocab-inp';
+            pluralInp.placeholder = 'Plural';
+            pluralInp.dataset.vocab = item.plural;
+            pluralInp.oninput = function() { vocabLiveCheck(this); };
+            inputs.appendChild(pluralInp);
+
+            artInp.dataset.vocab = item.artikel;
+        } else {
+            var verbInp = document.createElement('input');
+            verbInp.className = 'vocab-inp';
+            verbInp.placeholder = 'Wort';
+            verbInp.dataset.vocab = item.de;
+            verbInp.oninput = function() { vocabLiveCheck(this); };
+            inputs.appendChild(verbInp);
+        }
+
+        vi.appendChild(inputs);
+        container.appendChild(vi);
+    });
+}
+
+function vocabLiveCheck(inp) {
+    var vocab = inp.dataset.vocab || '';
+    var val = inp.value.trim();
+    inp.classList.remove('correct', 'wrong');
+    if (!val) return;
+    if (val.toLowerCase() === vocab.toLowerCase()) {
+        inp.classList.add('correct');
+        timerAutoStart(5);
+        checkVocabAllDone();
+    } else if (vocab.toLowerCase().startsWith(val.toLowerCase())) {
+        inp.classList.remove('wrong');
+    } else {
+        inp.classList.add('wrong');
+    }
+}
+
+function checkVocabAllDone() {
+    var all = document.querySelectorAll('#tab5 .vocab-inp');
+    var ok = true;
+    all.forEach(function(inp) { if (!inp.classList.contains('correct')) ok = false; });
+    if (ok) timerStop(5);
+}
+
+function showVocabLoesung() {
+    document.querySelectorAll('#tab5 .vocab-item').forEach(function(item, idx) {
+        var vocab = WORTSCHATZ[idx];
+        var inputs = item.querySelectorAll('.vocab-inp');
+        if (vocab.type === 'n') {
+            inputs[0].value = vocab.artikel;
+            inputs[0].classList.add('correct');
+            inputs[1].value = vocab.de;
+            inputs[1].classList.add('correct');
+            inputs[2].value = vocab.plural;
+            inputs[2].classList.add('correct');
+        } else {
+            inputs[0].value = vocab.de;
+            inputs[0].classList.add('correct');
+        }
+    });
+}
+
+function resetVocab() {
+    initVocab();
+}
+
+/* Initialize on page load */
+window.addEventListener('DOMContentLoaded', function() {
+    initSatzbau();
+    initVocab();
+});
+</script>
+
+</body>
+</html>
