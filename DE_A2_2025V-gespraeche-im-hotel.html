@@ -64,6 +64,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .lese-text { font-family: Georgia, 'Times New Roman', serif; background: #f8f9fa; border-radius: 10px; padding: 22px 26px; font-size: 1.0em; line-height: 1.9; color: #333; margin-bottom: 18px; }
 .lese-text p { margin-bottom: 12px; }
 .lese-text p:last-child { margin-bottom: 0; }
+.lese-text .vocab-hl { background: #ffe9a0; border-radius: 3px; padding: 1px 3px; font-weight: 600; cursor: help; }
 .rf-list { display: flex; flex-direction: column; gap: 8px; }
 .rf-item { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #f9f9f9; border-radius: 8px; font-size: 0.95em; cursor: pointer; border: 1.5px solid #ddd; }
 .rf-item:hover { background: #f3e5f5; }
@@ -986,10 +987,65 @@ function resetVocab() {
     initVocab();
 }
 
+// ===== VOKABEL-HIGHLIGHTING IM LESETEXT =====
+function highlightVocabInText() {
+    var storyText = document.querySelector('.story-text') || document.querySelector('.lese-text');
+    if (!storyText) return;
+    var words = [];
+    if (typeof VORENTLASTUNG !== 'undefined' && VORENTLASTUNG.length) {
+        words = VORENTLASTUNG.map(function(item) {
+            var term = item.term.replace(/^(der|die|das)\s+/i, '');
+            return term.split(',')[0].trim();
+        });
+    } else if (typeof VOCAB !== 'undefined' && VOCAB.length) {
+        words = VOCAB.map(function(item) { return item.word; });
+    } else if (typeof WORTSCHATZ !== 'undefined' && WORTSCHATZ.length) {
+        words = WORTSCHATZ.map(function(item) { return item.de; });
+    } else if (typeof WORT_DATA !== 'undefined' && WORT_DATA.length) {
+        words = WORT_DATA.map(function(item) { return item.wort; });
+    }
+    words = words.filter(function(w) { return w && w.length > 3; });
+    if (words.length === 0) return;
+    function walkAndHighlight(node) {
+        if (node.nodeType === 3) {
+            var text = node.nodeValue;
+            var replaced = text;
+            words.forEach(function(word) {
+                var escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var regex = new RegExp('(?<![a-zA-ZäöüÄÖÜß])(' + escaped + ')(?![a-zA-ZäöüÄÖÜß])', 'g');
+                replaced = replaced.replace(regex, '\x01$1\x02');
+            });
+            if (replaced !== text) {
+                var span = document.createElement('span');
+                var parts = replaced.split(/\x01|\x02/);
+                var isHighlight = false;
+                parts.forEach(function(part) {
+                    if (!part) { isHighlight = !isHighlight; return; }
+                    if (isHighlight) {
+                        var hl = document.createElement('span');
+                        hl.className = 'vocab-hl';
+                        hl.title = '\u{1F4D6} Vokabel aus dem W\u00f6rter-Tab';
+                        hl.textContent = part;
+                        span.appendChild(hl);
+                    } else {
+                        span.appendChild(document.createTextNode(part));
+                    }
+                    isHighlight = !isHighlight;
+                });
+                node.parentNode.replaceChild(span, node);
+            }
+        } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT') {
+            Array.from(node.childNodes).forEach(walkAndHighlight);
+        }
+    }
+    walkAndHighlight(storyText);
+}
+
 /* Initialize on page load */
 window.addEventListener('DOMContentLoaded', function() {
     initSatzbau();
     initVocab();
+    highlightVocabInText();
 });
 </script>
 
