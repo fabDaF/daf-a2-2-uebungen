@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2028S Erzähl von deinen Reisen</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+  .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+  .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+  .header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+  .header .subtitle, .header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+  .header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+
+  /* NAV */
+  .nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+  .nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .nav-btn:last-child { border-right: none; }
+  .nav-btn:hover { background: #e8ecff; color: #667eea; }
+  .nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+  .nav-emoji { font-size: 1.3em; line-height: 1.2; }
+  .nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+
+  .section { display: none; padding: 22px 24px 28px; }
+  .section.active { display: block; }
+
+  /* TIMER */
+  .control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+  .btn-row { display: flex; gap: 6px; }
+  .btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+  .btn:hover { border-color: #667eea; color: #667eea; }
+  .timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+  .best-time { font-size:0.78rem; color:#888; }
+
+  /* AUSSPRACHE */
+  .aussprache-intro { background:#f3e5f5; border-radius:8px; padding:14px 18px; margin-bottom:18px; font-size:0.9rem; color:#4a235a; }
+  .regel-box { background:#fff3cd; border:1.5px solid #f39c12; border-radius:8px; padding:14px 18px; margin-bottom:18px; font-size:0.88rem; line-height:1.6; }
+  .regel-box strong { color:#e67e22; }
+  .wort-gruppe { margin-bottom:20px; }
+  .wort-gruppe h3 { font-size:0.88rem; font-weight:700; color:#6c3483; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.04em; }
+  .wort-cards { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px; }
+  .wort-card { background:#e8d5f5; border:2px solid #9b59b6; border-radius:8px; padding:10px 16px; font-size:0.95rem; font-weight:600; color:#4a235a; cursor:pointer; user-select:none; position:relative; }
+  .wort-card .akzent { color:#e74c3c; text-decoration:underline; text-decoration-style:dotted; }
+  .wort-card:hover { background:#d2aff0; }
+  .hinweis { font-size:0.8rem; color:#888; font-style:italic; margin-top:4px; }
+  .zuordnung-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .sort-zone { flex:1; min-width:160px; background:#f9f9f9; border:2px dashed #9b59b6; border-radius:8px; padding:12px; min-height:80px; }
+  .sort-zone h4 { font-size:0.82rem; color:#6c3483; font-weight:700; margin-bottom:8px; }
+  .sort-chip { display:inline-block; background:#e8d5f5; border:1.5px solid #9b59b6; border-radius:16px; padding:5px 12px; font-size:0.82rem; font-weight:600; color:#4a235a; margin:3px; cursor:grab; }
+  .sort-chip.correct { background:#c8e6c9; border-color:#27ae60; color:#1b5e20; }
+  .sort-chip.incorrect { background:#ffcdd2; border-color:#e74c3c; color:#c62828; }
+
+  /* DIALOG / ROLLEN */
+  .rollen-intro { background:#e8f4f8; border-radius:8px; padding:14px 18px; margin-bottom:18px; font-size:0.88rem; color:#1a5276; }
+  .profil-cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; }
+  .profil-card { border-radius:10px; padding:14px 16px; border:2px solid; }
+  .profil-card.kunde { background:#e3f2fd; border-color:#2196f3; }
+  .profil-card.agent { background:#fce4ec; border-color:#e91e63; }
+  .profil-card h3 { font-size:1rem; font-weight:700; margin-bottom:8px; }
+  .profil-card.kunde h3 { color:#1565c0; }
+  .profil-card.agent h3 { color:#c2185b; }
+  .profil-row { display:flex; gap:6px; align-items:flex-start; font-size:0.82rem; margin-bottom:4px; }
+  .profil-label { font-weight:700; min-width:120px; color:#555; }
+  .redemittel-box { background:#e8f5e9; border-radius:8px; padding:14px 18px; margin-bottom:18px; }
+  .redemittel-box h3 { font-size:0.92rem; font-weight:700; color:#1b5e20; margin-bottom:10px; }
+  .redemittel-list { list-style:none; padding:0; }
+  .redemittel-list li { font-size:0.88rem; color:#333; padding:4px 0; border-bottom:1px dotted #c8e6c9; }
+  .redemittel-list li:last-child { border-bottom:none; }
+  .redemittel-hl { color:#6c3483; font-weight:600; }
+  .fragen-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .frage-card { background:#fff; border:1.5px solid #9b59b6; border-radius:8px; padding:12px 14px; font-size:0.88rem; color:#4a235a; cursor:pointer; }
+  .frage-card:hover { background:#f3e5f5; }
+  .frage-card .antwort { display:none; color:#27ae60; font-weight:600; margin-top:6px; font-size:0.82rem; }
+  .frage-card.open .antwort { display:block; }
+  .frage-card .frage-text { color:#6c3483; font-weight:600; }
+  .dialog-beispiel { background:#f3e5f5; border-radius:8px; padding:14px 18px; font-size:0.88rem; color:#4a235a; margin-bottom:14px; }
+  .dialog-beispiel strong { color:#6c3483; }
+  .situation-box { background:#fff3e0; border:1.5px solid #f39c12; border-radius:8px; padding:14px 18px; margin-bottom:18px; font-size:0.88rem; color:#e65100; }
+
+  /* LÜCKENTEXT */
+  .luecken-intro { background:#e8f5e9; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:0.88rem; color:#1b5e20; }
+  .luecken-text { font-size:0.92rem; line-height:2.2; color:#333; }
+  .gap-inp { width:130px; border:none; border-bottom:2px solid #9b59b6; background:transparent; font-size:0.9rem; font-family:inherit; color:#333; padding:2px 4px; outline:none; text-align:center; }
+  .gap-inp.correct { border-bottom-color:#27ae60; background:#e8f9ec; border-radius:4px 4px 0 0; }
+  .gap-inp.partial { border-bottom-color:#f39c12; }
+  .gap-inp.wrong { border-bottom-color:#e74c3c; }
+  .wortbank { background:#f3e5f5; border-radius:8px; padding:12px 16px; margin-bottom:18px; }
+  .wortbank strong { font-size:0.82rem; color:#6c3483; display:block; margin-bottom:6px; }
+  .wb-chip { display:inline-block; background:#fff; border:1.5px solid #9b59b6; border-radius:12px; padding:3px 10px; font-size:0.82rem; color:#4a235a; margin:3px; }
+
+  /* SATZBAU */
+  .chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+  .sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+  .sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+  .sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+  .sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+  .satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+  .satzbau-feedback.correct { color: #27ae60; }
+  .satzbau-feedback.incorrect { color: #e74c3c; }
+  .chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+  .chip:active { cursor: grabbing; }
+  .chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+  .chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+  .sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
+  .satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+
+  .author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+  .author-footer a { color: #aaa; }
+  .author-name { font-weight: 700; }
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+  }
+
+  .tab-banner { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Erzähl von deinen Reisen</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2028S &nbsp;|&nbsp; Sprechen</p>
+        <div class="big-emoji">🗣️</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">🔊</span><span class="nav-label">Aussprache</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">✈️</span><span class="nav-label">Reisegespräch</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+    </div>
+
+<!-- ══════════════════════ TAB 0: AUSSPRACHE ══════════════════════ -->
+<div class="section active" id="tab0">
+  <div class="control-bar">
+    <div class="btn-row">
+      <button class="btn btn-reset" onclick="timerAutoStart(0);">Neu starten</button>
+    </div>
+    <div class="timer-display">
+      <span class="current-time">⏱ <span id="timer-0">0:00</span></span>
+      <span class="best-time">🏆 <span id="best-0">--:--</span></span>
+    </div>
+  </div>
+
+  <img class="tab-banner" src="https://images.pexels.com/photos/2007401/pexels-photo-2007401.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Reisen">
+
+  <div class="aussprache-intro">
+    <strong>Aussprache: „ei" oder „ie"?</strong><br>
+    Im Deutschen klingen „ei" und „ie" sehr unterschiedlich. Klicke auf ein Wort, um die Aussprache-Regel zu sehen!
+  </div>
+
+  <div class="regel-box">
+    <strong>Regel 1 – „ei":</strong> Wir sprechen „ei" wie „ai" aus. Beispiel: <em>R<strong>ei</strong>se → „Raise"</em><br><br>
+    <strong>Regel 2 – „ie":</strong> Wir sprechen „ie" wie ein langes „i" aus. Beispiel: <em>fl<strong>ie</strong>gen → „fliiiegen"</em><br><br>
+    <strong>Tipp:</strong> Bei „ei" öffnet sich der Mund weit, bei „ie" bleibt er fast geschlossen.
+  </div>
+
+  <div class="wort-gruppe">
+    <h3>1 · Wörter mit „ei" — Klick um die Aussprache zu sehen</h3>
+    <div class="wort-cards">
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Einreise</span>
+        <span class="akzent" style="display:none"><u>Ei</u>n·rei·se → /ai/-Laut</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Eintritt</span>
+        <span class="akzent" style="display:none"><u>Ei</u>n·tritt → /ai/-Laut</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">schreiben</span>
+        <span class="akzent" style="display:none">schr<u>ei</u>·ben → /ai/-Laut</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Reiseleiter</span>
+        <span class="akzent" style="display:none"><u>Rei</u>·se·lei·ter → /ai/-Laut</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)">
+        <span class="akzent-hidden">Bäckerei</span>
+        <span class="akzent" style="display:none">Bäck·er·<u>ei</u> → /ai/-Laut</span>
+      </div>
+    </div>
+    <p class="hinweis">💡 „ei" klingt immer wie „ai" — egal wo es im Wort steht.</p>
+  </div>
+
+  <div class="wort-gruppe">
+    <h3>2 · Wörter mit „ie" — Klick um die Aussprache zu sehen</h3>
+    <div class="wort-cards">
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">hier</span>
+        <span class="akzent" style="display:none">h<u>ie</u>r → langes /iː/</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">Bier</span>
+        <span class="akzent" style="display:none">B<u>ie</u>r → langes /iː/</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">fliegen</span>
+        <span class="akzent" style="display:none">fl<u>ie</u>·gen → langes /iː/</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">Griechenland</span>
+        <span class="akzent" style="display:none">Gr<u>ie</u>·chen·land → langes /iː/</span>
+      </div>
+      <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+        <span class="akzent-hidden">respektieren</span>
+        <span class="akzent" style="display:none">re·spek·t<u>ie</u>·ren → langes /iː/</span>
+      </div>
+    </div>
+    <p class="hinweis">💡 „ie" ist immer ein langes „i" — wie in „Tier" oder „Papier".</p>
+  </div>
+
+  <!-- Zuordnungs-Übung -->
+  <h3 style="font-size:0.95rem;color:#4a235a;margin:20px 0 10px;">3 · Zuordnung: „i", „ie" oder „ei"?</h3>
+  <p class="hinweis" style="margin-bottom:12px;">Ziehe jedes Wort in die richtige Spalte.</p>
+  <div id="sortBank" class="wort-cards" style="margin-bottom:14px;"></div>
+  <div class="zuordnung-row">
+    <div class="sort-zone" id="zone-ei"><h4>ei = /ai/</h4></div>
+    <div class="sort-zone" id="zone-ie"><h4>ie = /iː/</h4></div>
+    <div class="sort-zone" id="zone-i"><h4>i (kurz)</h4></div>
+  </div>
+  <div id="sort-feedback" style="font-size:0.88rem;font-weight:600;min-height:1.4em;margin-top:6px;"></div>
+</div>
+
+<!-- ══════════════════════ TAB 1: REISEGESPRÄCH ══════════════════════ -->
+<div class="section" id="tab1">
+  <div class="control-bar">
+    <div class="btn-row">
+      <button class="btn btn-reset" onclick="timerAutoStart(1);">Neu starten</button>
+    </div>
+    <div class="timer-display">
+      <span class="current-time">⏱ <span id="timer-1">0:00</span></span>
+      <span class="best-time">🏆 <span id="best-1">--:--</span></span>
+    </div>
+  </div>
+
+  <img class="tab-banner" src="https://images.pexels.com/photos/3935702/pexels-photo-3935702.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Reisebüro">
+
+  <div class="rollen-intro">
+    <strong>🎭 Rollenspiel: Im Reisebüro</strong><br>
+    Arbeite mit einem Partner. Eine Person ist der Kunde, die andere Person ist der Reisebüro-Agent. Nutze die Redemittel unten!
+  </div>
+
+  <div class="profil-cards">
+    <div class="profil-card kunde">
+      <h3>👤 Rolle A — Kunde/Kundin</h3>
+      <div class="profil-row"><span class="profil-label">Reiseziel:</span><span>Du möchtest nach Griechenland.</span></div>
+      <div class="profil-row"><span class="profil-label">Zeitraum:</span><span>2 Wochen im August</span></div>
+      <div class="profil-row"><span class="profil-label">Budget:</span><span>Maximal 1.500 € pro Person</span></div>
+      <div class="profil-row"><span class="profil-label">Wünsche:</span><span>Strand, gutes Essen, ruhig</span></div>
+    </div>
+    <div class="profil-card agent">
+      <h3>💼 Rolle B — Reisebüro-Agent/in</h3>
+      <div class="profil-row"><span class="profil-label">Hotel 1:</span><span>All-inclusive, 4 Sterne, 1.200 €</span></div>
+      <div class="profil-row"><span class="profil-label">Hotel 2:</span><span>Ferienwohnung, 800 €, ohne Frühstück</span></div>
+      <div class="profil-row"><span class="profil-label">Flug:</span><span>Direktflug ab Berlin, 350 € hin und zurück</span></div>
+      <div class="profil-row"><span class="profil-label">Extra:</span><span>Mietwagen ab 25 € / Tag</span></div>
+    </div>
+  </div>
+
+  <div class="redemittel-box">
+    <h3>💬 Redemittel für den Kunden</h3>
+    <ul class="redemittel-list">
+      <li>Ich <span class="redemittel-hl">hätte gern</span> Informationen über Reisen nach …</li>
+      <li>Ich möchte <span class="redemittel-hl">gern</span> im … (Monat) verreisen.</li>
+      <li>Wir <span class="redemittel-hl">haben ein Budget von</span> … Euro.</li>
+      <li>Gibt es <span class="redemittel-hl">Angebote</span> für …?</li>
+      <li>Ist <span class="redemittel-hl">Frühstück inklusive</span>?</li>
+      <li>Können Sie mir <span class="redemittel-hl">etwas empfehlen</span>?</li>
+    </ul>
+  </div>
+
+  <div class="redemittel-box" style="background:#fce4ec;">
+    <h3 style="color:#c2185b;">💬 Redemittel für den Agenten</h3>
+    <ul class="redemittel-list">
+      <li>Ich <span class="redemittel-hl">kann Ihnen … empfehlen</span>.</li>
+      <li>Das Hotel <span class="redemittel-hl">bietet … an</span>.</li>
+      <li><span class="redemittel-hl">Im Preis inbegriffen</span> sind …</li>
+      <li>Der Flug <span class="redemittel-hl">kostet</span> … Euro pro Person.</li>
+      <li>Möchten Sie <span class="redemittel-hl">auch einen Mietwagen</span> buchen?</li>
+      <li>Ich <span class="redemittel-hl">reserviere</span> das gern für Sie.</li>
+    </ul>
+  </div>
+
+  <div class="situation-box">
+    <strong>🎯 Weitere Sprechanlässe:</strong><br>
+    1. Erzähl deinem Partner von deiner lustigsten Reiseerfahrung.<br>
+    2. Beschreibe deinen Traumurlaub: Wohin? Mit wem? Wie lange?<br>
+    3. Diskutiert: Reisebüro oder online buchen — was ist besser?
+  </div>
+
+  <h3 style="font-size:0.95rem;color:#4a235a;margin:20px 0 10px;">❓ Fragen zum Sprechen — Klick für Sprechhilfen</h3>
+  <div class="fragen-grid">
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Wohin bist du das letzte Mal gereist?</div>
+      <div class="antwort">→ Ich bin nach … gereist. / Ich war in …</div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Was hast du dort gemacht?</div>
+      <div class="antwort">→ Ich habe … besucht / gesehen / gegessen.</div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Wie war das Wetter?</div>
+      <div class="antwort">→ Es war sonnig / heiß / regnerisch / kalt.</div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Buchst du lieber online oder im Reisebüro?</div>
+      <div class="antwort">→ Ich buche lieber …, weil …</div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Was packst du immer in deinen Koffer?</div>
+      <div class="antwort">→ Ich packe immer … ein.</div>
+    </div>
+    <div class="frage-card" onclick="this.classList.toggle('open')">
+      <div class="frage-text">Hast du Fernweh?</div>
+      <div class="antwort">→ Ja, ich möchte unbedingt nach … reisen. / Nein, ich reise nicht gern.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TAB 2: LÜCKENTEXT ══════════════════════ -->
+<div class="section" id="tab2">
+  <div class="control-bar">
+    <div class="btn-row">
+      <button class="btn btn-reset" onclick="resetLuecken();">Neu starten</button>
+    </div>
+    <div class="timer-display">
+      <span class="current-time">⏱ <span id="timer-2">0:00</span></span>
+      <span class="best-time">🏆 <span id="best-2">--:--</span></span>
+    </div>
+  </div>
+
+  <img class="tab-banner" src="https://images.pexels.com/photos/1467277/pexels-photo-1467277.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Reisevokabular">
+
+  <div class="luecken-intro">
+    <strong>✏️ Lückentext: „i", „ie" oder „ei"?</strong><br>
+    Ergänze die fehlenden Buchstaben. Die Wortbank hilft dir!
+  </div>
+
+  <div class="wortbank">
+    <strong>Wortbank:</strong>
+    <span class="wb-chip">Eis</span>
+    <span class="wb-chip">riesig</span>
+    <span class="wb-chip">fliegen</span>
+    <span class="wb-chip">Einheimische</span>
+    <span class="wb-chip">griechischer Wein</span>
+    <span class="wb-chip">heiß</span>
+    <span class="wb-chip">Mittelmeer</span>
+    <span class="wb-chip">Missverständnis</span>
+    <span class="wb-chip">gestikulieren</span>
+    <span class="wb-chip">Österreich</span>
+    <span class="wb-chip">Reiseleiter</span>
+    <span class="wb-chip">Sehenswürdigkeiten</span>
+  </div>
+
+  <div class="luecken-text" id="lueckenContainer">
+    <p>1. Im Sommer esse ich gern <input class="gap-inp" data-ans="Eis" oninput="liveCheck(this)" placeholder="…"> am Strand.</p>
+    <p>2. Das Hotel war <input class="gap-inp" data-ans="riesig" oninput="liveCheck(this)" placeholder="…"> — es hatte über 500 Zimmer!</p>
+    <p>3. Wir wollen im August nach Kreta <input class="gap-inp" data-ans="fliegen" oninput="liveCheck(this)" placeholder="…">.</p>
+    <p>4. Die <input class="gap-inp" data-ans="Einheimische" style="width:150px" oninput="liveCheck(this)" placeholder="…"> haben uns den Weg zum Hafen gezeigt.</p>
+    <p>5. Abends haben wir <input class="gap-inp" data-ans="griechischer Wein" style="width:170px" oninput="liveCheck(this)" placeholder="…"> getrunken.</p>
+    <p>6. Im Juli ist es am Mittelmeer sehr <input class="gap-inp" data-ans="heiß" oninput="liveCheck(this)" placeholder="…">.</p>
+    <p>7. Griechenland liegt am <input class="gap-inp" data-ans="Mittelmeer" style="width:140px" oninput="liveCheck(this)" placeholder="…">.</p>
+    <p>8. Es gab ein kleines <input class="gap-inp" data-ans="Missverständnis" style="width:170px" oninput="liveCheck(this)" placeholder="…"> an der Hotelrezeption.</p>
+    <p>9. Wenn man die Sprache nicht spricht, muss man viel <input class="gap-inp" data-ans="gestikulieren" style="width:150px" oninput="liveCheck(this)" placeholder="…">.</p>
+    <p>10. Nächsten Winter fahren wir zum Skifahren nach <input class="gap-inp" data-ans="Österreich" style="width:140px" oninput="liveCheck(this)" placeholder="…">.</p>
+    <p>11. Der <input class="gap-inp" data-ans="Reiseleiter" style="width:140px" oninput="liveCheck(this)" placeholder="…"> hat uns alles auf Deutsch erklärt.</p>
+    <p>12. In Rom gibt es viele berühmte <input class="gap-inp" data-ans="Sehenswürdigkeiten" style="width:190px" oninput="liveCheck(this)" placeholder="…">.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════ TAB 3: SATZBAU ══════════════════════ -->
+<div class="section" id="tab3">
+  <div class="control-bar">
+    <div class="btn-row">
+      <button class="btn btn-reset" onclick="resetSatzbau();">Neu starten</button>
+    </div>
+    <div class="timer-display">
+      <span class="current-time">⏱ <span id="timer-3">0:00</span></span>
+      <span class="best-time">🏆 <span id="best-3">--:--</span></span>
+    </div>
+  </div>
+
+  <img class="tab-banner" src="https://images.pexels.com/photos/1051075/pexels-photo-1051075.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Satzbau Reisen">
+
+  <div class="luecken-intro" style="background:#e8ecff;">
+    <strong>🧩 Satzbau: Bringe die Wörter in die richtige Reihenfolge!</strong><br>
+    Ziehe die Chips in die untere Zeile. Die Farbe zeigt dir, ob dein Satz stimmt.
+  </div>
+
+  <div id="satzbauContainer"></div>
+</div>
+
+</div><!-- /container -->
+
+<div class="author-footer">
+  Erstellt von <span class="author-name">Frank Burkert</span> · <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+</div>
+
+<script>
+// ─── TAB NAVIGATION ───────────────────────────────────────────────
+function showTab(i) {
+  document.querySelectorAll('.section').forEach(function(s,j){ s.classList.toggle('active', j===i); });
+  document.querySelectorAll('.nav-btn').forEach(function(b,j){ b.classList.toggle('active', j===i); });
+}
+
+// ─── TIMER ────────────────────────────────────────────────────────
+const timers = [null,null,null,null];
+const elapsed = [0,0,0,0];
+const running = [false,false,false,false];
+function timerKey(t) { return 'daf-2028s-best-' + t; }
+function timerFmt(sec) { const m=Math.floor(sec/60),s=sec%60; return m+':'+(s<10?'0':'')+s; }
+function timerAutoStart(i) {
+  if (running[i]) return;
+  running[i] = true;
+  timers[i] = setInterval(() => {
+    elapsed[i]++;
+    document.getElementById('timer-'+i).textContent = timerFmt(elapsed[i]);
+  }, 1000);
+}
+function timerStop(i) {
+  if (!running[i]) return;
+  clearInterval(timers[i]);
+  running[i] = false;
+  const k = timerKey(i);
+  const prev = localStorage.getItem(k);
+  if (!prev || elapsed[i] < parseInt(prev)) localStorage.setItem(k, elapsed[i]);
+  timerLoadBest(i);
+}
+function timerLoadBest(i) {
+  const b = localStorage.getItem(timerKey(i));
+  if (b) document.getElementById('best-'+i).textContent = 'Bestzeit: ' + timerFmt(parseInt(b));
+}
+[0,1,2,3].forEach(timerLoadBest);
+
+// ─── AUSSPRACHE REVEAL ────────────────────────────────────────────
+function revealAkzent(card) {
+  var hidden = card.querySelector('.akzent-hidden');
+  var shown = card.querySelector('.akzent');
+  if (hidden.style.display !== 'none') {
+    hidden.style.display = 'none';
+    shown.style.display = 'inline';
+  } else {
+    hidden.style.display = 'inline';
+    shown.style.display = 'none';
+  }
+}
+
+// ─── ZUORDNUNG ei / ie / i ────────────────────────────────────────
+var sortData = [
+  { word: 'Einreise',      zone: 'ei' },
+  { word: 'fliegen',       zone: 'ie' },
+  { word: 'Missverständnis', zone: 'i' },
+  { word: 'Reiseleiter',   zone: 'ei' },
+  { word: 'Griechenland',  zone: 'ie' },
+  { word: 'heiß',          zone: 'ei' },
+  { word: 'Bier',          zone: 'ie' },
+  { word: 'gestikulieren', zone: 'ie' },
+  { word: 'Eintritt',      zone: 'ei' },
+  { word: 'Mittelmeer',    zone: 'i'  }
+];
+var sortDragged = null;
+
+function initSort() {
+  var bank = document.getElementById('sortBank');
+  bank.innerHTML = '';
+  document.getElementById('zone-ei').innerHTML = '<h4>ei = /ai/</h4>';
+  document.getElementById('zone-ie').innerHTML = '<h4>ie = /iː/</h4>';
+  document.getElementById('zone-i').innerHTML = '<h4>i (kurz)</h4>';
+  document.getElementById('sort-feedback').textContent = '';
+  var items = sortData.slice();
+  for (var i = items.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = items[i]; items[i] = items[j]; items[j] = tmp;
+  }
+  items.forEach(function(item) {
+    var chip = document.createElement('span');
+    chip.className = 'sort-chip';
+    chip.textContent = item.word;
+    chip.dataset.zone = item.zone;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', function(e) {
+      sortDragged = chip;
+      e.dataTransfer.setData('text/plain', '');
+      setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+      chip.style.opacity = '';
+      sortDragged = null;
+    });
+    bank.appendChild(chip);
+  });
+  ['zone-ei','zone-ie','zone-i'].forEach(function(zid) {
+    var zone = document.getElementById(zid);
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      if (!sortDragged) return;
+      timerAutoStart(0);
+      zone.appendChild(sortDragged);
+      var expected = zid.replace('zone-','');
+      if (sortDragged.dataset.zone === expected) {
+        sortDragged.classList.add('correct');
+        sortDragged.classList.remove('incorrect');
+      } else {
+        sortDragged.classList.add('incorrect');
+        sortDragged.classList.remove('correct');
+      }
+      sortDragged = null;
+      checkSortDone();
+    });
+  });
+}
+
+function checkSortDone() {
+  var bank = document.getElementById('sortBank');
+  if (bank.querySelectorAll('.sort-chip').length > 0) return;
+  var allChips = document.querySelectorAll('.sort-chip');
+  var allCorrect = true;
+  allChips.forEach(function(c) { if (!c.classList.contains('correct')) allCorrect = false; });
+  var fb = document.getElementById('sort-feedback');
+  if (allCorrect) {
+    fb.style.color = '#27ae60';
+    fb.textContent = '✓ Alle richtig! Sehr gut!';
+    timerStop(0);
+  } else {
+    fb.style.color = '#e74c3c';
+    fb.textContent = '✗ Einige Wörter sind falsch zugeordnet. Korrigiere sie!';
+  }
+}
+initSort();
+
+// ─── LIVE CHECK (Lückentext) ─────────────────────────────────────
+function liveCheck(inp) {
+  var val = inp.value.trim();
+  var ans = inp.dataset.ans;
+  var caseIns = ans.charAt(0) === ans.charAt(0).toLowerCase();
+  var v = caseIns ? val.toLowerCase() : val;
+  var a = caseIns ? ans.toLowerCase() : ans;
+  if (v === a) {
+    inp.classList.add('correct'); inp.classList.remove('partial','wrong');
+    timerAutoStart(2);
+    checkLueckenDone();
+    return;
+  }
+  if (a.startsWith(v) && v.length > 0) {
+    inp.classList.add('partial'); inp.classList.remove('correct','wrong');
+    timerAutoStart(2);
+    return;
+  }
+  inp.classList.remove('correct','partial');
+  if (v.length > 0) { inp.classList.add('wrong'); timerAutoStart(2); }
+  else inp.classList.remove('wrong');
+}
+
+function checkLueckenDone() {
+  var inputs = document.querySelectorAll('#lueckenContainer .gap-inp');
+  var allCorrect = true;
+  inputs.forEach(function(inp) { if (!inp.classList.contains('correct')) allCorrect = false; });
+  if (allCorrect) timerStop(2);
+}
+
+function resetLuecken() {
+  var inputs = document.querySelectorAll('#lueckenContainer .gap-inp');
+  inputs.forEach(function(inp) {
+    inp.value = '';
+    inp.classList.remove('correct','partial','wrong');
+  });
+  if (running[2]) { clearInterval(timers[2]); running[2] = false; }
+  elapsed[2] = 0;
+  document.getElementById('timer-2').textContent = '0:00';
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 3 — SATZBAU (satzbau-drag-drop Skill)
+   ════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    { parts: ['wir', 'sind', 'letztes', 'Jahr', 'nach', 'Griechenland', 'geflogen'], valid: [['wir', 'sind', 'letztes', 'Jahr', 'nach', 'Griechenland', 'geflogen'], ['letztes', 'Jahr', 'sind', 'wir', 'nach', 'Griechenland', 'geflogen']], punct: '.' },
+    { parts: ['der', 'Reiseleiter', 'hat', 'uns', 'die', 'Sehenswürdigkeiten', 'gezeigt'], valid: [['der', 'Reiseleiter', 'hat', 'uns', 'die', 'Sehenswürdigkeiten', 'gezeigt']], punct: '.' },
+    { parts: ['ich', 'möchte', 'gern', 'ein', 'Zimmer', 'mit', 'Meerblick', 'buchen'], valid: [['ich', 'möchte', 'gern', 'ein', 'Zimmer', 'mit', 'Meerblick', 'buchen']], punct: '.' },
+    { parts: ['am', 'Strand', 'war', 'es', 'sehr', 'heiß', 'und', 'sonnig'], valid: [['am', 'Strand', 'war', 'es', 'sehr', 'heiß', 'und', 'sonnig']], punct: '.' },
+    { parts: ['können', 'Sie', 'mir', 'ein', 'gutes', 'Restaurant', 'empfehlen'], valid: [['können', 'Sie', 'mir', 'ein', 'gutes', 'Restaurant', 'empfehlen']], punct: '?' },
+    { parts: ['wir', 'haben', 'einen', 'Mietwagen', 'für', 'eine', 'Woche', 'reserviert'], valid: [['wir', 'haben', 'einen', 'Mietwagen', 'für', 'eine', 'Woche', 'reserviert']], punct: '.' },
+    { parts: ['im', 'Hotel', 'gab', 'es', 'jeden', 'Morgen', 'ein', 'großes', 'Frühstücksbuffet'], valid: [['im', 'Hotel', 'gab', 'es', 'jeden', 'Morgen', 'ein', 'großes', 'Frühstücksbuffet']], punct: '.' },
+    { parts: ['die', 'Einheimischen', 'waren', 'sehr', 'freundlich', 'und', 'hilfsbereit'], valid: [['die', 'Einheimischen', 'waren', 'sehr', 'freundlich', 'und', 'hilfsbereit']], punct: '.' }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase()
+                    && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) {
+            c.textContent = orig;
+        } else {
+            c.textContent = (i === 0) ? sbCapitalize(orig) : orig;
+        }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else {
+            zone.appendChild(sbDragged);
+        }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) {
+            c.classList.remove('correct', 'incorrect');
+        });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '✓ Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '✗ Falsche Reihenfolge – verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx); var row = document.getElementById('sb-row-' + idx); var fb = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = Array.from(bank.querySelectorAll('.chip')).concat(Array.from(row.querySelectorAll('.chip')));
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        for (var j = 0; j < allChips.length; j++) {
+            if (allChips[j] && allChips[j].dataset.orig === word) {
+                var chip = allChips[j]; allChips[j] = null;
+                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+                chip.classList.remove('correct', 'incorrect');
+                row.appendChild(chip); break;
+            }
+        }
+    });
+    fb.textContent = ''; setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+
+        // Chips mischen (Fisher-Yates)
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+
+        // Beide Zonen registrieren
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+
+        // Buttons pro Satz: Lösen + Neustart
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = '\u{1F4A1} Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '\u21BA Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() { initSatzbau(); }
+initSatzbau();
+</script>
+</body>
+</html>
