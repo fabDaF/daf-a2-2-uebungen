@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indefinitpronomen – Interaktive DaF-Grammatik (A2.2)</title>
+    <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header p { font-size: 1.0em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+.sec-inner { padding: 28px 30px; }
+.sec-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
+
+/* ── TAB-BANNER ─────────────────────────────────────────────── */
+.tab-banner { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+
+/* ── ENTDECKUNG ─────────────────────────────────────────────── */
+.intro-box { background: #f0f4ff; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; border-left: 4px solid #667eea; }
+.intro-box p { font-size: 0.95em; color: #444; line-height: 1.8; margin-bottom: 8px; }
+.intro-box p:last-child { margin-bottom: 0; }
+.hl { background: #fff3cd; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+.progress-dots { display: flex; gap: 10px; margin-bottom: 20px; }
+.dot { width: 14px; height: 14px; border-radius: 50%; background: #ddd; transition: background 0.3s; }
+.dot.done { background: #667eea; }
+.mc-step { display: none; background: #f8f9fa; border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; }
+.mc-step.visible { display: block; }
+.mc-q { font-weight: 700; color: #333; margin-bottom: 14px; font-size: 0.97em; }
+.mc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc-opt { padding: 10px 16px; border: 2px solid #ddd; border-radius: 20px; cursor: pointer; font-size: 12px; color: #444; transition: all 0.2s; }
+.mc-opt:hover { border-color: #667eea; color: #667eea; }
+.mc-opt.correct { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.mc-opt.wrong { border-color: #e74c3c; background: #fce4ec; color: #c62828; }
+.mc-feedback { margin-top: 10px; font-size: 0.88em; font-weight: 600; }
+.mc-feedback.ok { color: #27ae60; }
+.mc-feedback.no { color: #e74c3c; }
+.regel-karte { display: none; background: linear-gradient(135deg, #667eea10, #764ba220); border: 2px solid #667eea; border-radius: 12px; padding: 22px 26px; margin-top: 20px; }
+.regel-karte h3 { color: #667eea; font-size: 1.05em; margin-bottom: 14px; }
+.regel-karte p { font-size: 0.9em; color: #444; margin-bottom: 10px; }
+.regel-karte p:last-child { margin-bottom: 0; }
+
+/* ── REGEL ──────────────────────────────────────────────────── */
+.regel-block { margin-bottom: 20px; background: #f0f4ff; border-radius: 10px; padding: 16px 20px; }
+.regel-block h3 { color: #667eea; font-size: 0.95em; margin-bottom: 10px; }
+.regel-table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 12px; }
+.regel-table th { background: #667eea; color: white; padding: 7px 12px; text-align: left; }
+.regel-table td { padding: 7px 12px; border-bottom: 1px solid #e0e0e0; color: #444; }
+.regel-table tr:last-child td { border-bottom: none; }
+
+/* ── LÜCKENTEXT ─────────────────────────────────────────────── */
+.luecken-block { padding: 28px 30px; }
+.luecken-block h2 { font-size: 1.05em; color: #667eea; margin: 22px 0 10px; }
+.luecken-block h2:first-child { margin-top: 0; }
+.teil-label { font-weight: 700; color: #667eea; margin-top: 18px; margin-bottom: 10px; font-size: 0.95em; }
+.luecken-item { line-height: 2.4; font-size: 0.95em; color: #444; margin-bottom: 12px; }
+.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.luecken-inp:focus { border-bottom-color: #667eea; }
+.luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+.luecken-inp::placeholder { color: #bbb; font-style: italic; }
+
+/* ── ZUORDNUNG ──────────────────────────────────────────────── */
+.chip-bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f0f4ff; border-radius: 10px; min-height: 56px; margin-bottom: 18px; border: 2px dashed #c5cae9; }
+.zuord-zones { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.zuord-cat { border-radius: 10px; border: 2px solid #e0e0e0; overflow: hidden; }
+.zuord-cat-hdr { padding: 10px 14px; font-weight: 700; font-size: 0.88em; text-align: center; background: #e8ecff; color: #667eea; }
+.zuord-drop { min-height: 100px; padding: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+.zuord-drop.dragover { background: #e8ecff; }
+.chip { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.88em; transition: all 0.2s; user-select: none; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+
+/* ── SATZBAU ────────────────────────────────────────────────── */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+.sb-label { font-weight: 700; color: #4a148c; margin: 18px 0 6px; font-size: 0.95em; }
+.chip.punct-chip { background: transparent !important; border: none !important; color: #667eea !important; padding: 2px 0 !important; cursor: default !important; font-weight: 700; font-size: 1.1em; pointer-events: none; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+
+/* ── TIMER & CONTROL ────────────────────────────────────────── */
+.control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+/* ── FOOTER ────────────────────────────────────────────────── */
+.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #aaa; }
+
+/* ── MOBILE ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .zuord-zones { grid-template-columns: 1fr; }
+}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Indefinitpronomen</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2053G &nbsp;|&nbsp; Grammatik</p>
+        <div class="big-emoji">🔍</div>
+    </div>
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">🔍</span><span class="nav-label">Entdecken</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">📋</span><span class="nav-label">Regel</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🔀</span><span class="nav-label">Zuordnung</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+    </div>
+
+    <!-- TAB 0: ENTDECKEN -->
+    <div class="section active" id="sec0">
+        <img class="tab-banner" src="https://images.pexels.com/photos/267669/pexels-photo-267669.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Entdeckung">
+        <div class="sec-inner">
+            <div class="sec-title">🔍 Entdecke Indefinitpronomen</div>
+            <div class="intro-box">
+                <p>Lies diese Sätze und achte auf die <span class="hl">markierten Wörter</span>:</p>
+                <p>1. <span class="hl">Alle</span> denken, Grammatik ist schwer, <span class="hl">man</span> muss nur üben und dann versteht <span class="hl">jeder</span> etwas.</p>
+                <p>2. <span class="hl">Jemand</span> hat mir gesagt, dass <span class="hl">niemand</span> die Prüfung bestanden hat.</p>
+                <p>3. Ich habe <span class="hl">nichts</span> gekauft, obwohl es <span class="hl">einige</span> Angebote gab.</p>
+                <p>4. <span class="hl">Man</span> kann in diesem Restaurant <span class="hl">alles</span> bestellen.</p>
+                <p>5. <span class="hl">Manche</span> Studenten lernen schnell, <span class="hl">andere</span> brauchen mehr Zeit.</p>
+                <p>6. <span class="hl">Keiner</span> möchte laufen. Nur <span class="hl">einer</span> nimmt die Treppe.</p>
+            </div>
+            <div class="progress-dots" id="pdots">
+                <div class="dot" id="dot0"></div>
+                <div class="dot" id="dot1"></div>
+                <div class="dot" id="dot2"></div>
+                <div class="dot" id="dot3"></div>
+            </div>
+            <div class="mc-step visible" id="step0">
+                <div class="mc-q">Was ersetzen Indefinitpronomen?</div>
+                <div class="mc-opts">
+                    <div class="mc-opt" onclick="checkMC(0, 'A')">A) Nomen</div>
+                    <div class="mc-opt" onclick="checkMC(0, 'B')">B) Verben</div>
+                    <div class="mc-opt" onclick="checkMC(0, 'C')">C) Adjektive</div>
+                </div>
+                <div class="mc-feedback" id="fb0"></div>
+            </div>
+            <div class="mc-step" id="step1">
+                <div class="mc-q">Welches Pronomen kann nur für Sachen verwendet werden?</div>
+                <div class="mc-opts">
+                    <div class="mc-opt" onclick="checkMC(1, 'A')">A) jemand</div>
+                    <div class="mc-opt" onclick="checkMC(1, 'B')">B) etwas</div>
+                    <div class="mc-opt" onclick="checkMC(1, 'C')">C) alle</div>
+                </div>
+                <div class="mc-feedback" id="fb1"></div>
+            </div>
+            <div class="mc-step" id="step2">
+                <div class="mc-q">Welches Pronomen ist unpersönlich?</div>
+                <div class="mc-opts">
+                    <div class="mc-opt" onclick="checkMC(2, 'A')">A) man</div>
+                    <div class="mc-opt" onclick="checkMC(2, 'B')">B) jeder</div>
+                    <div class="mc-opt" onclick="checkMC(2, 'C')">C) niemand</div>
+                </div>
+                <div class="mc-feedback" id="fb2"></div>
+            </div>
+            <div class="mc-step" id="step3">
+                <div class="mc-q">Werden Indefinitpronomen für Personen dekliniert?</div>
+                <div class="mc-opts">
+                    <div class="mc-opt" onclick="checkMC(3, 'A')">A) Nein, nie</div>
+                    <div class="mc-opt" onclick="checkMC(3, 'B')">B) Ja, immer</div>
+                    <div class="mc-opt" onclick="checkMC(3, 'C')">C) Nur im Plural</div>
+                </div>
+                <div class="mc-feedback" id="fb3"></div>
+            </div>
+            <div class="regel-karte" id="regelKarte">
+                <h3>Wichtige Kategorien:</h3>
+                <p><strong>Nur für Sachen:</strong> etwas, nichts</p>
+                <p><strong>Nur für Personen:</strong> man, jemand, niemand</p>
+                <p><strong>Für Personen und Sachen:</strong> alle, jede, einige, manche, ein, kein</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 1: REGEL -->
+    <div class="section" id="sec1">
+        <img class="tab-banner" src="https://images.pexels.com/photos/6238120/pexels-photo-6238120.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Grammatik-Regeln">
+        <div class="sec-inner">
+            <div class="sec-title">📋 Grammatik-Regeln</div>
+
+            <div class="regel-block">
+                <h3>1. etwas / nichts (nicht deklinierbar)</h3>
+                <table class="regel-table">
+                    <tr>
+                        <th>Nominativ</th>
+                        <th>Dativ</th>
+                        <th>Akkusativ</th>
+                    </tr>
+                    <tr>
+                        <td>etwas / nichts</td>
+                        <td>etwas / nichts</td>
+                        <td>etwas / nichts</td>
+                    </tr>
+                </table>
+                <p><em>Beispiel: Ich habe nichts gekauft. Ich gebe dir etwas.</em></p>
+            </div>
+
+            <div class="regel-block">
+                <h3>2. man / jemand / niemand</h3>
+                <table class="regel-table">
+                    <tr>
+                        <th>Pronomen</th>
+                        <th>Nominativ</th>
+                        <th>Dativ</th>
+                        <th>Akkusativ</th>
+                    </tr>
+                    <tr>
+                        <td>man</td>
+                        <td>man</td>
+                        <td>einem</td>
+                        <td>einen</td>
+                    </tr>
+                    <tr>
+                        <td>jemand</td>
+                        <td>jemand</td>
+                        <td>jemandem</td>
+                        <td>jemanden</td>
+                    </tr>
+                    <tr>
+                        <td>niemand</td>
+                        <td>niemand</td>
+                        <td>niemandem</td>
+                        <td>niemanden</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="regel-block">
+                <h3>3. jede / manche (mit Genus)</h3>
+                <table class="regel-table">
+                    <tr>
+                        <th>Genus</th>
+                        <th>Nominativ</th>
+                        <th>Dativ</th>
+                        <th>Akkusativ</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Maskulin</strong></td>
+                        <td>jeder / mancher</td>
+                        <td>jedem / manchem</td>
+                        <td>jeden / manchen</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Feminin</strong></td>
+                        <td>jede / manche</td>
+                        <td>jeder / mancher</td>
+                        <td>jede / manche</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Neutrum</strong></td>
+                        <td>jedes / manches</td>
+                        <td>jedem / manchem</td>
+                        <td>jedes / manches</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="regel-block">
+                <h3>4. alle / einige / manche (Plural)</h3>
+                <table class="regel-table">
+                    <tr>
+                        <th>Pronomen</th>
+                        <th>Nominativ</th>
+                        <th>Dativ</th>
+                        <th>Akkusativ</th>
+                    </tr>
+                    <tr>
+                        <td>alle</td>
+                        <td>alle</td>
+                        <td>allen</td>
+                        <td>alle</td>
+                    </tr>
+                    <tr>
+                        <td>einige</td>
+                        <td>einige</td>
+                        <td>einigen</td>
+                        <td>einige</td>
+                    </tr>
+                    <tr>
+                        <td>manche</td>
+                        <td>manche</td>
+                        <td>manchen</td>
+                        <td>manche</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="regel-block">
+                <h3>5. ein / kein (vollständig mit Plural)</h3>
+                <table class="regel-table">
+                    <tr>
+                        <th>Genus</th>
+                        <th>Nominativ</th>
+                        <th>Dativ</th>
+                        <th>Akkusativ</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Maskulin</strong></td>
+                        <td>einer / keiner</td>
+                        <td>einem / keinem</td>
+                        <td>einen / keinen</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Feminin</strong></td>
+                        <td>eine / keine</td>
+                        <td>einer / keiner</td>
+                        <td>eine / keine</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Neutrum</strong></td>
+                        <td>eins / keins</td>
+                        <td>einem / keinem</td>
+                        <td>eins / keins</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plural</strong></td>
+                        <td>—</td>
+                        <td>keinen</td>
+                        <td>keine</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: LÜCKENTEXT -->
+    <div class="section" id="sec2">
+        <img class="tab-banner" src="https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Lückentext">
+        <div class="sec-inner">
+            <div class="sec-title">✏️ Lückentext</div>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="resetTab(2)">Zurücksetzen</button>
+                    <button class="btn" onclick="showLueckeSolution()">Lösung zeigen</button>
+                </div>
+                <div class="timer-display">
+                    <span>Zeit: <span id="timer-2">0:00</span></span>
+                    <span>Bestes: <span id="best-2">—</span></span>
+                </div>
+            </div>
+
+            <div class="luecken-block">
+                <h2>Teil A: etwas & nichts</h2>
+                <div class="teil-label">Aufgabe 1</div>
+                <div class="luecken-item">Ich war heute im Supermarkt. Ich wollte mir <input class="luecken-inp input-blank" data-ans="etwas" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> kaufen, aber es gab <input class="luecken-inp input-blank" data-ans="nichts" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> Frisches.</div>
+
+                <div class="teil-label">Aufgabe 2</div>
+                <div class="luecken-item">Hast du <input class="luecken-inp input-blank" data-ans="etwas" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> von Hemingway gelesen? – Nein, <input class="luecken-inp input-blank" data-ans="nichts" data-tab="2" placeholder="" onkeyup="liveCheck(this)">.</div>
+
+                <div class="teil-label">Aufgabe 3</div>
+                <div class="luecken-item">Es gab viele Angebote im Kaufhaus, aber wir haben <input class="luecken-inp input-blank" data-ans="nichts" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> gekauft.</div>
+
+                <div class="teil-label">Aufgabe 4</div>
+                <div class="luecken-item"><input class="luecken-inp input-blank" data-ans="Etwas" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> ist mit ihm nicht in Ordnung. Ich war beim Arzt, aber er hat <input class="luecken-inp input-blank" data-ans="nichts" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> gefunden.</div>
+
+                <div class="teil-label">Aufgabe 5</div>
+                <div class="luecken-item">Der Lehrer hat dem Schüler eine Frage gestellt, aber er hat <input class="luecken-inp input-blank" data-ans="nichts" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> gesagt.</div>
+
+                <h2>Teil B: man, jemand & niemand</h2>
+                <div class="teil-label">Aufgabe 1</div>
+                <div class="luecken-item">In Deutschland isst <input class="luecken-inp input-blank" data-ans="man" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> oft Bierwurst.</div>
+
+                <div class="teil-label">Aufgabe 2</div>
+                <div class="luecken-item">Kann mir <input class="luecken-inp input-blank" data-ans="jemand" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> helfen? – Nein, ich glaube, <input class="luecken-inp input-blank" data-ans="niemand" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> spricht hier Englisch.</div>
+
+                <div class="teil-label">Aufgabe 3</div>
+                <div class="luecken-item">Er hat gewartet, aber <input class="luecken-inp input-blank" data-ans="niemand" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> ist gekommen. Er wird mit <input class="luecken-inp input-blank" data-ans="jemandem" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> darüber sprechen.</div>
+
+                <div class="teil-label">Aufgabe 4</div>
+                <div class="luecken-item">Wenn <input class="luecken-inp input-blank" data-ans="niemand" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> mehr etwas braucht, dann werde ich gehen.</div>
+
+                <div class="teil-label">Aufgabe 5</div>
+                <div class="luecken-item">Ich glaube, ich habe <input class="luecken-inp input-blank" data-ans="jemanden" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> in der Wohnung neben uns gehört. Eigentlich wohnt dort doch <input class="luecken-inp input-blank" data-ans="niemand" data-tab="2" placeholder="" onkeyup="liveCheck(this)">, oder?</div>
+
+                <h2>Teil C: alle, jede, einige & manche</h2>
+                <div class="teil-label">Aufgabe 1</div>
+                <div class="luecken-item">Ich denke, <input class="luecken-inp input-blank" data-ans="alle" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> haben gelernt.</div>
+
+                <div class="teil-label">Aufgabe 2</div>
+                <div class="luecken-item">Haben dir schon <input class="luecken-inp input-blank" data-ans="alle" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> bestätigt, dass sie kommen? Nein, nur <input class="luecken-inp input-blank" data-ans="einige" data-tab="2" placeholder="" onkeyup="liveCheck(this)">.</div>
+
+                <div class="teil-label">Aufgabe 3</div>
+                <div class="luecken-item"><input class="luecken-inp input-blank" data-ans="Manche" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> wollen den Braten essen, andere bevorzugen den Fisch.</div>
+
+                <div class="teil-label">Aufgabe 4</div>
+                <div class="luecken-item">Hast du schon mit deinen Kollegen gesprochen? Ja, ich habe mit <input class="luecken-inp input-blank" data-ans="manchen" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> gesprochen.</div>
+
+                <div class="teil-label">Aufgabe 5</div>
+                <div class="luecken-item">Nach dem Diplom gebe ich <input class="luecken-inp input-blank" data-ans="allen" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> ein Fest. Da werden sich <input class="luecken-inp input-blank" data-ans="einige" data-tab="2" placeholder="" onkeyup="liveCheck(this)"> schon freuen.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: ZUORDNUNG -->
+    <div class="section" id="sec3">
+        <img class="tab-banner" src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Zuordnung">
+        <div class="sec-inner">
+            <div class="sec-title">🔀 Zuordnung: Kategorien</div>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="resetTab(3)">Zurücksetzen</button>
+                </div>
+                <div class="timer-display">
+                    <span>Zeit: <span id="timer-3">0:00</span></span>
+                    <span>Bestes: <span id="best-3">—</span></span>
+                </div>
+            </div>
+
+            <p style="font-size: 0.95em; color: #666; margin-bottom: 16px;">Sortiere die Indefinitpronomen in die richtige Kategorie.</p>
+
+            <div class="chip-bank" id="chipBank"></div>
+
+            <div class="zuord-zones">
+                <div class="zuord-cat" data-category="sachen">
+                    <div class="zuord-cat-hdr">Nur für Sachen</div>
+                    <div class="zuord-drop" ondrop="dropChip(event, 'sachen')" ondragover="allowDrop(event)" ondragleave="removeDragover(event)"></div>
+                </div>
+                <div class="zuord-cat" data-category="personen">
+                    <div class="zuord-cat-hdr">Nur für Personen</div>
+                    <div class="zuord-drop" ondrop="dropChip(event, 'personen')" ondragover="allowDrop(event)" ondragleave="removeDragover(event)"></div>
+                </div>
+                <div class="zuord-cat" data-category="beide">
+                    <div class="zuord-cat-hdr">Personen & Sachen</div>
+                    <div class="zuord-drop" ondrop="dropChip(event, 'beide')" ondragover="allowDrop(event)" ondragleave="removeDragover(event)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: SATZBAU -->
+    <div class="section" id="sec4">
+        <img class="tab-banner" src="https://images.pexels.com/photos/278888/pexels-photo-278888.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Satzbau">
+        <div class="sec-inner">
+            <div class="sec-title">🧩 Satzbau</div>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="resetSatzbau()">Zurücksetzen</button>
+                    <button class="btn" onclick="sbShowSolution()">Lösung zeigen</button>
+                </div>
+                <div class="timer-display">
+                    <span>Zeit: <span id="timer-4">0:00</span></span>
+                    <span>Bestes: <span id="best-4">—</span></span>
+                </div>
+            </div>
+
+            <p style="font-size: 0.95em; color: #666; margin-bottom: 16px;">Ordne die Wörter zu einem grammatikalisch korrekten Satz.</p>
+
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">© Frank Burkert · DaF-Materialien · FrankBurkert@fabdaf.onmicrosoft.com</div>
+</div><!-- /container -->
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════════════
+// GLOBAL STATE
+// ════════════════════════════════════════════════════════════════════════════════════
+var currentTab = 0;
+var mcAnswers = {};
+var timerIntervals = {};
+var timerSeconds = [0, 0, 0, 0, 0];
+var tabStartTime = {};
+
+var zuordnungData = [
+    { text: 'etwas', category: 'sachen' },
+    { text: 'nichts', category: 'sachen' },
+    { text: 'man', category: 'personen' },
+    { text: 'jemand', category: 'personen' },
+    { text: 'niemand', category: 'personen' },
+    { text: 'alle', category: 'beide' },
+    { text: 'jede', category: 'beide' },
+    { text: 'einige', category: 'beide' },
+    { text: 'manche', category: 'beide' },
+    { text: 'ein', category: 'beide' },
+    { text: 'kein', category: 'beide' }
+];
+
+var satzbauData = [
+    { parts: ['man', 'kann', 'in', 'Deutschland', 'alles', 'kaufen'], valid: [['man', 'kann', 'in', 'Deutschland', 'alles', 'kaufen']], punct: '.' },
+    { parts: ['jemand', 'hat', 'mir', 'eine', 'Nachricht', 'geschickt'], valid: [['jemand', 'hat', 'mir', 'eine', 'Nachricht', 'geschickt']], punct: '.' },
+    { parts: ['niemand', 'weiß', ',', 'wie', 'das', 'passiert', 'ist'], valid: [['niemand', 'weiß', ',', 'wie', 'das', 'passiert', 'ist']], punct: '.' },
+    { parts: ['alle', 'kommen', 'zu', 'meinem', 'Geburtstag'], valid: [['alle', 'kommen', 'zu', 'meinem', 'Geburtstag']], punct: '.' },
+    { parts: ['manche', 'Studenten', 'lernen', 'schnell', ',', 'andere', 'nicht'], valid: [['manche', 'Studenten', 'lernen', 'schnell', ',', 'andere', 'nicht']], punct: '.' },
+    { parts: ['ich', 'habe', 'mit', 'niemandem', 'darüber', 'gesprochen'], valid: [['ich', 'habe', 'mit', 'niemandem', 'darüber', 'gesprochen']], punct: '.' },
+    { parts: ['einige', 'Angebote', 'waren', 'wirklich', 'sehr', 'günstig'], valid: [['einige', 'Angebote', 'waren', 'wirklich', 'sehr', 'günstig']], punct: '.' },
+    { parts: ['keiner', 'möchte', 'heute', 'die', 'Treppe', 'nehmen'], valid: [['keiner', 'möchte', 'heute', 'die', 'Treppe', 'nehmen']], punct: '.' }
+];
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════════════════════════════════════════════════════
+function showTab(n) {
+    // Stop all timers
+    for (var i = 0; i < 5; i++) {
+        if (timerIntervals[i]) clearInterval(timerIntervals[i]);
+    }
+
+    // Hide all sections
+    var secs = document.querySelectorAll('.section');
+    secs.forEach(function(s) { s.classList.remove('active'); });
+
+    // Hide all nav buttons active state
+    var navBtns = document.querySelectorAll('.nav-btn');
+    navBtns.forEach(function(b) { b.classList.remove('active'); });
+
+    // Activate current section and nav button
+    document.getElementById('sec' + n).classList.add('active');
+    navBtns[n].classList.add('active');
+
+    currentTab = n;
+
+    // Init tab content (timers start on first interaction, NOT on tab switch)
+    if (n === 3) {
+        initZuordnung();
+    } else if (n === 4) {
+        initSatzbau();
+    }
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 0: ENTDECKEN (DISCOVERY)
+// ════════════════════════════════════════════════════════════════════════════════════
+function checkMC(step, chosen) {
+    var answers = {
+        0: 'A', // Was ersetzen Indefinitpronomen → Nomen
+        1: 'B', // Welches nur für Sachen → etwas
+        2: 'A', // unpersönlich → man
+        3: 'B'  // dekliniert → Ja, immer
+    };
+
+    var correct = answers[step] === chosen;
+    var fb = document.getElementById('fb' + step);
+    var opt = event.target;
+
+    // Mark option
+    document.querySelectorAll('#step' + step + ' .mc-opt').forEach(function(o) {
+        o.classList.remove('correct', 'wrong');
+    });
+
+    if (correct) {
+        opt.classList.add('correct');
+        fb.textContent = '✓ Richtig!';
+        fb.className = 'mc-feedback ok';
+        document.getElementById('dot' + step).classList.add('done');
+
+        // Show next step after 500ms
+        setTimeout(function() {
+            if (step < 3) {
+                document.getElementById('step' + step).classList.remove('visible');
+                document.getElementById('step' + (step + 1)).classList.add('visible');
+            } else {
+                // All done, show regel card
+                document.getElementById('regelKarte').style.display = 'block';
+            }
+        }, 500);
+    } else {
+        opt.classList.add('wrong');
+        fb.textContent = '✗ Versuche nochmal.';
+        fb.className = 'mc-feedback no';
+    }
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 2: LÜCKENTEXT
+// ════════════════════════════════════════════════════════════════════════════════════
+function liveCheck(el) {
+    timerAutoStart(2);
+    var ans = el.getAttribute('data-ans');
+    var val = el.value;
+
+    // Case-sensitive check
+    if (val === ans) {
+        el.classList.remove('no');
+        el.classList.add('ok');
+        // Check if all Lückentext inputs are correct
+        var allInputs = document.querySelectorAll('#sec2 .input-blank');
+        var allOk = Array.from(allInputs).every(function(inp) { return inp.classList.contains('ok'); });
+        if (allOk) timerStop(2);
+    } else if (ans.startsWith(val) && val.length > 0) {
+        el.classList.remove('ok', 'no');
+    } else {
+        el.classList.remove('ok');
+        if (val.length > 0) el.classList.add('no');
+        else el.classList.remove('no');
+    }
+}
+
+function showLueckeSolution() {
+    document.querySelectorAll('#sec2 .input-blank').forEach(function(inp) {
+        inp.value = inp.getAttribute('data-ans');
+        inp.classList.remove('no');
+        inp.classList.add('ok');
+    });
+    timerStop(2);
+}
+
+function resetTab(tabNum) {
+    if (tabNum === 2) {
+        document.querySelectorAll('#sec2 .input-blank').forEach(function(inp) {
+            inp.value = '';
+            inp.classList.remove('ok', 'no');
+        });
+        resetTimer(2);
+    } else if (tabNum === 3) {
+        var drops = document.querySelectorAll('.zuord-drop');
+        drops.forEach(function(d) { d.innerHTML = ''; });
+        initZuordnung();
+        resetTimer(3);
+    }
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 3: ZUORDNUNG (SORTING)
+// ════════════════════════════════════════════════════════════════════════════════════
+function initZuordnung() {
+    var bank = document.getElementById('chipBank');
+    bank.innerHTML = '';
+
+    // Shuffle
+    var shuffled = fisherYatesShuffle(zuordnungData.slice());
+
+    shuffled.forEach(function(item) {
+        var chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = item.text;
+        chip.draggable = true;
+        chip.dataset.category = item.category;
+        chip.dataset.text = item.text;
+        chip.ondragstart = function(e) {
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', item.text);
+            e.dataTransfer.setData('category', item.category);
+        };
+        bank.appendChild(chip);
+    });
+}
+
+function allowDrop(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('dragover');
+}
+
+function removeDragover(e) {
+    e.currentTarget.classList.remove('dragover');
+}
+
+function dropChip(e, targetCategory) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('dragover');
+    timerAutoStart(3);
+
+    var text = e.dataTransfer.getData('text/plain');
+    var chipCategory = e.dataTransfer.getData('category');
+
+    // Find the chip in the bank
+    var chip = document.querySelector('.chip[data-text="' + text + '"]');
+    if (!chip) return;
+
+    // Check if correct
+    var correct = chipCategory === targetCategory;
+
+    // Visual feedback
+    if (correct) {
+        chip.classList.add('correct');
+        chip.draggable = false;
+        e.currentTarget.appendChild(chip);
+        // Check if all chips placed
+        var remaining = document.querySelectorAll('#chipBank .chip');
+        if (remaining.length === 0) timerStop(3);
+    } else {
+        chip.classList.add('incorrect');
+        setTimeout(function() {
+            chip.classList.remove('incorrect');
+        }, 500);
+    }
+}
+
+function fisherYatesShuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+    return arr;
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 4: SATZBAU (SENTENCE BUILDER)
+// ════════════════════════════════════════════════════════════════════════════════════
+var sbDragged = null;
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    var isPunct = /^[,;.:!?]$/.test(word);
+    chip.className = isPunct ? 'chip punct-chip' : 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = !isPunct;
+    if (!isPunct) {
+        chip.addEventListener('dragstart', function(e) {
+            sbDragged = chip;
+            e.dataTransfer.setData('text/plain', '');
+            setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+        });
+        chip.addEventListener('dragend', function() {
+            chip.style.opacity = '';
+            sbDragged = null;
+        });
+    }
+    return chip;
+}
+
+function sbCapitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var wordIdx = 0;
+    chips.forEach(function(c) {
+        var orig = c.dataset.orig;
+        if (orig === ',') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase() && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        c.textContent = (wordIdx === 0 && !isProper) ? sbCapitalize(orig) : orig;
+        wordIdx++;
+    });
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        zone.appendChild(sbDragged);
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('correct', 'incorrect'); });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(4);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '\u2713 Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '\u2717 Falsche Reihenfolge \u2013 verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(4);
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    if (container.children.length === 0) {
+        satzbauData.forEach(function(ex, idx) {
+            var parts = ex.parts.slice();
+            for (var i = parts.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+            }
+
+            var label = document.createElement('div');
+            label.className = 'sb-label';
+            label.textContent = 'Satz ' + (idx + 1);
+            container.appendChild(label);
+
+            var bank = document.createElement('div');
+            bank.className = 'chips-container';
+            bank.id = 'sb-bank-' + idx;
+            parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+            sbRegisterZone(bank, idx);
+            container.appendChild(bank);
+
+            var row = document.createElement('div');
+            row.className = 'sentence-builder';
+            row.id = 'sb-row-' + idx;
+            sbRegisterZone(row, idx);
+            container.appendChild(row);
+
+            var fb = document.createElement('div');
+            fb.className = 'satzbau-feedback';
+            fb.id = 'sb-fb-' + idx;
+            container.appendChild(fb);
+        });
+    }
+}
+
+function resetSatzbau() {
+    resetTimer(4);
+    document.getElementById('satzbauContainer').innerHTML = '';
+    initSatzbau();
+}
+
+function sbShowSolution() {
+    satzbauData.forEach(function(ex, idx) {
+        var bank = document.getElementById('sb-bank-' + idx);
+        var row = document.getElementById('sb-row-' + idx);
+        var solution = ex.valid[0];
+
+        var allChips = {};
+        Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+        Array.from(row.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+
+        while (bank.firstChild) bank.removeChild(bank.firstChild);
+        while (row.firstChild) row.removeChild(row.firstChild);
+
+        solution.forEach(function(word, i) {
+            var chip = allChips[word];
+            if (chip) {
+                if (!chip.classList.contains('punct-chip')) {
+                    var isProper = word.charAt(0) === word.charAt(0).toUpperCase() && word.charAt(0) !== word.charAt(0).toLowerCase();
+                    chip.textContent = (i === 0 && !isProper) ? sbCapitalize(word) : word;
+                }
+                chip.classList.remove('correct', 'incorrect');
+                row.appendChild(chip);
+            }
+        });
+        setTimeout(function() { sbCheckAuto(idx); }, 100);
+    });
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.textContent = c.dataset.orig;
+        bank.appendChild(c);
+    });
+    row.classList.remove('correct', 'incorrect');
+    var punkt = row.querySelector('.sb-punkt');
+    if (punkt) punkt.parentNode.removeChild(punkt);
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TIMER SYSTEM
+// ════════════════════════════════════════════════════════════════════════════════════
+function timerAutoStart(n) {
+    if (timerIntervals[n]) return;
+    timerIntervals[n] = setInterval(function() {
+        timerSeconds[n]++;
+        updateTimerDisplay(n);
+    }, 1000);
+}
+
+function timerStart(n) {
+    timerAutoStart(n);
+}
+
+function timerStop(n) {
+    if (timerIntervals[n]) {
+        clearInterval(timerIntervals[n]);
+        timerIntervals[n] = null;
+        saveBest(n);
+    }
+}
+
+function resetTimer(n) {
+    if (timerIntervals[n]) clearInterval(timerIntervals[n]);
+    timerIntervals[n] = null;
+    timerSeconds[n] = 0;
+    updateTimerDisplay(n);
+}
+
+function updateTimerDisplay(n) {
+    var sec = timerSeconds[n];
+    var min = Math.floor(sec / 60);
+    var s = sec % 60;
+    var display = min + ':' + (s < 10 ? '0' : '') + s;
+    var el = document.getElementById('timer-' + n);
+    if (el) el.textContent = display;
+}
+
+function saveBest(n) {
+    var key = 'best-2053G-' + n;
+    var current = timerSeconds[n];
+    var best = localStorage.getItem(key);
+
+    if (!best || current < parseInt(best)) {
+        localStorage.setItem(key, current);
+        updateBestDisplay(n);
+    }
+}
+
+function updateBestDisplay(n) {
+    var key = 'best-2053G-' + n;
+    var best = localStorage.getItem(key);
+    var el = document.getElementById('best-' + n);
+    if (el) {
+        if (best) {
+            var sec = parseInt(best);
+            var min = Math.floor(sec / 60);
+            var s = sec % 60;
+            el.textContent = min + ':' + (s < 10 ? '0' : '') + s;
+        } else {
+            el.textContent = '—';
+        }
+    }
+}
+
+// Load best times on init
+window.addEventListener('DOMContentLoaded', function() {
+    updateBestDisplay(2);
+    updateBestDisplay(3);
+    updateBestDisplay(4);
+});
+    </script>
+</body>
+</html>

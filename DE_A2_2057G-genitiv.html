@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genitiv – A2.2 Lektion 2057G</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: Georgia, serif;
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .big-emoji {
+            font-size: 3.5em;
+            margin-top: 10px;
+        }
+
+        .nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+        .nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .nav-btn:last-child { border-right: none; }
+        .nav-btn:hover { background: #e8ecff; color: #667eea; }
+        .nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+        .nav-emoji { font-size: 1.3em; line-height: 1.2; }
+        .nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+
+        .tabs-wrap {
+            position: relative;
+            min-height: 500px;
+        }
+
+        .section {
+            display: none;
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+            position: relative;
+            opacity: 1;
+        }
+
+        .tab-banner {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        .sec-inner {
+            padding: 28px 30px;
+        }
+
+        .control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 30px;
+            background: #fafafa;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.95em;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .timer-display {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .intro-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .hl {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .mc-step {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .mc-step.active {
+            border-color: #667eea;
+            background: #f9fafe;
+        }
+
+        .mc-step-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 14px;
+            font-size: 1.05em;
+        }
+
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mc-option {
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95em;
+        }
+
+        .mc-option:hover {
+            border-color: #667eea;
+            background: #f9fafe;
+        }
+
+        .mc-option.selected {
+            border-color: #667eea;
+            background: #e8ecff;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .mc-option.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .mc-option.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .regel-karte {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 4px solid #764ba2;
+        }
+
+        .regel-title {
+            font-weight: 700;
+            font-size: 1.15em;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .dekl-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+
+        .dekl-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dekl-table td:first-child {
+            font-weight: 600;
+            color: #667eea;
+            width: 15%;
+        }
+
+        .lueckentext-box {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+
+        .lueckentext-box input {
+            background: #fffacd;
+            border: 2px solid #ffc107;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 0.95em;
+            width: auto;
+            min-width: 120px;
+            font-family: inherit;
+        }
+
+        .lueckentext-box input.ok {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .lueckentext-box input.no {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+
+        .hint {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .wortkasten {
+            background: #f0f4ff;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .wortkasten-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .wortkasten-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .word-tag {
+            background: white;
+            border: 1px solid #667eea;
+            color: #667eea;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .drop-zone {
+            min-height: 80px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            background: #fafafa;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            align-content: flex-start;
+            gap: 8px;
+        }
+
+        .drop-zone.drag-over {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+
+        .chip {
+            display: inline-block;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: move;
+            font-weight: 500;
+            user-select: none;
+            transition: all 0.2s ease;
+            font-size: 0.9em;
+        }
+
+        .chip:hover {
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .chip.placed {
+            background: #e8ecff;
+        }
+
+        .chip.correct {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+
+        .chip.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+
+        .chip.punct-chip {
+            font-weight: 600;
+        }
+
+        .sb-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 50px;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .sb-row.complete {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .sb-row.incomplete {
+            background: white;
+            border-color: #e0e0e0;
+        }
+
+        .category-box {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .category-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+
+        .category-chips {
+            min-height: 60px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: flex-start;
+            align-content: flex-start;
+        }
+
+        .pill-btn {
+            padding: 10px 18px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.95em;
+            margin-right: 10px;
+            margin-bottom: 6px;
+        }
+
+        .pill-btn:hover {
+            border-color: #667eea;
+            background: #f9fafe;
+        }
+
+        .pill-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pill-btn.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .pill-btn.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .author-footer {
+            text-align: center;
+            padding: 20px 30px;
+            background: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .author-footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .author-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .author-name {
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .nav { flex-wrap: wrap; }
+            .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+            .nav-btn:last-child { border-right: 1px solid #ddd; }
+            .tab-banner { max-height: 120px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Genitiv</h1>
+            <p style="font-family: Georgia, serif;">A2.2 – Lektion 2057G &nbsp;|&nbsp; Grammatik &amp; Üben</p>
+            <div class="big-emoji">📝</div>
+        </div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection(0)">
+                <span class="nav-emoji">📖</span>
+                <span class="nav-label">Entdeckung</span>
+            </button>
+            <button class="nav-btn" onclick="showSection(1)">
+                <span class="nav-emoji">✏️</span>
+                <span class="nav-label">Lückentext</span>
+            </button>
+            <button class="nav-btn" onclick="showSection(2)">
+                <span class="nav-emoji">🔀</span>
+                <span class="nav-label">Zuordnung</span>
+            </button>
+            <button class="nav-btn" onclick="showSection(3)">
+                <span class="nav-emoji">🧩</span>
+                <span class="nav-label">Satzbau</span>
+            </button>
+            <button class="nav-btn" onclick="showSection(4)">
+                <span class="nav-emoji">🎯</span>
+                <span class="nav-label">Gen. oder Dat.?</span>
+            </button>
+        </div>
+
+        <div class="tabs-wrap">
+            <!-- TAB 0: ENTDECKUNG -->
+            <div class="section active" id="sec-0">
+                <img class="tab-banner" src="https://images.pexels.com/photos/261909/pexels-photo-261909.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Bücher">
+                <div style="padding: 28px 30px;">
+                    <div class="intro-box">
+                        <p>Carlas Mutter, Andreas' Vater, die Freundin <span class="hl">meines Bruders</span>, der Vater <span class="hl">der Kollegin</span> — was haben diese Ausdrücke gemeinsam?</p>
+                    </div>
+
+                    <div id="mc-0-step-0" class="mc-step active">
+                        <div class="mc-step-title">1. Was beschreiben diese Ausdrücke?</div>
+                        <div class="mc-options">
+                            <div class="mc-option" onclick="selectMCDiscovery(0, 0, this)">Besitz und Zugehörigkeit</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(0, 1, this)">Ort</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(0, 2, this)">Zeit</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(0, 3, this)">Grund</div>
+                        </div>
+                    </div>
+
+                    <div id="mc-0-step-1" class="mc-step">
+                        <div class="mc-step-title">2. Wie heißt der Fall, der Besitz ausdrückt?</div>
+                        <div class="mc-options">
+                            <div class="mc-option" onclick="selectMCDiscovery(1, 0, this)">Genitiv</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(1, 1, this)">Dativ</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(1, 2, this)">Akkusativ</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(1, 3, this)">Nominativ</div>
+                        </div>
+                    </div>
+
+                    <div id="mc-0-step-2" class="mc-step">
+                        <div class="mc-step-title">3. Welche Endung bekommen maskuline und neutrale Nomen im Genitiv?</div>
+                        <div class="mc-options">
+                            <div class="mc-option" onclick="selectMCDiscovery(2, 0, this)">-s oder -es</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(2, 1, this)">-n oder -en</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(2, 2, this)">-e</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(2, 3, this)">Keine Endung</div>
+                        </div>
+                    </div>
+
+                    <div id="mc-0-step-3" class="mc-step">
+                        <div class="mc-step-title">4. Wie fragt man nach dem Genitiv?</div>
+                        <div class="mc-options">
+                            <div class="mc-option" onclick="selectMCDiscovery(3, 0, this)">Wessen?</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(3, 1, this)">Wem?</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(3, 2, this)">Wen?</div>
+                            <div class="mc-option" onclick="selectMCDiscovery(3, 3, this)">Was?</div>
+                        </div>
+                    </div>
+
+                    <div class="regel-karte">
+                        <div class="regel-title">📋 Die Genitiv-Formen</div>
+                        <table class="dekl-table">
+                            <tr>
+                                <td>Maskulin:</td>
+                                <td>des alten Mannes / meines alten Mannes</td>
+                            </tr>
+                            <tr>
+                                <td>Feminin:</td>
+                                <td>der jungen Frau / meiner jungen Frau</td>
+                            </tr>
+                            <tr>
+                                <td>Neutrum:</td>
+                                <td>des kleinen Kindes / meines kleinen Kindes</td>
+                            </tr>
+                            <tr>
+                                <td>Plural:</td>
+                                <td>der alten Männer / meiner alten Männer</td>
+                            </tr>
+                        </table>
+
+                        <p><strong>Wichtige Präpositionen mit Genitiv:</strong></p>
+                        <p style="margin-top: 8px; font-size: 0.95em;">wegen, trotz, während, innerhalb, außerhalb</p>
+
+                        <p style="margin-top: 16px; font-size: 0.95em;"><strong>Eigennamen (Possessiva):</strong> Nicks Gitarre, Marias Buch, Andreas' Auto</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 1: LÜCKENTEXT -->
+            <div class="section" id="sec-1">
+                <img class="tab-banner" src="https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Studieren">
+                <div style="padding: 28px 30px;">
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 1:</strong> Das Kleid <input type="text" data-ans="des Mädchens" oninput="liveCheck(this)"> ist sehr bunt. <span class="hint">(das Mädchen)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 2:</strong> Maria ist sich <input type="text" data-ans="der Hilfe" oninput="liveCheck(this)"> bewusst. <span class="hint">(die Hilfe)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 3:</strong> Die Farbe <input type="text" data-ans="der Hose" oninput="liveCheck(this)"> gefällt mir nicht. <span class="hint">(die Hose)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 4:</strong> <input type="text" data-ans="Alex'" oninput="liveCheck(this)"> Buch ist interessant. <span class="hint">(Alex)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 5:</strong> Die Hand <input type="text" data-ans="des Mannes" oninput="liveCheck(this)"> ist gebrochen. <span class="hint">(der Mann)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 6:</strong> Die Mütter <input type="text" data-ans="der Kinder" oninput="liveCheck(this)"> sind alle gekommen. <span class="hint">(die Kinder)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 7:</strong> Die Stimme <input type="text" data-ans="der Sängerin" oninput="liveCheck(this)"> ist sehr schön. <span class="hint">(die Sängerin)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 8:</strong> Ich sehe das Auto <input type="text" data-ans="des Mannes" oninput="liveCheck(this)">. <span class="hint">(der Mann)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 9:</strong> Die Tasche <input type="text" data-ans="der Frau" oninput="liveCheck(this)"> ist aus Leder. <span class="hint">(die Frau)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 10:</strong> Die Bücher <input type="text" data-ans="der Schüler" oninput="liveCheck(this)"> sind interessant. <span class="hint">(die Schüler)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 11:</strong> Die Bäume <input type="text" data-ans="des Gartens" oninput="liveCheck(this)"> sind alle grün. <span class="hint">(der Garten)</span></p>
+                    </div>
+
+                    <div class="lueckentext-box">
+                        <p><strong>Satz 12:</strong> Das Wasser <input type="text" data-ans="des Sees" oninput="liveCheck(this)"> ist klar. <span class="hint">(der See)</span></p>
+                    </div>
+
+                    <div class="wortkasten">
+                        <div class="wortkasten-title">Wortkasten – Lösungen:</div>
+                        <div class="wortkasten-words">
+                            <div class="word-tag">des Mädchens</div>
+                            <div class="word-tag">der Hilfe</div>
+                            <div class="word-tag">der Hose</div>
+                            <div class="word-tag">Alex'</div>
+                            <div class="word-tag">des Mannes</div>
+                            <div class="word-tag">der Kinder</div>
+                            <div class="word-tag">der Sängerin</div>
+                            <div class="word-tag">der Frau</div>
+                            <div class="word-tag">der Schüler</div>
+                            <div class="word-tag">des Gartens</div>
+                            <div class="word-tag">des Sees</div>
+                        </div>
+                    </div>
+
+                    <div class="control-bar">
+                        <div class="control-buttons">
+                            <button class="btn btn-secondary" onclick="resetTab(1)">Zurücksetzen</button>
+                        </div>
+                        <div class="timer-display">
+                            <span id="timer-1">0:00</span> / <span id="best-1">–</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: ZUORDNUNG -->
+            <div class="section" id="sec-2">
+                <img class="tab-banner" src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Zusammenarbeit">
+                <div style="padding: 28px 30px;">
+                    <p style="margin-bottom: 20px; font-size: 1.05em;"><strong>Ordne die Nomen in die richtige Kategorie:</strong></p>
+
+                    <div style="background: #f0f4ff; border: 2px dashed #667eea; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                        <div class="wortkasten-title">Chip-Bank (Genitivformen):</div>
+                        <div id="chip-bank-2" class="wortkasten-words" style="border: none; padding: 0;">
+                        </div>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">♂️ Maskulin (des...+s/es)</div>
+                        <div class="category-chips" id="drop-maskulin" ondrop="dropZone2(event)" ondragover="dragOverZone2(event)" ondragleave="dragLeaveZone2(event)"></div>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">♀️ Feminin (der...)</div>
+                        <div class="category-chips" id="drop-feminin" ondrop="dropZone2(event)" ondragover="dragOverZone2(event)" ondragleave="dragLeaveZone2(event)"></div>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">♟️ Neutrum (des...+s/es)</div>
+                        <div class="category-chips" id="drop-neutrum" ondrop="dropZone2(event)" ondragover="dragOverZone2(event)" ondragleave="dragLeaveZone2(event)"></div>
+                    </div>
+
+                    <div class="category-box">
+                        <div class="category-title">👥 Plural (der...)</div>
+                        <div class="category-chips" id="drop-plural" ondrop="dropZone2(event)" ondragover="dragOverZone2(event)" ondragleave="dragLeaveZone2(event)"></div>
+                    </div>
+
+                    <div class="control-bar">
+                        <div class="control-buttons">
+                            <button class="btn btn-secondary" onclick="resetTab(2)">Zurücksetzen</button>
+                        </div>
+                        <div class="timer-display">
+                            <span id="timer-2">0:00</span> / <span id="best-2">–</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SATZBAU -->
+            <div class="section" id="sec-3">
+                <img class="tab-banner" src="https://images.pexels.com/photos/1329296/pexels-photo-1329296.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Puzzle">
+                <div style="padding: 28px 30px;">
+                    <p style="margin-bottom: 20px; font-size: 1.05em;"><strong>Baue die Sätze:</strong></p>
+
+                    <div id="sb-rows-container"></div>
+
+                    <div class="control-bar">
+                        <div class="control-buttons">
+                            <button class="btn btn-secondary" onclick="resetTab(3)">Zurücksetzen</button>
+                        </div>
+                        <div class="timer-display">
+                            <span id="timer-3">0:00</span> / <span id="best-3">–</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: GENITIV ODER DATIV -->
+            <div class="section" id="sec-4">
+                <img class="tab-banner" src="https://images.pexels.com/photos/6457579/pexels-photo-6457579.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Entscheidung">
+                <div style="padding: 28px 30px;">
+                    <p style="margin-bottom: 25px; font-size: 1.05em;"><strong>Wähle: Ist das Genitiv oder Dativ?</strong></p>
+
+                    <div id="mc-4-container"></div>
+
+                    <div class="control-bar">
+                        <div class="control-buttons">
+                            <button class="btn btn-secondary" onclick="resetTab(4)">Zurücksetzen</button>
+                        </div>
+                        <div class="timer-display">
+                            <span id="timer-4">0:00</span> / <span id="best-4">–</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="author-footer">
+            <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+            <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+        </div>
+
+    </div><!-- /container -->
+
+    <script>
+        // ========== GLOBALS ==========
+        var timers = {};
+        var draggedChip = null;
+        var sbDragged = null;
+
+        // ========== TAB NAVIGATION ==========
+        function showSection(idx) {
+            document.querySelectorAll('.section').forEach(function(s, i) {
+                s.classList.toggle('active', i === idx);
+            });
+            document.querySelectorAll('.nav-btn').forEach(function(b, i) {
+                b.classList.toggle('active', i === idx);
+            });
+        }
+
+        // ========== TIMER SYSTEM ==========
+        function fmtTime(s) {
+            var m = Math.floor(s / 60);
+            var sec = s % 60;
+            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        }
+
+        function timerAutoStart(tabIdx) {
+            if (!timers[tabIdx]) {
+                timers[tabIdx] = { interval: null, start: null };
+            }
+            if (timers[tabIdx].interval === null) {
+                var start = Date.now();
+                timers[tabIdx].start = start;
+                timers[tabIdx].interval = setInterval(function() {
+                    var elapsed = Math.floor((Date.now() - start) / 1000);
+                    document.getElementById('timer-' + tabIdx).textContent = fmtTime(elapsed);
+                }, 100);
+            }
+        }
+
+        function timerStop(tabIdx) {
+            if (timers[tabIdx] && timers[tabIdx].interval) {
+                clearInterval(timers[tabIdx].interval);
+                var elapsed = Math.floor((Date.now() - timers[tabIdx].start) / 1000);
+                timers[tabIdx].interval = null;
+
+                var filename = 'DE_A2_2057G-genitiv';
+                var key = filename + '_best_' + tabIdx;
+                var best = localStorage.getItem(key);
+                if (!best || elapsed < parseInt(best)) {
+                    localStorage.setItem(key, elapsed);
+                    document.getElementById('best-' + tabIdx).textContent = fmtTime(elapsed);
+                } else if (best) {
+                    document.getElementById('best-' + tabIdx).textContent = fmtTime(parseInt(best));
+                }
+            }
+        }
+
+        function resetTimer(tabIdx) {
+            if (timers[tabIdx]) {
+                if (timers[tabIdx].interval) clearInterval(timers[tabIdx].interval);
+                timers[tabIdx] = { interval: null, start: null };
+                document.getElementById('timer-' + tabIdx).textContent = '0:00';
+            }
+        }
+
+        function loadBestTime(tabIdx) {
+            var filename = 'DE_A2_2057G-genitiv';
+            var key = filename + '_best_' + tabIdx;
+            var best = localStorage.getItem(key);
+            if (best) {
+                document.getElementById('best-' + tabIdx).textContent = fmtTime(parseInt(best));
+            }
+        }
+
+        // ========== TAB 0: ENTDECKUNG (MC) ==========
+        var discoveryStates = { 0: null, 1: null, 2: null, 3: null };
+        var discoveryCorrect = { 0: 0, 1: 0, 2: 0, 3: 0 };
+
+        function selectMCDiscovery(step, option, el) {
+            var step_el = document.getElementById('mc-0-step-' + step);
+            step_el.querySelectorAll('.mc-option').forEach(function(opt) {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            el.classList.add('selected');
+
+            if (option === discoveryCorrect[step]) {
+                el.classList.add('correct');
+                discoveryStates[step] = true;
+            } else {
+                el.classList.add('incorrect');
+                discoveryStates[step] = false;
+            }
+        }
+
+        // ========== TAB 1: LÜCKENTEXT ==========
+        function liveCheck(inp) {
+            var ans = inp.dataset.ans;
+            var val = inp.value.trim();
+            inp.classList.remove('ok', 'no');
+            if (!val) return;
+            if (val === ans) {
+                inp.classList.add('ok');
+                timerAutoStart(1);
+                checkLueckenDone();
+                return;
+            }
+            if (ans.startsWith(val)) {
+                timerAutoStart(1);
+                return;
+            }
+            inp.classList.add('no');
+            timerAutoStart(1);
+        }
+
+        function checkLueckenDone() {
+            var inputs = document.querySelectorAll('#sec-1 input[type="text"]');
+            var allCorrect = true;
+            inputs.forEach(function(inp) {
+                if (!inp.classList.contains('ok')) allCorrect = false;
+            });
+            if (allCorrect) {
+                timerStop(1);
+            }
+        }
+
+        function resetTab(tabIdx) {
+            if (tabIdx === 1) {
+                document.querySelectorAll('#sec-1 input[type="text"]').forEach(function(inp) {
+                    inp.value = '';
+                    inp.classList.remove('ok', 'no');
+                });
+                resetTimer(1);
+            } else if (tabIdx === 2) {
+                initZuordnung();
+                resetTimer(2);
+            } else if (tabIdx === 3) {
+                resetSatzbau();
+                resetTimer(3);
+            } else if (tabIdx === 4) {
+                initMC();
+                resetTimer(4);
+            }
+        }
+
+        // ========== TAB 2: ZUORDNUNG ==========
+        var zuordnungData = [
+            { text: 'des Mannes', cat: 'maskulin' },
+            { text: 'des Bruders', cat: 'maskulin' },
+            { text: 'des Kindes', cat: 'neutrum' },
+            { text: 'des Mädchens', cat: 'neutrum' },
+            { text: 'der Frau', cat: 'feminin' },
+            { text: 'der Mutter', cat: 'feminin' },
+            { text: 'der Sängerin', cat: 'feminin' },
+            { text: 'der Kinder', cat: 'plural' },
+            { text: 'der Schüler', cat: 'plural' },
+            { text: 'der Absolventen', cat: 'plural' },
+            { text: 'des Vaters', cat: 'maskulin' },
+            { text: 'des Hauses', cat: 'neutrum' }
+        ];
+
+        function initZuordnung() {
+            var bank = document.getElementById('chip-bank-2');
+            bank.innerHTML = '';
+            document.getElementById('drop-maskulin').innerHTML = '';
+            document.getElementById('drop-feminin').innerHTML = '';
+            document.getElementById('drop-neutrum').innerHTML = '';
+            document.getElementById('drop-plural').innerHTML = '';
+
+            zuordnungData.forEach(function(item, idx) {
+                var chip = document.createElement('div');
+                chip.className = 'chip';
+                chip.textContent = item.text;
+                chip.draggable = true;
+                chip.dataset.cat = item.cat;
+                chip.dataset.idx = idx;
+                chip.ondragstart = function(e) {
+                    draggedChip = this;
+                    e.dataTransfer.effectAllowed = 'move';
+                };
+                chip.ondragend = function() {
+                    draggedChip = null;
+                };
+                bank.appendChild(chip);
+            });
+        }
+
+        function dragOverZone2(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function dragLeaveZone2(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function dropZone2(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            if (!draggedChip) return;
+
+            var dropZone = e.currentTarget;
+            var dropId = dropZone.id;
+            var expectedCat = dropId.replace('drop-', '');
+
+            var chip = draggedChip.cloneNode(true);
+            chip.className = 'chip';
+            chip.draggable = true;
+            chip.dataset.cat = draggedChip.dataset.cat;
+
+            if (draggedChip.dataset.cat === expectedCat) {
+                chip.classList.add('correct');
+            } else {
+                chip.classList.add('incorrect');
+            }
+
+            chip.ondragstart = function(e) {
+                draggedChip = this;
+                e.dataTransfer.effectAllowed = 'move';
+            };
+            chip.ondragend = function() {
+                draggedChip = null;
+            };
+
+            dropZone.appendChild(chip);
+            draggedChip.style.opacity = '0.4';
+
+            timerAutoStart(2);
+            checkZuordnungDone();
+        }
+
+        function checkZuordnungDone() {
+            var allZones = [
+                document.getElementById('drop-maskulin'),
+                document.getElementById('drop-feminin'),
+                document.getElementById('drop-neutrum'),
+                document.getElementById('drop-plural')
+            ];
+            var allCorrect = true;
+            allZones.forEach(function(zone) {
+                zone.querySelectorAll('.chip').forEach(function(chip) {
+                    if (!chip.classList.contains('correct')) allCorrect = false;
+                });
+            });
+
+            var totalChips = 0;
+            allZones.forEach(function(zone) {
+                totalChips += zone.querySelectorAll('.chip').length;
+            });
+
+            if (allCorrect && totalChips === zuordnungData.length) {
+                timerStop(2);
+            }
+        }
+
+        // ========== TAB 3: SATZBAU ==========
+        var sbData = [
+            { parts: ['wegen', 'des', 'Wetters', 'gehe', 'ich', 'nicht', 'nach', 'draußen'], valid: [['wegen', 'des', 'Wetters', 'gehe', 'ich', 'nicht', 'nach', 'draußen']], punct: '.' },
+            { parts: ['gehst', 'du', 'zu', 'Annas', 'Geburtstag'], valid: [['gehst', 'du', 'zu', 'Annas', 'Geburtstag']], punct: '?' },
+            { parts: ['trotz', 'deiner', 'Argumente', 'sehe', 'ich', 'das', 'anders'], valid: [['trotz', 'deiner', 'Argumente', 'sehe', 'ich', 'das', 'anders']], punct: '.' },
+            { parts: ['das', 'ist', 'der', 'Stuhl', 'meines', 'Bruders'], valid: [['das', 'ist', 'der', 'Stuhl', 'meines', 'Bruders']], punct: '.' },
+            { parts: ['die', 'Zeugnisse', 'der', 'Absolventen', 'liegen', 'im', 'Sekretariat', 'bereit'], valid: [['die', 'Zeugnisse', 'der', 'Absolventen', 'liegen', 'im', 'Sekretariat', 'bereit']], punct: '.' },
+            { parts: ['die', 'Arbeit', 'des', 'Mannes', 'ist', 'wirklich', 'interessant'], valid: [['die', 'Arbeit', 'des', 'Mannes', 'ist', 'wirklich', 'interessant']], punct: '.' },
+            { parts: ['der', 'Kindergarten', 'meines', 'Sohnes', 'liegt', 'in', 'der', 'Nähe'], valid: [['der', 'Kindergarten', 'meines', 'Sohnes', 'liegt', 'in', 'der', 'Nähe']], punct: '.' },
+            { parts: ['ich', 'bin', 'mir', 'meines', 'Fehlers', 'bewusst'], valid: [['ich', 'bin', 'mir', 'meines', 'Fehlers', 'bewusst']], punct: '.' }
+        ];
+
+        function fisherYates(arr) {
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            return arr;
+        }
+
+        function sbMakeChip(text, isLast, punct) {
+            var chip = document.createElement('div');
+            chip.className = 'chip';
+            if (isLast && punct) {
+                chip.className += ' punct-chip';
+                chip.textContent = text + punct;
+            } else {
+                chip.textContent = text;
+            }
+            chip.draggable = true;
+            chip.dataset.word = text;
+            chip.ondragstart = function(e) {
+                sbDragged = this;
+                e.dataTransfer.effectAllowed = 'move';
+            };
+            chip.ondragend = function() {
+                sbDragged = null;
+            };
+            return chip;
+        }
+
+        function sbCapitalize(word) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        }
+
+        function sbUpdateCapitalization(row) {
+            var chips = row.querySelectorAll('.chip');
+            if (chips.length > 0) {
+                chips.forEach(function(c, i) {
+                    var text = c.dataset.word;
+                    if (i === 0) {
+                        c.textContent = sbCapitalize(text);
+                    } else {
+                        c.textContent = text;
+                    }
+                });
+            }
+        }
+
+        function sbRegisterZone(row) {
+            row.ondrop = function(e) {
+                e.preventDefault();
+                if (!sbDragged) return;
+
+                var chip = sbDragged.cloneNode(true);
+                chip.className = 'chip';
+                chip.draggable = true;
+                chip.ondragstart = function(e) {
+                    sbDragged = this;
+                    e.dataTransfer.effectAllowed = 'move';
+                };
+                chip.ondragend = function() {
+                    sbDragged = null;
+                };
+
+                row.appendChild(chip);
+                sbUpdateCapitalization(row);
+                sbColorRow(row);
+                timerAutoStart(3);
+
+                setTimeout(function() {
+                    sbCheckAllDone();
+                }, 500);
+            };
+            row.ondragover = function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            };
+        }
+
+        function sbColorRow(row) {
+            var chips = row.querySelectorAll('.chip');
+            var rowText = Array.from(chips).map(function(c) { return c.dataset.word; }).join(' ');
+            var correct = false;
+
+            var sentIdx = parseInt(row.dataset.sentIdx);
+            var sentence = sbData[sentIdx];
+            var validStr = sentence.valid[0].join(' ');
+
+            if (rowText === validStr) {
+                correct = true;
+            }
+
+            if (correct) {
+                row.classList.remove('incomplete');
+                row.classList.add('complete');
+            } else {
+                row.classList.remove('complete');
+                row.classList.add('incomplete');
+            }
+        }
+
+        function sbCheckAllDone() {
+            var allRows = document.querySelectorAll('.sb-row');
+            var allDone = true;
+            allRows.forEach(function(row) {
+                if (!row.classList.contains('complete')) allDone = false;
+            });
+            if (allDone && allRows.length > 0) {
+                timerStop(3);
+            }
+        }
+
+        function sbShowSolution(sentIdx) {
+            var row = document.querySelector('.sb-row[data-sent-idx="' + sentIdx + '"]');
+            row.innerHTML = '';
+            var parts = sbData[sentIdx].parts;
+            parts.forEach(function(word, i) {
+                var chip = sbMakeChip(word, i === parts.length - 1, sbData[sentIdx].punct);
+                row.appendChild(chip);
+            });
+            sbUpdateCapitalization(row);
+            sbColorRow(row);
+        }
+
+        function sbResetOne(sentIdx) {
+            var row = document.querySelector('.sb-row[data-sent-idx="' + sentIdx + '"]');
+            row.innerHTML = '';
+            sbColorRow(row);
+        }
+
+        function initSatzbau() {
+            var container = document.getElementById('sb-rows-container');
+            container.innerHTML = '';
+
+            sbData.forEach(function(sent, idx) {
+                var row = document.createElement('div');
+                row.className = 'sb-row incomplete';
+                row.dataset.sentIdx = idx;
+                sbRegisterZone(row);
+                container.appendChild(row);
+
+                var chipBank = document.createElement('div');
+                chipBank.style.marginBottom = '8px';
+                chipBank.style.display = 'flex';
+                chipBank.style.flexWrap = 'wrap';
+                chipBank.style.gap = '8px';
+
+                var shuffled = fisherYates(sent.parts.slice());
+                shuffled.forEach(function(word, i) {
+                    var chip = sbMakeChip(word, i === shuffled.length - 1, sent.punct);
+                    chipBank.appendChild(chip);
+                });
+
+                container.insertBefore(chipBank, row);
+            });
+        }
+
+        function resetSatzbau() {
+            sbData.forEach(function(_, idx) {
+                sbResetOne(idx);
+            });
+            var banks = document.querySelectorAll('#sb-rows-container > div:not(.sb-row)');
+            banks.forEach(function(bank) {
+                bank.remove();
+            });
+            initSatzbau();
+        }
+
+        // ========== TAB 4: MC GENITIV ODER DATIV ==========
+        var mc4Data = [
+            { sentence: 'Wegen dem Wetter gehe ich nicht nach draußen.', correct: 'dativ' },
+            { sentence: 'Gehst du zu Annas Geburtstag?', correct: 'genitiv' },
+            { sentence: 'Trotz deiner Argumente sehe ich das anders.', correct: 'genitiv' },
+            { sentence: 'Das ist der Stuhl von meinem Bruder.', correct: 'dativ' },
+            { sentence: 'Die Zeugnisse der Absolventen liegen im Sekretariat bereit.', correct: 'genitiv' },
+            { sentence: 'Kannst du bitte die Brille von deinem Vater holen?', correct: 'dativ' }
+        ];
+
+        function initMC() {
+            var container = document.getElementById('mc-4-container');
+            container.innerHTML = '';
+
+            mc4Data.forEach(function(item, idx) {
+                var box = document.createElement('div');
+                box.className = 'mc-step';
+                box.style.marginBottom = '16px';
+
+                var title = document.createElement('div');
+                title.className = 'mc-step-title';
+                title.textContent = 'Satz ' + (idx + 1) + ': \u201E' + item.sentence + '\u201C';
+                box.appendChild(title);
+
+                var opts = document.createElement('div');
+                opts.className = 'mc-options';
+
+                var btn1 = document.createElement('div');
+                btn1.className = 'pill-btn';
+                btn1.textContent = 'Genitiv';
+                btn1.onclick = function() {
+                    selectMC4(idx, 'genitiv', this);
+                };
+                opts.appendChild(btn1);
+
+                var btn2 = document.createElement('div');
+                btn2.className = 'pill-btn';
+                btn2.textContent = 'Dativ';
+                btn2.onclick = function() {
+                    selectMC4(idx, 'dativ', this);
+                };
+                opts.appendChild(btn2);
+
+                box.appendChild(opts);
+                container.appendChild(box);
+            });
+        }
+
+        var mc4States = {};
+
+        function selectMC4(idx, choice, el) {
+            var box = el.parentElement.parentElement;
+            var buttons = box.querySelectorAll('.pill-btn');
+
+            buttons.forEach(function(btn) {
+                btn.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            el.classList.add('selected');
+            mc4States[idx] = choice;
+
+            if (choice === mc4Data[idx].correct) {
+                el.classList.add('correct');
+            } else {
+                el.classList.add('incorrect');
+            }
+
+            timerAutoStart(4);
+            checkMC4Done();
+        }
+
+        function checkMC4Done() {
+            var allSelected = true;
+            for (var i = 0; i < mc4Data.length; i++) {
+                if (mc4States[i] !== mc4Data[i].correct) {
+                    allSelected = false;
+                    break;
+                }
+            }
+            if (allSelected) {
+                timerStop(4);
+            }
+        }
+
+        // ========== INIT ==========
+        window.addEventListener('load', function() {
+            initZuordnung();
+            initSatzbau();
+            initMC();
+            loadBestTime(1);
+            loadBestTime(2);
+            loadBestTime(3);
+            loadBestTime(4);
+        });
+    </script>
+</body>
+</html>

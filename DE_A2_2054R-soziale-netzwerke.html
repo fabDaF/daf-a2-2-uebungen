@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soziale Netzwerke – Interaktive DaF-Übung (A2)</title>
+    <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+.sec-inner { padding: 28px 30px; }
+.sec-title { font-size: 1.4em; font-weight: 700; color: #667eea; margin-bottom: 20px; }
+.tab-banner { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .tab-banner { max-height: 120px; }
+}
+
+/* CONTROL BAR */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+/* VORENTLASTUNG */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-top: 16px; }
+.vocab-card { background: #f8f9ff; border: 1px solid #dde3ff; border-radius: 10px; padding: 14px 16px; }
+.vocab-term { font-weight: 700; color: #667eea; font-size: 1.05em; margin-bottom: 2px; }
+.vocab-en { color: #999; font-size: 0.85em; margin-bottom: 5px; font-style: italic; }
+.vocab-def { color: #555; font-size: 0.92em; line-height: 1.5; }
+
+/* STORY TEXT */
+.story-text { max-width: 600px; margin: 0 auto; font-family: Georgia, 'Times New Roman', serif; font-size: 1.05em; line-height: 1.8; color: #1a1a1a; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+.story-text p { margin-bottom: 1em; text-indent: 1.4em; }
+.story-text p:first-child { text-indent: 0; }
+.story-source { margin-top: 24px; color: #aaa; font-size: 0.8em; text-align: right; }
+
+/* VOCAB HIGHLIGHTING */
+.vocab-hl { background: #ffe9a0; border-radius: 3px; padding: 1px 3px; font-weight: 600; cursor: help; }
+
+/* R/F LAYOUT */
+.rf-list { display: flex; flex-direction: column; gap: 8px; max-width: 650px; margin-left: auto; margin-right: auto; }
+.rf-item { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #f9f9f9; border-radius: 8px; font-size: 0.95em; border: 1.5px solid #ddd; }
+.rf-item:hover { background: #f3e5f5; }
+.rf-text { flex: 1; }
+.rf-btns { display: flex; gap: 6px; }
+.rf-btn { padding: 4px 14px; border-radius: 14px; border: 1.5px solid #9b59b6; background: #fff; color: #6c3483; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.rf-btn:hover { background: #f3e5f5; }
+.rf-btn.sel-r { background: #27ae60; color: #fff; border-color: #27ae60; }
+.rf-btn.sel-f { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+.rf-result { font-size: 0.8rem; font-weight: 700; min-width: 24px; }
+.rf-result.ok { color: #27ae60; }
+.rf-result.err { color: #e74c3c; }
+
+/* LÜCKENTEXT */
+.luecken-group { margin-bottom: 24px; }
+.luecken-group h3 { color: #667eea; font-size: 1.0em; margin-bottom: 12px; }
+.luecken-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 10px; border-radius: 10px; border-left: 4px solid #667eea; font-size: 0.95em; line-height: 1.7; }
+.luecken-inp { border: none; border-bottom: 2px solid #667eea; background: transparent; padding: 2px 6px; font-family: inherit; font-size: 0.95em; outline: none; width: 120px; transition: all 0.2s; }
+.luecken-inp:focus { border-bottom-color: #764ba2; background: #f0f7ff; }
+.luecken-inp.ok { border-bottom-color: #27ae60; background: #e8f8f0; color: #27ae60; font-weight: 600; }
+.luecken-inp.no { border-bottom-color: #e74c3c; background: #fdeaea; }
+
+/* SATZBAU */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.punct-chip { background: transparent !important; border: none !important; color: #667eea !important; padding: 2px 0 !important; cursor: default !important; font-weight: 700; font-size: 1.1em; pointer-events: none; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.sb-label { font-weight: 700; color: #4a148c; margin: 18px 0 6px; font-size: 0.95em; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+
+/* WORTSCHATZ */
+.vocab-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vocab-en-label { font-weight: 600; color: #764ba2; min-width: 140px; font-size: 0.95em; }
+.vocab-arrow { color: #ccc; font-size: 1.2em; }
+.vocab-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vocab-inputs input { border: none; border-bottom: 2px solid #667eea; background: #fff; padding: 4px 8px; font-family: inherit; font-size: 0.95em; outline: none; transition: all 0.2s; }
+.vocab-inputs input:focus { border-bottom-color: #764ba2; background: #f0f7ff; }
+.vocab-inputs input.correct { border-bottom-color: #27ae60; background: #e8f8f0; }
+.vocab-inputs input.wrong { border-bottom-color: #e74c3c; background: #fdeaea; }
+.vocab-inputs input.art { width: 70px; }
+.vocab-inputs input.wort { width: 140px; }
+.vocab-inputs input.plural { width: 140px; }
+.vocab-hint { color: #27ae60; font-weight: 600; font-size: 0.8em; margin-left: 6px; }
+@media (max-width: 600px) { .vocab-item { flex-direction: column; align-items: flex-start; } }
+
+/* HILFE-BOX */
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* FOOTER */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Soziale Netzwerke</h1>
+        <p style="font-family: Georgia, serif;">A2 – Lektion 2054R &nbsp;|&nbsp; Lesen &amp; Verstehen</p>
+        <div class="big-emoji">📱</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">🌅</span><span class="nav-label">Vorentlastung</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">📖</span><span class="nav-label">Geschichte</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">❓</span><span class="nav-label">Verständnis</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(5)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+    <!-- TAB 0: VORENTLASTUNG -->
+    <div class="section active" id="sec0">
+        <img class="tab-banner" src="https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Soziale Netzwerke">
+        <div class="sec-inner">
+            <div class="sec-title">🌅 Vorentlastung</div>
+            <p style="color:#888; font-size:0.92em; margin-bottom:16px;">Lerne diese Wörter, bevor du den Text liest.</p>
+            <div class="vocab-grid" id="vocabGrid"></div>
+        </div>
+    </div>
+
+    <!-- TAB 1: GESCHICHTE -->
+    <div class="section" id="sec1">
+        <img class="tab-banner" src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Menschen am Laptop">
+        <div class="sec-inner">
+            <div class="sec-title">📖 Soziale Netzwerke</div>
+            <div class="story-text">
+                <p>Anfang 2016 hat WhatsApp mehr als eine Milliarde Nutzer gehabt. Privatpersonen können hier chatten, für Unternehmen ist es ein Kommunikationskanal. Facebook wird von noch mehr Menschen genutzt. Man kann chatten, Fotos hochladen, seine Meinung äußern, aber auch verschiedenen Gruppen beitreten.</p>
+
+                <p>Auf Instagram kann man Fotos veröffentlichen, aber auch komplexere Inhalte. Eine Filterung gibt es hier nicht. Viele posten Bilder von Reisen, Beauty-Tipps oder stellen Fitness-Programme vor. Die Nutzer sind zwischen 16 und 34 Jahre alt.</p>
+
+                <p>In Deutschland gibt es 6 Millionen YouTube-Nutzer. Hier findet man Videos über alle Themen: Dokumentarfilme, Tutorials, Musikvideos. Man kann Filme anschauen, Werbung veröffentlichen, Menschen ansprechen und viele Fans finden.</p>
+
+                <p>Soziale Netzwerke sind sehr beliebt, haben aber Vor- und Nachteile. Man ist immer auf dem neuesten Stand, denn sie sichern eine schnelle und direkte Kommunikation. Mithilfe der sozialen Netzwerke kann man alte Kollegen aus der ganzen Welt finden. Die Anmeldung ist generell kostenlos.</p>
+
+                <p>Wenn man zum Beispiel ein neues Musikvideo auf YouTube postet, dann bekommt man auch sehr schnell ein Feedback. Soziale Netzwerke sind auch ein Zeichen der Meinungsfreiheit.</p>
+
+                <p>Soziale Netzwerke haben auch Nachteile. Die Daten sind nicht immer sicher und man kann die Inhalte oft nicht kontrollieren. Gefährlich sind sie für Jugendliche, denn diese verbringen mehr Zeit auf sozialen Netzwerken als mit realen Freunden. Soziale Netzwerke können auch ein Problem für die Karriere sein, wenn zum Beispiel nicht ernsthafte Fotos ins Netz hochgeladen werden.</p>
+            </div>
+            <div class="story-source">Quelle: A2 – Lektion 2054R – Soziale Netzwerke</div>
+        </div>
+    </div>
+
+    <!-- TAB 2: VERSTÄNDNIS (R/F) -->
+    <div class="section" id="sec2">
+        <img class="tab-banner" src="https://images.pexels.com/photos/3184325/pexels-photo-3184325.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Diskussion">
+        <div class="sec-inner">
+            <div class="sec-title">❓ Verständnis</div>
+
+            <p style="font-size:1.0em; color:#555; margin-bottom:16px; font-weight:600; max-width:650px; margin-left:auto; margin-right:auto;">Teil A: Richtig oder Falsch?</p>
+            <div class="rf-list" id="rfListA"></div>
+
+            <div style="margin-top:32px;"></div>
+            <p style="font-size:1.0em; color:#555; margin-bottom:16px; font-weight:600; max-width:650px; margin-left:auto; margin-right:auto;">Teil B: Richtig oder Falsch?</p>
+            <div class="rf-list" id="rfListB"></div>
+        </div>
+    </div>
+
+    <!-- TAB 3: LÜCKENTEXT -->
+    <div class="section" id="sec3">
+        <img class="tab-banner" src="https://images.pexels.com/photos/261763/pexels-photo-261763.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Schreiben">
+        <div class="sec-inner">
+            <div class="sec-title">✏️ Lückentext</div>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="resetLuecke()">Zurücksetzen</button>
+                    <button class="btn" onclick="showLueckeSolution()">Lösung zeigen</button>
+                </div>
+                <div class="timer-display">
+                    <span>Zeit: <span id="timer-3">0:00</span></span>
+                    <span>Bestes: <span id="best-3">—</span></span>
+                </div>
+            </div>
+            <p style="font-size:0.92em; color:#666; margin-bottom:16px;">Ergänze die fehlenden Wörter aus dem Text.</p>
+
+            <div class="luecken-group">
+                <h3>Teil A: WhatsApp, Facebook, Instagram, YouTube</h3>
+                <div class="luecken-item">Anfang 2016 hat WhatsApp mehr als eine <input class="luecken-inp input-blank" data-ans="Milliarde" placeholder="" onkeyup="liveCheck(this)"> Nutzer gehabt.</div>
+                <div class="luecken-item">Für <input class="luecken-inp input-blank" data-ans="Unternehmen" placeholder="" onkeyup="liveCheck(this)"> ist WhatsApp ein Kommunikationskanal.</div>
+                <div class="luecken-item">Auf Facebook kann man seine <input class="luecken-inp input-blank" data-ans="Meinung" placeholder="" onkeyup="liveCheck(this)"> äußern und verschiedenen Gruppen <input class="luecken-inp input-blank" data-ans="beitreten" placeholder="" onkeyup="liveCheck(this)">.</div>
+                <div class="luecken-item">Die Instagram-Nutzer sind zwischen 16 und <input class="luecken-inp input-blank" data-ans="34" placeholder="" onkeyup="liveCheck(this)"> Jahre alt.</div>
+                <div class="luecken-item">Auf YouTube kann man Filme anschauen und <input class="luecken-inp input-blank" data-ans="Werbung" placeholder="" onkeyup="liveCheck(this)"> veröffentlichen.</div>
+            </div>
+
+            <div class="luecken-group">
+                <h3>Teil B: Vor- und Nachteile</h3>
+                <div class="luecken-item">Man ist immer auf dem neuesten <input class="luecken-inp input-blank" data-ans="Stand" placeholder="" onkeyup="liveCheck(this)">.</div>
+                <div class="luecken-item">Die <input class="luecken-inp input-blank" data-ans="Anmeldung" placeholder="" onkeyup="liveCheck(this)"> ist generell kostenlos.</div>
+                <div class="luecken-item">Die <input class="luecken-inp input-blank" data-ans="Daten" placeholder="" onkeyup="liveCheck(this)"> sind nicht immer sicher.</div>
+                <div class="luecken-item">Jugendliche verbringen mehr Zeit auf sozialen Netzwerken als mit <input class="luecken-inp input-blank" data-ans="realen" placeholder="" onkeyup="liveCheck(this)"> Freunden.</div>
+                <div class="luecken-item">Soziale Netzwerke können ein Problem für die <input class="luecken-inp input-blank" data-ans="Karriere" placeholder="" onkeyup="liveCheck(this)"> sein.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: SATZBAU -->
+    <div class="section" id="sec4">
+        <img class="tab-banner" src="https://images.pexels.com/photos/278888/pexels-photo-278888.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Puzzle">
+        <div class="sec-inner">
+            <div class="sec-title">🧩 Satzbau</div>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="resetSatzbau()">Zurücksetzen</button>
+                    <button class="btn" onclick="sbShowSolution()">Lösung zeigen</button>
+                </div>
+                <div class="timer-display">
+                    <span>Zeit: <span id="timer-4">0:00</span></span>
+                    <span>Bestes: <span id="best-4">—</span></span>
+                </div>
+            </div>
+            <p style="font-size:0.95em; color:#666; margin-bottom:16px;">Ordne die Wörter zu einem grammatikalisch korrekten Satz.</p>
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- TAB 5: WORTSCHATZ -->
+    <div class="section" id="sec5">
+        <img class="tab-banner" src="https://images.pexels.com/photos/256417/pexels-photo-256417.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Wörterbuch">
+        <div class="sec-inner">
+            <div class="sec-title">🔠 Wortschatz</div>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="resetVocab()">Zurücksetzen</button>
+                    <button class="btn" onclick="showVocabLoesung()">Lösung zeigen</button>
+                </div>
+                <div class="timer-display">
+                    <span>Zeit: <span id="timer-5">0:00</span></span>
+                    <span>Bestes: <span id="best-5">—</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Übersetze die Wörter ins Deutsche. Bei Nomen: Artikel + Wort + Plural!
+            </div>
+            <div id="vocabContainer"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">© Frank Burkert · DaF-Materialien · FrankBurkert@fabdaf.onmicrosoft.com</div>
+</div><!-- /container -->
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════════════
+// GLOBAL STATE
+// ════════════════════════════════════════════════════════════════════════════════════
+var currentTab = 0;
+var timerIntervals = {};
+var timerSeconds = [0, 0, 0, 0, 0, 0];
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════════════════════════════════════════
+var VORENTLASTUNG = [
+    { term: 'das Netzwerk, -e', en: 'network', def: 'Ein System, in dem Menschen miteinander verbunden sind.' },
+    { term: 'der Nutzer, -', en: 'user', def: 'Eine Person, die ein Programm oder eine App benutzt.' },
+    { term: 'die Meinungsfreiheit', en: 'freedom of speech', def: 'Das Recht, seine Meinung frei zu sagen.' },
+    { term: 'die Zensur, -en', en: 'censorship', def: 'Wenn Informationen kontrolliert oder verboten werden.' },
+    { term: 'die Werbung, -en', en: 'advertisement', def: 'Information, die ein Produkt bekannt machen soll.' },
+    { term: 'die Anmeldung, -en', en: 'registration', def: 'Wenn man sich für etwas registriert.' },
+    { term: 'die Karriere, -n', en: 'career', def: 'Der berufliche Weg eines Menschen.' },
+    { term: 'der Entwurf, Entwu\u0308rfe', en: 'draft', def: 'Eine erste Version von einem Text oder Dokument.' },
+    { term: 'veröffentlichen', en: 'to publish', def: 'Etwas für alle sichtbar machen.' },
+    { term: 'beitreten', en: 'to join', def: 'Mitglied einer Gruppe werden.' },
+    { term: 'herunterladen', en: 'to download', def: 'Dateien aus dem Internet auf den Computer speichern.' },
+    { term: 'hochladen', en: 'to upload', def: 'Dateien vom Computer ins Internet stellen.' }
+];
+
+var rfDataA = [
+    { text: 'Anfang 2015 hat WhatsApp mehr als eine Milliarde Nutzer gehabt.', answer: 'f', correction: 'Anfang 2016, nicht 2015.' },
+    { text: 'WhatsApp ist nur für Privatpersonen.', answer: 'f', correction: 'WhatsApp ist auch für Unternehmen ein Kommunikationskanal.' },
+    { text: 'Die absolute Nummer 1 ist Facebook.', answer: 'r', correction: '' },
+    { text: 'Instagram ist nur für Jugendliche.', answer: 'f', correction: 'Die Nutzer sind zwischen 16 und 34 Jahre alt.' },
+    { text: 'In Deutschland gibt es 6 Millionen YouTube-Nutzer.', answer: 'r', correction: '' },
+    { text: 'Auf Instagram kann man Filme anschauen, Werbung veröffentlichen, Menschen ansprechen und viele Fans finden.', answer: 'f', correction: 'Das gilt für YouTube, nicht Instagram.' }
+];
+
+var rfDataB = [
+    { text: 'Man ist auf dem letzten Stand.', answer: 'f', correction: 'Man ist auf dem neuesten Stand.' },
+    { text: 'Für die Anmeldung muss man bezahlen.', answer: 'f', correction: 'Die Anmeldung ist generell kostenlos.' },
+    { text: 'Man bekommt schnelles Feedback.', answer: 'r', correction: '' },
+    { text: 'Daten sind immer sicher.', answer: 'f', correction: 'Die Daten sind nicht immer sicher.' },
+    { text: 'Auf sozialen Netzwerken gibt es reale Freunde.', answer: 'f', correction: 'Jugendliche verbringen mehr Zeit auf sozialen Netzwerken als mit realen Freunden.' },
+    { text: 'Soziale Netzwerke sind gut für die Karriere.', answer: 'f', correction: 'Sie können ein Problem für die Karriere sein.' }
+];
+
+var satzbauData = [
+    { parts: ['WhatsApp', 'hat', 'mehr', 'als', 'eine', 'Milliarde', 'Nutzer'], valid: [['WhatsApp', 'hat', 'mehr', 'als', 'eine', 'Milliarde', 'Nutzer']], punct: '.' },
+    { parts: ['man', 'kann', 'auf', 'Facebook', 'Fotos', 'hochladen'], valid: [['man', 'kann', 'auf', 'Facebook', 'Fotos', 'hochladen']], punct: '.' },
+    { parts: ['die', 'Anmeldung', 'ist', 'generell', 'kostenlos'], valid: [['die', 'Anmeldung', 'ist', 'generell', 'kostenlos']], punct: '.' },
+    { parts: ['soziale', 'Netzwerke', 'haben', 'Vor-', 'und', 'Nachteile'], valid: [['soziale', 'Netzwerke', 'haben', 'Vor-', 'und', 'Nachteile']], punct: '.' },
+    { parts: ['die', 'Daten', 'sind', 'nicht', 'immer', 'sicher'], valid: [['die', 'Daten', 'sind', 'nicht', 'immer', 'sicher']], punct: '.' },
+    { parts: ['auf', 'YouTube', 'findet', 'man', 'Videos', 'über', 'alle', 'Themen'], valid: [['auf', 'YouTube', 'findet', 'man', 'Videos', 'über', 'alle', 'Themen']], punct: '.' },
+    { parts: ['Jugendliche', 'verbringen', 'mehr', 'Zeit', 'auf', 'sozialen', 'Netzwerken'], valid: [['Jugendliche', 'verbringen', 'mehr', 'Zeit', 'auf', 'sozialen', 'Netzwerken']], punct: '.' },
+    { parts: ['man', 'kann', 'alte', 'Kollegen', 'aus', 'der', 'ganzen', 'Welt', 'finden'], valid: [['man', 'kann', 'alte', 'Kollegen', 'aus', 'der', 'ganzen', 'Welt', 'finden']], punct: '.' }
+];
+
+var WORTSCHATZ = [
+    { id:1, type:'n', en:'network', artikel:'das', de:'Netzwerk', plural:'Netzwerke' },
+    { id:2, type:'n', en:'user', artikel:'der', de:'Nutzer', plural:'\u2014' },
+    { id:3, type:'n', en:'freedom of speech', artikel:'die', de:'Meinungsfreiheit', plural:'\u2014' },
+    { id:4, type:'n', en:'censorship', artikel:'die', de:'Zensur', plural:'Zensuren' },
+    { id:5, type:'n', en:'advertisement', artikel:'die', de:'Werbung', plural:'Werbungen' },
+    { id:6, type:'n', en:'registration', artikel:'die', de:'Anmeldung', plural:'Anmeldungen' },
+    { id:7, type:'n', en:'career', artikel:'die', de:'Karriere', plural:'Karrieren' },
+    { id:8, type:'n', en:'draft', artikel:'der', de:'Entwurf', plural:'Entwu\u0308rfe' },
+    { id:9, type:'v', en:'to publish', de:'veröffentlichen' },
+    { id:10, type:'v', en:'to join (a group)', de:'beitreten' },
+    { id:11, type:'v', en:'to download', de:'herunterladen' },
+    { id:12, type:'v', en:'to upload', de:'hochladen' }
+];
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════════════════════════════════════════════════════
+function showTab(n) {
+    for (var i = 0; i < 6; i++) {
+        if (timerIntervals[i]) clearInterval(timerIntervals[i]);
+    }
+    var secs = document.querySelectorAll('.section');
+    secs.forEach(function(s) { s.classList.remove('active'); });
+    var navBtns = document.querySelectorAll('.nav-btn');
+    navBtns.forEach(function(b) { b.classList.remove('active'); });
+    document.getElementById('sec' + n).classList.add('active');
+    navBtns[n].classList.add('active');
+    currentTab = n;
+    if (n === 4) initSatzbau();
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 0: VORENTLASTUNG
+// ════════════════════════════════════════════════════════════════════════════════════
+function initVorentlastung() {
+    var grid = document.getElementById('vocabGrid');
+    grid.innerHTML = '';
+    VORENTLASTUNG.forEach(function(v) {
+        var card = document.createElement('div');
+        card.className = 'vocab-card';
+        card.innerHTML = '<div class="vocab-term">' + v.term + '</div>'
+            + '<div class="vocab-en">' + v.en + '</div>'
+            + '<div class="vocab-def">' + v.def + '</div>';
+        grid.appendChild(card);
+    });
+}
+initVorentlastung();
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 2: R/F VERSTÄNDNIS
+// ════════════════════════════════════════════════════════════════════════════════════
+function buildRfList(containerId, data) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = '';
+    data.forEach(function(item, idx) {
+        var div = document.createElement('div');
+        div.className = 'rf-item';
+        div.innerHTML = '<span class="rf-text">' + (idx + 1) + '. ' + item.text + '</span>'
+            + '<div class="rf-btns">'
+            + '<button class="rf-btn" data-val="r" onclick="checkRf(this,\'' + containerId + '\',' + idx + ')">R</button>'
+            + '<button class="rf-btn" data-val="f" onclick="checkRf(this,\'' + containerId + '\',' + idx + ')">F</button>'
+            + '</div>'
+            + '<span class="rf-result" id="' + containerId + '-res-' + idx + '"></span>';
+        container.appendChild(div);
+    });
+}
+
+function checkRf(btn, containerId, idx) {
+    var data = containerId === 'rfListA' ? rfDataA : rfDataB;
+    var item = data[idx];
+    var parentBtns = btn.parentNode.querySelectorAll('.rf-btn');
+    parentBtns.forEach(function(b) { b.classList.remove('sel-r', 'sel-f'); });
+
+    var chosen = btn.getAttribute('data-val');
+    var res = document.getElementById(containerId + '-res-' + idx);
+
+    if (chosen === item.answer) {
+        btn.classList.add(chosen === 'r' ? 'sel-r' : 'sel-f');
+        res.className = 'rf-result ok';
+        res.textContent = '✓';
+    } else {
+        btn.classList.add(chosen === 'r' ? 'sel-r' : 'sel-f');
+        res.className = 'rf-result err';
+        res.textContent = '✗ ' + item.correction;
+    }
+}
+
+buildRfList('rfListA', rfDataA);
+buildRfList('rfListB', rfDataB);
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 3: LÜCKENTEXT
+// ════════════════════════════════════════════════════════════════════════════════════
+function liveCheck(el) {
+    timerAutoStart(3);
+    var ans = el.getAttribute('data-ans');
+    var val = el.value;
+
+    if (val === ans) {
+        el.classList.remove('no');
+        el.classList.add('ok');
+        var allInputs = document.querySelectorAll('#sec3 .input-blank');
+        var allOk = Array.from(allInputs).every(function(inp) { return inp.classList.contains('ok'); });
+        if (allOk) timerStop(3);
+    } else if (ans.startsWith(val) && val.length > 0) {
+        el.classList.remove('ok', 'no');
+    } else {
+        el.classList.remove('ok');
+        if (val.length > 0) el.classList.add('no');
+        else el.classList.remove('no');
+    }
+}
+
+function showLueckeSolution() {
+    document.querySelectorAll('#sec3 .input-blank').forEach(function(inp) {
+        inp.value = inp.getAttribute('data-ans');
+        inp.classList.remove('no');
+        inp.classList.add('ok');
+    });
+    timerStop(3);
+}
+
+function resetLuecke() {
+    document.querySelectorAll('#sec3 .input-blank').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('ok', 'no');
+    });
+    resetTimer(3);
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 4: SATZBAU
+// ════════════════════════════════════════════════════════════════════════════════════
+var sbDragged = null;
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    var isPunct = /^[,;.:!?]$/.test(word);
+    chip.className = isPunct ? 'chip punct-chip' : 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = !isPunct;
+    if (!isPunct) {
+        chip.addEventListener('dragstart', function(e) {
+            sbDragged = chip;
+            e.dataTransfer.setData('text/plain', '');
+            setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+        });
+        chip.addEventListener('dragend', function() {
+            chip.style.opacity = '';
+            sbDragged = null;
+        });
+    }
+    return chip;
+}
+
+function sbCapitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var wordIdx = 0;
+    chips.forEach(function(c) {
+        var orig = c.dataset.orig;
+        if (orig === ',') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase() && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        c.textContent = (wordIdx === 0 && !isProper) ? sbCapitalize(orig) : orig;
+        wordIdx++;
+    });
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        zone.appendChild(sbDragged);
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('correct', 'incorrect'); });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(4);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '\u2713 Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '\u2717 Falsche Reihenfolge \u2013 verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(4);
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    if (container.children.length === 0) {
+        satzbauData.forEach(function(ex, idx) {
+            var parts = ex.parts.slice();
+            for (var i = parts.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+            }
+
+            var label = document.createElement('div');
+            label.className = 'sb-label';
+            label.textContent = 'Satz ' + (idx + 1);
+            container.appendChild(label);
+
+            var bank = document.createElement('div');
+            bank.className = 'chips-container';
+            bank.id = 'sb-bank-' + idx;
+            parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+            sbRegisterZone(bank, idx);
+            container.appendChild(bank);
+
+            var row = document.createElement('div');
+            row.className = 'sentence-builder';
+            row.id = 'sb-row-' + idx;
+            sbRegisterZone(row, idx);
+            container.appendChild(row);
+
+            var fb = document.createElement('div');
+            fb.className = 'satzbau-feedback';
+            fb.id = 'sb-fb-' + idx;
+            container.appendChild(fb);
+        });
+    }
+}
+
+function resetSatzbau() {
+    resetTimer(4);
+    document.getElementById('satzbauContainer').innerHTML = '';
+    initSatzbau();
+}
+
+function sbShowSolution() {
+    satzbauData.forEach(function(ex, idx) {
+        var bank = document.getElementById('sb-bank-' + idx);
+        var row = document.getElementById('sb-row-' + idx);
+        var solution = ex.valid[0];
+
+        var allChips = {};
+        Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+        Array.from(row.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+
+        while (bank.firstChild) bank.removeChild(bank.firstChild);
+        while (row.firstChild) row.removeChild(row.firstChild);
+
+        solution.forEach(function(word, i) {
+            var chip = allChips[word];
+            if (chip) {
+                if (!chip.classList.contains('punct-chip')) {
+                    var isProper = word.charAt(0) === word.charAt(0).toUpperCase() && word.charAt(0) !== word.charAt(0).toLowerCase();
+                    chip.textContent = (i === 0 && !isProper) ? sbCapitalize(word) : word;
+                }
+                chip.classList.remove('correct', 'incorrect');
+                row.appendChild(chip);
+            }
+        });
+        setTimeout(function() { sbCheckAuto(idx); }, 100);
+    });
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.textContent = c.dataset.orig;
+        bank.appendChild(c);
+    });
+    row.classList.remove('correct', 'incorrect');
+    var punkt = row.querySelector('.sb-punkt');
+    if (punkt) punkt.parentNode.removeChild(punkt);
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TAB 5: WORTSCHATZ
+// ════════════════════════════════════════════════════════════════════════════════════
+function fisherYatesShuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+    }
+    return arr;
+}
+
+function initVocab() {
+    var container = document.getElementById('vocabContainer');
+    container.innerHTML = '';
+    var shuffled = fisherYatesShuffle(WORTSCHATZ.slice());
+    shuffled.forEach(function(item) {
+        var div = document.createElement('div');
+        div.className = 'vocab-item';
+        div.dataset.id = item.id;
+
+        var enSpan = document.createElement('span');
+        enSpan.className = 'vocab-en-label';
+        enSpan.textContent = item.en;
+        div.appendChild(enSpan);
+
+        var arrow = document.createElement('span');
+        arrow.className = 'vocab-arrow';
+        arrow.textContent = '→';
+        div.appendChild(arrow);
+
+        var inputs = document.createElement('div');
+        inputs.className = 'vocab-inputs';
+
+        if (item.type === 'n') {
+            var artInp = document.createElement('input');
+            artInp.className = 'art';
+            artInp.placeholder = 'Artikel';
+            artInp.dataset.answer = item.artikel;
+            artInp.onkeyup = function() { vocabLiveCheck(this); };
+            inputs.appendChild(artInp);
+
+            var wortInp = document.createElement('input');
+            wortInp.className = 'wort';
+            wortInp.placeholder = 'Deutsch';
+            wortInp.dataset.answer = item.de;
+            wortInp.onkeyup = function() { vocabLiveCheck(this); };
+            inputs.appendChild(wortInp);
+
+            if (item.plural !== '\u2014') {
+                var pluralInp = document.createElement('input');
+                pluralInp.className = 'plural';
+                pluralInp.placeholder = 'Plural';
+                pluralInp.dataset.answer = item.plural;
+                pluralInp.onkeyup = function() { vocabLiveCheck(this); };
+                inputs.appendChild(pluralInp);
+            }
+        } else {
+            var deInp = document.createElement('input');
+            deInp.className = 'wort';
+            deInp.placeholder = 'Deutsch';
+            deInp.dataset.answer = item.de;
+            deInp.onkeyup = function() { vocabLiveCheck(this); };
+            inputs.appendChild(deInp);
+        }
+
+        div.appendChild(inputs);
+        container.appendChild(div);
+    });
+}
+
+function vocabLiveCheck(inp) {
+    timerAutoStart(5);
+    var answer = inp.dataset.answer;
+    var val = inp.value;
+
+    if (val === answer) {
+        inp.classList.remove('wrong');
+        inp.classList.add('correct');
+        checkVocabAllDone();
+    } else if (answer.startsWith(val) && val.length > 0) {
+        inp.classList.remove('correct', 'wrong');
+    } else {
+        inp.classList.remove('correct');
+        if (val.length > 0) inp.classList.add('wrong');
+        else inp.classList.remove('wrong');
+    }
+}
+
+function checkVocabAllDone() {
+    var allInputs = document.querySelectorAll('#vocabContainer input');
+    var allOk = Array.from(allInputs).every(function(inp) { return inp.classList.contains('correct'); });
+    if (allOk) timerStop(5);
+}
+
+function showVocabLoesung() {
+    document.querySelectorAll('#vocabContainer .vocab-item').forEach(function(item) {
+        var inputs = item.querySelectorAll('input');
+        inputs.forEach(function(inp) {
+            if (!inp.classList.contains('correct')) {
+                var hint = document.createElement('span');
+                hint.className = 'vocab-hint';
+                hint.textContent = inp.dataset.answer;
+                inp.parentNode.insertBefore(hint, inp.nextSibling);
+            }
+        });
+    });
+    timerStop(5);
+}
+
+function resetVocab() {
+    document.querySelectorAll('#vocabContainer input').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('correct', 'wrong');
+    });
+    document.querySelectorAll('#vocabContainer .vocab-hint').forEach(function(h) {
+        h.parentNode.removeChild(h);
+    });
+    resetTimer(5);
+}
+
+initVocab();
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// TIMER SYSTEM
+// ════════════════════════════════════════════════════════════════════════════════════
+function timerAutoStart(n) {
+    if (timerIntervals[n]) return;
+    timerIntervals[n] = setInterval(function() {
+        timerSeconds[n]++;
+        updateTimerDisplay(n);
+    }, 1000);
+}
+
+function timerStop(n) {
+    if (timerIntervals[n]) {
+        clearInterval(timerIntervals[n]);
+        timerIntervals[n] = null;
+        saveBest(n);
+    }
+}
+
+function resetTimer(n) {
+    if (timerIntervals[n]) clearInterval(timerIntervals[n]);
+    timerIntervals[n] = null;
+    timerSeconds[n] = 0;
+    updateTimerDisplay(n);
+}
+
+function updateTimerDisplay(n) {
+    var sec = timerSeconds[n];
+    var min = Math.floor(sec / 60);
+    var s = sec % 60;
+    var display = min + ':' + (s < 10 ? '0' : '') + s;
+    var el = document.getElementById('timer-' + n);
+    if (el) el.textContent = display;
+}
+
+function saveBest(n) {
+    var key = 'best-2054R-' + n;
+    var current = timerSeconds[n];
+    var best = localStorage.getItem(key);
+    if (!best || current < parseInt(best)) {
+        localStorage.setItem(key, current);
+        updateBestDisplay(n);
+    }
+}
+
+function updateBestDisplay(n) {
+    var key = 'best-2054R-' + n;
+    var best = localStorage.getItem(key);
+    var el = document.getElementById('best-' + n);
+    if (el) {
+        if (best) {
+            var sec = parseInt(best);
+            var min = Math.floor(sec / 60);
+            var s = sec % 60;
+            el.textContent = min + ':' + (s < 10 ? '0' : '') + s;
+        } else {
+            el.textContent = '\u2014';
+        }
+    }
+}
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// VOCAB HIGHLIGHTING
+// ════════════════════════════════════════════════════════════════════════════════════
+function highlightVocabInText() {
+    var storyText = document.querySelector('.story-text') || document.querySelector('.lese-text');
+    if (!storyText) return;
+    var words = [];
+    if (typeof VORENTLASTUNG !== 'undefined' && VORENTLASTUNG.length) {
+        words = VORENTLASTUNG.map(function(item) {
+            var term = item.term.replace(/^(der|die|das)\s+/i, '');
+            return term.split(',')[0].trim();
+        });
+    }
+    words = words.filter(function(w) { return w && w.length > 3; });
+    if (words.length === 0) return;
+
+    function walkAndHighlight(node) {
+        if (node.nodeType === 3) {
+            var text = node.nodeValue;
+            var replaced = text;
+            words.forEach(function(word) {
+                var escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var regex = new RegExp('(?<![a-zA-ZäöüÄÖÜß])(' + escaped + ')(?![a-zA-ZäöüÄÖÜß])', 'g');
+                replaced = replaced.replace(regex, '\x01$1\x02');
+            });
+            if (replaced !== text) {
+                var span = document.createElement('span');
+                var parts = replaced.split(/\x01|\x02/);
+                var isHighlight = false;
+                parts.forEach(function(part) {
+                    if (!part) { isHighlight = !isHighlight; return; }
+                    if (isHighlight) {
+                        var hl = document.createElement('span');
+                        hl.className = 'vocab-hl';
+                        hl.title = '\ud83d\udcd6 Vokabel aus der Vorentlastung';
+                        hl.textContent = part;
+                        span.appendChild(hl);
+                    } else {
+                        span.appendChild(document.createTextNode(part));
+                    }
+                    isHighlight = !isHighlight;
+                });
+                node.parentNode.replaceChild(span, node);
+            }
+        } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT') {
+            Array.from(node.childNodes).forEach(walkAndHighlight);
+        }
+    }
+    walkAndHighlight(storyText);
+}
+
+// Init on load
+window.addEventListener('DOMContentLoaded', function() {
+    updateBestDisplay(3);
+    updateBestDisplay(4);
+    updateBestDisplay(5);
+    highlightVocabInText();
+});
+</script>
+</body>
+</html>
