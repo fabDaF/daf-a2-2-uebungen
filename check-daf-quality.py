@@ -480,6 +480,91 @@ def check_lueckentext(html, css, js, results):
     elif '.no' in css:
         results['pass'].append((cat, 'CSS .no vorhanden (generisch)'))
 
+    # Großschreibung am Satzanfang prüfen
+    # Suche LUECKEN_DATA oder ähnliche Lückentext-Datenstrukturen
+    source = js if 'LUECKEN_DATA' in js or 'lueckenData' in js else html
+    luecken_match = re.search(r'var\s+(?:LUECKEN_DATA|lueckenData|LUECKEN)\s*=\s*\[(.*?)\];', source, re.DOTALL)
+    if luecken_match:
+        luecken_block = luecken_match.group(1)
+        # Finde Einträge wo text mit '_' beginnt (Lücke am Satzanfang)
+        # Pattern: text: '_ ...' oder text: "_ ..."
+        satzanfang_entries = re.findall(
+            r"text\s*:\s*['\"]_([^'\"]*)['\"].*?ans\s*:\s*['\"]([^'\"]*)['\"]",
+            luecken_block, re.DOTALL
+        )
+        # Auch Pattern: segments mit erstem Segment als Lücke
+        segment_entries = re.findall(
+            r"\{\s*b\s*:\s*['\"]([^'\"]+)['\"]",
+            luecken_block
+        )
+        # Prüfe direkt: ans-Felder die am Satzanfang stehen und kleingeschrieben sind
+        lowercase_errors = []
+        for m in satzanfang_entries:
+            ans = m[1]
+            if ans and ans[0].islower() and ans[0] != ans[0].upper():
+                lowercase_errors.append(ans)
+
+        # Prüfe auch das einfachere Pattern: text beginnt direkt mit Unterstrich
+        simple_entries = re.findall(
+            r"text\s*:\s*['\"](\s*_[^'\"]*)['\"].*?ans\s*:\s*['\"]([^'\"]*)['\"]",
+            luecken_block, re.DOTALL
+        )
+        for m in simple_entries:
+            text_val = m[0].strip()
+            ans = m[1]
+            if text_val.startswith('_') and ans and ans[0].islower() and ans[0] != ans[0].upper():
+                if ans not in lowercase_errors:
+                    lowercase_errors.append(ans)
+
+        # Prüfe auch segments-basiertes Pattern: erstes Segment ist Lücke
+        items = re.findall(r'\{[^}]*segments\s*:\s*\[(.*?)\]', luecken_block, re.DOTALL)
+        for item in items:
+            segs = re.findall(r'\{([^}]*)\}', item)
+            if segs:
+                first_seg = segs[0]
+                # Ist das erste Segment eine Lücke (hat 'b' key)?
+                b_match = re.search(r"b\s*:\s*['\"]([^'\"]+)['\"]", first_seg)
+                t_match = re.search(r"t\s*:\s*['\"]([^'\"]*)['\"]", first_seg)
+                if b_match and not t_match:
+                    # Erstes Segment ist Lücke → ans muss großgeschrieben sein
+                    ans = b_match.group(1)
+                    if ans and ans[0].islower() and ans[0] != ans[0].upper():
+                        if ans not in lowercase_errors:
+                            lowercase_errors.append(ans)
+                elif t_match and b_match:
+                    # Wenn t vor b kommt und t leer ist → Satzanfang
+                    t_val = t_match.group(1).strip()
+                    if t_val == '':
+                        ans = b_match.group(1)
+                        if ans and ans[0].islower() and ans[0] != ans[0].upper():
+                            if ans not in lowercase_errors:
+                                lowercase_errors.append(ans)
+
+        if lowercase_errors:
+            results['fail'].append((cat,
+                f'Kleinschreibung am Satzanfang: {", ".join(lowercase_errors)} — '
+                f'Lücke am Satzanfang muss großgeschrieben sein'))
+        else:
+            results['pass'].append((cat, 'Großschreibung am Satzanfang korrekt (alle Lücken geprüft)'))
+    else:
+        # Inline-HTML-Lückentext: <p>2. <input ... data-ans="bei"> ...</p>
+        # Lücke am Satzanfang = <input> ist erstes Kind nach Satznummer oder am Absatzbeginn
+        # Pattern: nach <p...> kommt optional Satznummer + Leerzeichen, dann direkt <input
+        inline_satzanfang = re.findall(
+            r'<p[^>]*>\s*(?:\d+\.\s*)?<input[^>]*data-ans=["\']([^"\']+)["\']',
+            html
+        )
+        lowercase_errors = []
+        for ans in inline_satzanfang:
+            if ans and ans[0].islower() and ans[0] != ans[0].upper():
+                lowercase_errors.append(ans)
+        if lowercase_errors:
+            results['fail'].append((cat,
+                f'Kleinschreibung am Satzanfang (Inline-HTML): {", ".join(lowercase_errors)} — '
+                f'Lücke am Satzanfang muss großgeschrieben sein'))
+        elif inline_satzanfang:
+            results['pass'].append((cat, 'Großschreibung am Satzanfang korrekt (Inline-HTML geprüft)'))
+
 def check_genus(html, css, js, results):
     """Prüfungen des Genus-Tabs (Drag-and-Drop der/die/das)."""
     cat = 'Genus'
@@ -494,6 +579,57 @@ def check_genus(html, css, js, results):
         return
 
     results['info'].append((cat, 'Genus-Tab erkannt'))
+
+def check_mc_buttons(html, css, js, results):
+    """Prüfe Multiple-Choice-Buttons (Skill: daf-uebungsformen, Abschnitt MC)."""
+    cat = 'MC-Buttons'
+
+    # Erkenne MC-Tab anhand typischer Marker
+    has_mc = ('mc-opt' in css or 'mc-opt' in html or 'MC_DATA' in js)
+    if not has_mc:
+        return
+
+    results['info'].append((cat, 'Multiple-Choice-Tab erkannt'))
+
+    # 1. flex-direction: column ist VERBOTEN für .mc-opts
+    if re.search(r'\.mc-opt[s]?\s*\{[^}]*flex-direction\s*:\s*column', css):
+        results['fail'].append((cat, 'mc-opts hat flex-direction:column — VERBOTEN (muss flex-wrap:wrap sein)'))
+    elif re.search(r'\.mc-opt[s]?\s*\{[^}]*flex-wrap\s*:\s*wrap', css) or 'flex-wrap: wrap' in css:
+        results['pass'].append((cat, 'mc-opts Layout korrekt: flex-wrap:wrap'))
+    else:
+        results['warn'].append((cat, 'mc-opts: kein flex-wrap:wrap erkannt'))
+
+    # 2. font-size der Buttons: muss px sein (nicht em/rem), maximal 12px
+    mc_opt_match = re.search(r'\.mc-opt\b[^{]*\{([^}]*)\}', css)
+    if mc_opt_match:
+        mc_opt_css = mc_opt_match.group(1)
+        fs_match = re.search(r'font-size\s*:\s*([^;]+)', mc_opt_css)
+        if fs_match:
+            fs_val = fs_match.group(1).strip()
+            if 'em' in fs_val or 'rem' in fs_val:
+                results['fail'].append((cat, f'mc-opt font-size ist {fs_val} (relativ) — muss fester px-Wert ≤12px sein'))
+            elif 'px' in fs_val:
+                px = float(re.search(r'([\d.]+)', fs_val).group(1))
+                if px > 12:
+                    results['fail'].append((cat, f'mc-opt font-size ist {fs_val} — zu groß (max 12px)'))
+                else:
+                    results['pass'].append((cat, f'mc-opt font-size korrekt: {fs_val}'))
+            else:
+                results['warn'].append((cat, f'mc-opt font-size nicht erkannt: {fs_val}'))
+        else:
+            results['warn'].append((cat, 'mc-opt: kein font-size definiert'))
+
+    # 3. border-radius: Pill-Form (≥16px)
+    if mc_opt_match:
+        mc_opt_css = mc_opt_match.group(1)
+        br_match = re.search(r'border-radius\s*:\s*([\d.]+)px', mc_opt_css)
+        if br_match:
+            br_val = float(br_match.group(1))
+            if br_val >= 16:
+                results['pass'].append((cat, f'mc-opt Pill-Form: border-radius {br_val}px'))
+            else:
+                results['warn'].append((cat, f'mc-opt border-radius {br_val}px — empfohlen ≥16px (Pill-Form)'))
+
 
 def check_anfuehrungszeichen(html, results):
     """Prüfe deutsche Anführungszeichen."""
@@ -619,6 +755,7 @@ def check_file(filepath):
     check_wortschatz(html, css, js, results)
     check_lueckentext(html, css, js, results)
     check_genus(html, css, js, results)
+    check_mc_buttons(html, css, js, results)
     check_anfuehrungszeichen(html, results)
     check_pluralendungen(html, js, results)
     check_control_bar(html, css, js, results)
