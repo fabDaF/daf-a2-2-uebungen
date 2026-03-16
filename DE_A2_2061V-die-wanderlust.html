@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2061V Die Wanderlust</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+
+.tab-banner { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+@media (max-width: 600px) { .tab-banner { max-height: 120px; } }
+
+.sec-inner { padding: 22px 24px 28px; }
+
+.section-title { font-size: 1.4em; font-weight: 700; color: #667eea; margin-bottom: 20px; }
+.section-sub { color: #888; font-size: 0.92em; margin-bottom: 20px; }
+
+/* ===== Control Bar ===== */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 10px; flex-wrap: wrap; }
+.control-bar .left-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-neu { padding: 7px 18px; border-radius: 8px; border: 1.5px solid #667eea; background: #f0f2ff; color: #667eea; font-weight: 600; font-size: 0.85em; cursor: pointer; }
+.btn-neu:hover { background: #667eea; color: white; }
+.timer-display { font-size: 0.97em; color: #bbb; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
+.timer-display.running { color: #e74c3c; }
+.best-time { font-size: 0.78em; color: #aaa; margin-left: 6px; }
+.score-display { font-size: 0.85em; color: #667eea; font-weight: 600; }
+
+/* ===== Tab 0: Wörter (Vocabulary Cards) ===== */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 16px; }
+.vcard { background: #f8f9ff; border: 1.5px solid #dde3ff; border-radius: 10px; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; }
+.vcard:hover { box-shadow: 0 4px 16px rgba(102,126,234,0.18); transform: translateY(-2px); }
+.vcard-img { width: 100%; height: 130px; object-fit: cover; background: #e8ecff; }
+.vcard-body { padding: 12px 14px; }
+.vcard-term { font-weight: 700; color: #667eea; font-size: 1.05em; margin-bottom: 2px; }
+.vcard-en { color: #999; font-size: 0.82em; font-style: italic; margin-bottom: 5px; }
+.vcard-ex { color: #555; font-size: 0.88em; line-height: 1.45; }
+
+/* ===== Tab 1: Redemittel (QA Drag-Drop) ===== */
+.qa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.qa-card { background: #f8f9ff; border: 1.5px solid #dde3ff; border-radius: 10px; overflow: hidden; }
+.qa-q { background: #667eea; color: white; padding: 12px 16px; font-weight: 600; font-size: 0.95em; }
+.qa-drop { min-height: 48px; padding: 12px 16px; border: 2px dashed transparent; transition: all 0.2s; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.qa-drop.over { border-color: #667eea; background: #f0f2ff; }
+.qa-drop .placed { background: #667eea; color: white; padding: 5px 12px; border-radius: 16px; font-size: 0.88em; font-weight: 500; cursor: pointer; }
+.qa-drop .placed.ok { background: #27ae60; }
+.qa-drop .placed.no { background: #e74c3c; }
+.qa-placeholder { color: #bbb; font-size: 0.88em; }
+.ans-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.ans-chip { background: #667eea; color: white; padding: 7px 16px; border-radius: 20px; font-size: 0.88em; font-weight: 500; cursor: grab; user-select: none; transition: all 0.2s; }
+.ans-chip:hover { background: #764ba2; transform: scale(1.04); }
+.ans-chip.used { opacity: 0.3; pointer-events: none; }
+
+/* ===== Tab 2: Lückentext ===== */
+.luecke-group { margin-bottom: 28px; }
+.luecke-title { font-weight: 700; color: #667eea; margin-bottom: 10px; font-size: 1.05em; }
+.luecke-bank { background: #f0f2ff; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.bank-word { background: #667eea; color: white; padding: 4px 12px; border-radius: 14px; font-size: 0.85em; font-weight: 500; }
+.luecke-item { background: #f8f9ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 8px; font-size: 0.95em; line-height: 1.7; }
+.luecke-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; width: 120px; text-align: center; font-size: 0.95em; font-family: inherit; outline: none; padding: 2px 4px; transition: border-color 0.2s; }
+.luecke-inp:focus { border-color: #667eea; }
+.luecke-inp.ok { border-color: #27ae60; color: #27ae60; font-weight: 600; }
+.luecke-inp.no { border-color: #e74c3c; color: #e74c3c; }
+
+/* ===== Tab 3: Text & Fragen ===== */
+.lese-text { font-family: Georgia, 'Times New Roman', serif; background: #f8f9fa; border-radius: 10px; padding: 22px 26px; font-size: 1.0em; line-height: 1.9; color: #333; margin-bottom: 18px; }
+.lese-text p { margin-bottom: 12px; }
+.lese-text p:last-child { margin-bottom: 0; }
+.vocab-hl { background: #ffe9a0; border-radius: 3px; padding: 1px 3px; font-weight: 600; cursor: help; }
+.rf-title { font-size: 1.0em; color: #555; margin-bottom: 12px; font-weight: 600; max-width: 650px; margin-left: auto; margin-right: auto; }
+.rf-list { display: flex; flex-direction: column; gap: 8px; max-width: 650px; margin-left: auto; margin-right: auto; }
+.rf-item { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #f9f9f9; border-radius: 8px; font-size: 0.95em; border: 1.5px solid #ddd; }
+.rf-item:hover { background: #f3e5f5; }
+.rf-q { flex: 1; }
+.rf-btns { display: flex; gap: 6px; }
+.rf-btn { padding: 4px 14px; border-radius: 14px; border: 1.5px solid #9b59b6; background: #fff; color: #6c3483; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.rf-btn:hover { background: #f3e5f5; }
+.rf-btn.sel-r { background: #27ae60; color: #fff; border-color: #27ae60; }
+.rf-btn.sel-f { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+.rf-result { font-size: 0.8rem; font-weight: 700; min-width: 24px; }
+.rf-result.ok { color: #27ae60; }
+.rf-result.err { color: #e74c3c; }
+
+/* ===== Tab 4: Satzbau ===== */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; }
+.satzbau-feedback { min-height: 22px; font-size: 0.85em; font-weight: 600; margin-top: 4px; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.satzbau-item { margin-bottom: 22px; }
+.sb-label { font-weight: 700; color: #4a148c; margin: 18px 0 6px; font-size: 0.95em; }
+.btn { padding: 5px 14px; border-radius: 6px; border: 1px solid #667eea; background: white; color: #667eea; font-size: 0.82em; cursor: pointer; }
+.btn:hover { background: #667eea; color: white; }
+
+/* ===== Tab 5: Wortschatz ===== */
+.ws-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.ws-card { background: #f8f9ff; border: 1px solid #dde3ff; border-radius: 10px; padding: 14px 16px; }
+.ws-en { color: #999; font-size: 0.85em; font-style: italic; margin-bottom: 8px; }
+.ws-fields { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+.ws-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; padding: 2px 4px; transition: border-color 0.2s; }
+.ws-inp:focus { border-color: #667eea; }
+.ws-inp.ok { border-color: #27ae60; color: #27ae60; font-weight: 600; }
+.ws-inp.no { border-color: #e74c3c; color: #e74c3c; }
+
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .tab-banner { max-height: 120px; }
+    .sec-inner { padding: 14px 12px 18px; }
+    .header h1 { font-size: 1.6em; }
+    .header .subtitle { font-size: 0.9em; }
+    .vocab-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .ws-grid { grid-template-columns: 1fr; }
+    .qa-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Die Wanderlust</h1>
+        <p class="subtitle">A2.2 – Lektion 2061V · Wortschatz: Die Wanderlust</p>
+        <span class="big-emoji">🏔️</span>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📸</span><span class="nav-label">Wörter</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">💬</span><span class="nav-label">Redemittel</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">📖</span><span class="nav-label">Text &amp; Fragen</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(5)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+    <!-- ==================== TAB 0: WÖRTER ==================== -->
+    <div class="section active" id="sec0">
+        <img class="tab-banner" src="https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Wanderlust in der Natur">
+        <div class="sec-inner">
+            <div class="section-title">📸 Wörter</div>
+            <div class="section-sub">Lerne neue Wörter zum Thema Wanderlust und Natur. Klicke auf eine Karte für mehr Information.</div>
+            <div class="vocab-grid" id="vocabGrid"></div>
+        </div>
+    </div>
+
+    <!-- ==================== TAB 1: REDEMITTEL ==================== -->
+    <div class="section" id="sec1">
+        <img class="tab-banner" src="https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Leute sprechen draußen">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="left-btns"><button class="btn-neu" onclick="initRedemittel()">🔄 Neu starten</button></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="timer-display" id="timer-1">00:00</span>
+                </div>
+            </div>
+            <div class="section-title">💬 Redemittel</div>
+            <div class="section-sub">Ordne die passende Antwort der Frage zu. Ziehe den Chip in das Antwortfeld.</div>
+
+            <div class="qa-grid" id="qaGrid"></div>
+            <div style="margin-top:18px;">
+                <div style="font-weight:600;color:#667eea;margin-bottom:8px;">Antworten:</div>
+                <div class="ans-pool" id="ansPool"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TAB 2: LÜCKENTEXT ==================== -->
+    <div class="section" id="sec2">
+        <img class="tab-banner" src="https://images.pexels.com/photos/3962286/pexels-photo-3962286.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Schreiben und Lernen">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="left-btns"><button class="btn-neu" onclick="resetLuecken()">🔄 Neu starten</button></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="score-display" id="score-2">0 / 0</span>
+                    <span class="timer-display" id="timer-2">00:00</span>
+                </div>
+            </div>
+            <div class="section-title">✏️ Lückentext</div>
+            <div class="section-sub">Fülle die Lücken mit Wörtern aus der Bank aus.</div>
+            <div id="lueckenContainer"></div>
+        </div>
+    </div>
+
+    <!-- ==================== TAB 3: TEXT & FRAGEN ==================== -->
+    <div class="section" id="sec3">
+        <img class="tab-banner" src="https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Lesen und Diskutieren">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="left-btns"><button class="btn-neu" onclick="resetRF()">🔄 Neu starten</button></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="score-display" id="score-3">0 / 0</span>
+                    <span class="timer-display" id="timer-3">00:00</span>
+                </div>
+            </div>
+            <div class="section-title">📖 Text &amp; Fragen</div>
+            <div class="section-sub">Lies den Text und beantworte die Fragen mit Richtig oder Falsch.</div>
+
+            <div class="lese-text" id="leseText">
+                <p>Jack und Lisa haben Wanderlust. Sie möchten ins Naturschutzgebiet in den Alpen fahren. Dort können sie bergsteigen und eine Fahrradtour machen. Sie möchten campen gehen und ihr Zelt in einer naturbelassenen Wiese aufbauen.</p>
+                <p>Für das Bergsteigen brauchen sie gute Ausrüstung und gesunden Proviant wie Äpfel, Käse und Brot. Sie lesen über Lawinen und passen auf. Jack sagt: „Ich möchte auch wild campen. Ist das hier erlaubt?“ Lisa antwortet: „Wir müssen das Naturschutzgebiet respektieren. Lass uns in der Wiese unser Zelt aufbauen und die Einsamkeit genießen.“</p>
+                <p>Am nächsten Morgen wandern sie durch das Naturschutzgebiet und genießen die Ruhe fernab der lauten Stadt. Sie essen ihren Proviant und singen Wanderlieder. Die Wanderlust hat sie wirklich gepackt! Sie planen schon die nächste Fahrradtour für Sommer.</p>
+            </div>
+
+            <p class="rf-title">Richtig oder Falsch?</p>
+            <div class="rf-list" id="rfList"></div>
+        </div>
+    </div>
+
+    <!-- ==================== TAB 4: SATZBAU ==================== -->
+    <div class="section" id="sec4">
+        <img class="tab-banner" src="https://images.pexels.com/photos/278887/pexels-photo-278887.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Puzzle und Bausteine">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="left-btns"><button class="btn-neu" onclick="resetSatzbau()">🔄 Neu starten</button></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="score-display" id="score-4">0 / 0</span>
+                    <span class="timer-display" id="timer-4">00:00</span>
+                </div>
+            </div>
+            <div class="section-title">🧩 Satzbau</div>
+            <div class="section-sub">Bringe die Wörter in die richtige Reihenfolge.</div>
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- ==================== TAB 5: WORTSCHATZ ==================== -->
+    <div class="section" id="sec5">
+        <img class="tab-banner" src="https://images.pexels.com/photos/267669/pexels-photo-267669.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Wörterbuch und Alphabet">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="left-btns"><button class="btn-neu" onclick="initWortschatz()">🔄 Neu starten</button></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="score-display" id="score-5">0 / 0</span>
+                    <span class="timer-display" id="timer-5">00:00</span>
+                </div>
+            </div>
+            <div class="section-title">🔠 Wortschatz</div>
+            <div class="section-sub">Tippe den Artikel, das deutsche Wort und den Plural. Groß-/Kleinschreibung beachten!</div>
+            <div class="ws-grid" id="wsGrid"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+</div>
+<!-- /container -->
+
+<script>
+// ===== GLOBAL STATE =====
+var activeTab = 0;
+var timerIds = {};
+var timerSeconds = {};
+var timerStarted = {};
+
+// ===== TAB SWITCHING =====
+function showTab(idx) {
+    document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.getElementById('sec' + idx).classList.add('active');
+    document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+    activeTab = idx;
+}
+
+// ===== TIMER SYSTEM =====
+function timerAutoStart(tabIdx) {
+    if (timerStarted[tabIdx]) return;
+    timerStarted[tabIdx] = true;
+    timerSeconds[tabIdx] = 0;
+    var el = document.getElementById('timer-' + tabIdx);
+    if (!el) return;
+    el.classList.add('running');
+    timerIds[tabIdx] = setInterval(function() {
+        timerSeconds[tabIdx]++;
+        var m = Math.floor(timerSeconds[tabIdx] / 60);
+        var s = timerSeconds[tabIdx] % 60;
+        el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }, 1000);
+}
+
+function timerStop(tabIdx) {
+    if (timerIds[tabIdx]) { clearInterval(timerIds[tabIdx]); timerIds[tabIdx] = null; }
+    var el = document.getElementById('timer-' + tabIdx);
+    if (el) el.classList.remove('running');
+    // Save best time
+    var key = '2061V-best-' + tabIdx;
+    var prev = localStorage.getItem(key);
+    var cur = timerSeconds[tabIdx] || 0;
+    if (cur > 0 && (!prev || cur < parseInt(prev))) {
+        localStorage.setItem(key, cur);
+    }
+}
+
+function showBestTime(tabIdx) {
+    var key = '2061V-best-' + tabIdx;
+    var best = localStorage.getItem(key);
+    if (best) {
+        var m = Math.floor(best / 60);
+        var s = best % 60;
+        var el = document.getElementById('timer-' + tabIdx);
+        if (el) {
+            var span = document.createElement('span');
+            span.className = 'best-time';
+            span.textContent = ' (Best: ' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0') + ')';
+            el.parentNode.appendChild(span);
+        }
+    }
+}
+
+// ===== TAB 0: WÖRTER DATA =====
+var WORTSCHATZ = [
+    { de: 'campen gehen', art: '', plural: '', en: 'to go camping', ex: 'Dieses Jahr möchten wir campen gehen, statt im Hotel Urlaub zu machen.', img: 'https://images.pexels.com/photos/2398220/pexels-photo-2398220.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'Zelt', art: 'das', plural: '-e', en: 'tent', ex: 'Wir schlafen heute im Zelt.', img: 'https://images.pexels.com/photos/2398220/pexels-photo-2398220.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'bergsteigen', art: '', plural: '', en: 'mountain climbing', ex: 'In den Alpen kannst du sehr gut bergsteigen, denn dort sind überall Berge.', img: 'https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'Lawine', art: 'die', plural: '-n', en: 'avalanche', ex: 'Wenn du im Winter Ski fährst, musst du dich vor Lawinen in Acht nehmen.', img: 'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'Ausrüstung', art: 'die', plural: '-en', en: 'equipment', ex: 'Man braucht zum Bergsteigen eine gute Ausrüstung.', img: 'https://images.pexels.com/photos/3944456/pexels-photo-3944456.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'Proviant', art: 'der', plural: '-e', en: 'provisions/food supplies', ex: 'Außerdem braucht man auch gesunden Proviant wie Weintrauben, Äpfel und Brot.', img: 'https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'Fahrradtour', art: 'die', plural: '-en', en: 'bike tour', ex: 'Im nächsten Urlaub möchten sie eine Fahrradtour machen.', img: 'https://images.pexels.com/photos/280949/pexels-photo-280949.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'naturbelassen', art: '', plural: '', en: 'natural/unspoiled', ex: 'Die Wiese ist wild, wunderschön und naturbelassen.', img: 'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'Wanderlust', art: 'die', plural: '(kein Pl.)', en: 'wanderlust', ex: 'Die Geschwister hat die Wanderlust gepackt.', img: 'https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'wild campen', art: '', plural: '', en: 'to camp in the wild', ex: 'Darf man hier überhaupt wild campen?', img: 'https://images.pexels.com/photos/2398220/pexels-photo-2398220.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'Naturschutzgebiet', art: 'das', plural: '-e', en: 'nature reserve', ex: 'In einem Naturschutzgebiet wird besonders darauf geachtet, dass Pflanzen und Tiere geschützt sind.', img: 'https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg?auto=compress&cs=tinysrgb&w=400' },
+    { de: 'Einsamkeit', art: 'die', plural: '(kein Pl.)', en: 'solitude', ex: 'Wir können die Ruhe der Einsamkeit fernab von der lauten Stadt genießen.', img: 'https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=400' }
+];
+
+function initWoerter() {
+    var grid = document.getElementById('vocabGrid');
+    grid.innerHTML = '';
+    WORTSCHATZ.forEach(function(w) {
+        var card = document.createElement('div');
+        card.className = 'vcard';
+        var termStr = w.art ? w.art + ' ' + w.de : w.de;
+        var pluralStr = w.plural ? ', ' + w.plural : '';
+        card.innerHTML = '<img class="vcard-img" src="' + w.img + '" alt="' + w.de + '">'
+            + '<div class="vcard-body">'
+            + '<div class="vcard-term">' + termStr + pluralStr + '</div>'
+            + '<div class="vcard-en">' + w.en + '</div>'
+            + '<div class="vcard-ex">' + w.ex + '</div>'
+            + '</div>';
+        grid.appendChild(card);
+    });
+}
+
+// ===== TAB 1: REDEMITTEL DATA =====
+var QA_DATA = [
+    { q: 'Was möchtest du in den Alpen machen?', a: 'Ich möchte bergsteigen und eine Fahrradtour machen.' },
+    { q: 'Welche Ausrüstung brauchst du zum Bergsteigen?', a: 'Ich brauche gute Ausrüstung und gesunden Proviant.' },
+    { q: 'Wo möchtest du dein Zelt aufbauen?', a: 'Ich möchte mein Zelt in einer naturbelassenen Wiese aufbauen.' },
+    { q: 'Was ist Wanderlust?', a: 'Wanderlust ist die Lust zu wandern und die Welt zu entdecken.' },
+    { q: 'Darfst du wild campen im Naturschutzgebiet?', a: 'Nein, man muss das Naturschutzgebiet respektieren und darf nicht wild campen.' },
+    { q: 'Was genießt du fernab der Stadt?', a: 'Ich genieße die Ruhe und Einsamkeit fernab von der lauten Stadt.' },
+    { q: 'Welchen Proviant nimmst du mit?', a: 'Ich nehme gesunden Proviant wie Äpfel, Käse und Brot mit.' },
+    { q: 'Wofür musst du dich beim Bergsteigen in Acht nehmen?', a: 'Ich muss mich vor Lawinen in Acht nehmen.' }
+];
+
+function shuffleArr(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+}
+
+function initRedemittel() {
+    var grid = document.getElementById('qaGrid');
+    var pool = document.getElementById('ansPool');
+    grid.innerHTML = '';
+    pool.innerHTML = '';
+
+    QA_DATA.forEach(function(qa, idx) {
+        var card = document.createElement('div');
+        card.className = 'qa-card';
+        card.innerHTML = '<div class="qa-q">' + qa.q + '</div>'
+            + '<div class="qa-drop" data-idx="' + idx + '"><span class="qa-placeholder">Antwort hierher ziehen …</span></div>';
+        grid.appendChild(card);
+    });
+
+    var shuffled = shuffleArr(QA_DATA.map(function(qa, i) { return { text: qa.a, idx: i }; }));
+    shuffled.forEach(function(item) {
+        var chip = document.createElement('div');
+        chip.className = 'ans-chip';
+        chip.textContent = item.text;
+        chip.draggable = true;
+        chip.dataset.idx = item.idx;
+        chip.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text/plain', item.idx);
+            chip.style.opacity = '0.4';
+        });
+        chip.addEventListener('dragend', function() { chip.style.opacity = '1'; });
+        chip.addEventListener('click', function() {
+            if (chip.classList.contains('used')) return;
+            document.querySelectorAll('.ans-chip.selected').forEach(function(c) { c.classList.remove('selected'); });
+            chip.classList.add('selected');
+            chip.style.outline = '3px solid #667eea';
+        });
+        pool.appendChild(chip);
+    });
+
+    document.querySelectorAll('.qa-drop').forEach(function(zone) {
+        zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('over'); });
+        zone.addEventListener('dragleave', function() { zone.classList.remove('over'); });
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            zone.classList.remove('over');
+            var chipIdx = e.dataTransfer.getData('text/plain');
+            placeAnswer(zone, parseInt(chipIdx));
+        });
+        zone.addEventListener('click', function() {
+            var sel = document.querySelector('.ans-chip.selected');
+            if (sel) {
+                placeAnswer(zone, parseInt(sel.dataset.idx));
+                sel.classList.remove('selected');
+                sel.style.outline = '';
+            }
+        });
+    });
+}
+
+function placeAnswer(zone, chipIdx) {
+    if (zone.querySelector('.placed')) return;
+    var zoneIdx = parseInt(zone.dataset.idx);
+    var correct = chipIdx === zoneIdx;
+
+    var ph = zone.querySelector('.qa-placeholder');
+    if (ph) ph.style.display = 'none';
+
+    var span = document.createElement('span');
+    span.className = 'placed ' + (correct ? 'ok' : 'no');
+    span.textContent = QA_DATA[chipIdx].a;
+    zone.appendChild(span);
+
+    var chipEl = document.querySelector('.ans-chip[data-idx="' + chipIdx + '"]');
+    if (chipEl) chipEl.classList.add('used');
+
+    if (!correct) {
+        setTimeout(function() {
+            zone.removeChild(span);
+            if (ph) ph.style.display = '';
+            if (chipEl) chipEl.classList.remove('used');
+        }, 1200);
+    }
+}
+
+// ===== TAB 2: LÜCKENTEXT DATA =====
+var LUECKE_A = {
+    title: 'Teil A — Wandern in den Alpen',
+    bank: ['bergsteigen', 'Naturschutzgebiet', 'Zelt', 'Wanderlust', 'Lawinen'],
+    items: [
+        { pre: 'Jack und Lisa haben ', ans: 'Wanderlust', post: ' und möchten in die Alpen fahren.' },
+        { pre: 'In den Alpen können sie ', ans: 'bergsteigen', post: ' und viel wandern.' },
+        { pre: 'Sie bauen ihr ', ans: 'Zelt', post: ' in einer naturbelassenen Wiese auf.' },
+        { pre: 'Sie wandern im ', ans: 'Naturschutzgebiet', post: ' und respektieren die Natur.' },
+        { pre: 'Sie passen auf und achten auf ', ans: 'Lawinen', post: '.' }
+    ]
+};
+var LUECKE_B = {
+    title: 'Teil B — Camping und Natur',
+    bank: ['wild campen', 'Ausrüstung', 'Proviant', 'Fahrradtour', 'Einsamkeit', 'naturbelassen', 'genießen', 'Wiese'],
+    items: [
+        { pre: 'Zum Bergsteigen braucht man gute ', ans: 'Ausrüstung', post: '.' },
+        { pre: 'Man braucht gesunden ', ans: 'Proviant', post: ' wie Äpfel und Brot.' },
+        { pre: 'Jack fragt: „Darf man hier ', ans: 'wild campen', post: '?“' },
+        { pre: 'Sie schlafen in einer ', ans: 'Wiese', post: ' unter den Sternen.' },
+        { pre: 'Die Wiese ist wild und ', ans: 'naturbelassen', post: '.' },
+        { pre: 'Sie möchten auch eine ', ans: 'Fahrradtour', post: ' machen.' },
+        { pre: 'Sie können die Ruhe der ', ans: 'Einsamkeit', post: ' fernab der Stadt ', post2: '.' },
+        { pre: 'Sie ', ans: 'genießen', post: ' die Natur und wandern gerne.' }
+    ]
+};
+
+function buildLuecken() {
+    var cont = document.getElementById('lueckenContainer');
+    cont.innerHTML = '';
+    [LUECKE_A, LUECKE_B].forEach(function(group, gi) {
+        var div = document.createElement('div');
+        div.className = 'luecke-group';
+
+        var title = document.createElement('div');
+        title.className = 'luecke-title';
+        title.textContent = group.title;
+        div.appendChild(title);
+
+        var bank = document.createElement('div');
+        bank.className = 'luecke-bank';
+        shuffleArr(group.bank).forEach(function(w) {
+            var sp = document.createElement('span');
+            sp.className = 'bank-word';
+            sp.textContent = w;
+            bank.appendChild(sp);
+        });
+        div.appendChild(bank);
+
+        group.items.forEach(function(item, ii) {
+            var row = document.createElement('div');
+            row.className = 'luecke-item';
+            var span1 = document.createTextNode((gi * 10 + ii + 1) + '. ' + item.pre);
+            row.appendChild(span1);
+            var inp = document.createElement('input');
+            inp.type = 'text';
+            inp.className = 'luecke-inp';
+            inp.placeholder = '';
+            inp.dataset.ans = item.ans;
+            inp.setAttribute('autocomplete', 'off');
+            inp.addEventListener('input', function() {
+                timerAutoStart(2);
+                liveCheck(inp);
+                updateScore(2);
+            });
+            row.appendChild(inp);
+            var span2 = document.createTextNode(item.post + (item.post2 ? item.post2 : ''));
+            row.appendChild(span2);
+            div.appendChild(row);
+        });
+
+        cont.appendChild(div);
+    });
+}
+
+function liveCheck(inp) {
+    var val = inp.value.trim();
+    var ans = inp.dataset.ans;
+    inp.classList.remove('ok', 'no');
+    if (!val) return;
+    if (val === ans) { inp.classList.add('ok'); return; }
+    var ch0 = ans.charAt(0);
+    var caseSensitive = ch0 >= 'A' && ch0 <= 'Z' || ch0 === 'Ä' || ch0 === 'Ö' || ch0 === 'Ü';
+    if (caseSensitive) {
+        if (ans.indexOf(val) === 0) return;
+        inp.classList.add('no');
+    } else {
+        var cmpVal = val.replace(/./g, function(c) { return c >= 'A' && c <= 'Z' ? String.fromCharCode(c.charCodeAt(0) + 32) : c === 'Ä' ? 'ä' : c === 'Ö' ? 'ö' : c === 'Ü' ? 'ü' : c; });
+        var cmpAns = ans.replace(/./g, function(c) { return c >= 'A' && c <= 'Z' ? String.fromCharCode(c.charCodeAt(0) + 32) : c === 'Ä' ? 'ä' : c === 'Ö' ? 'ö' : c === 'Ü' ? 'ü' : c; });
+        if (cmpAns.indexOf(cmpVal) === 0) return;
+        inp.classList.add('no');
+    }
+}
+
+function resetLuecken() {
+    timerStarted[2] = false;
+    if (timerIds[2]) { clearInterval(timerIds[2]); timerIds[2] = null; }
+    timerSeconds[2] = 0;
+    var el = document.getElementById('timer-2');
+    if (el) { el.textContent = '00:00'; el.classList.remove('running'); }
+    buildLuecken();
+    updateScore(2);
+}
+
+// ===== TAB 3: RICHTIG/FALSCH DATA =====
+var RF_DATA = [
+    { text: 'Jack und Lisa fahren in ein Naturschutzgebiet in den Alpen.', ans: true },
+    { text: 'Sie bauen ihr Zelt in einer naturbelassenen Wiese auf.', ans: true },
+    { text: 'Man braucht zum Bergsteigen gute Ausrüstung und Proviant.', ans: true },
+    { text: 'Darf man überall wild campen im Naturschutzgebiet.', ans: false },
+    { text: 'Sie lesen über Lawinen und achten auf die Gefahr.', ans: true },
+    { text: 'Sie genießen die Einsamkeit fernab der lauten Stadt.', ans: true }
+];
+
+function initRF() {
+    var list = document.getElementById('rfList');
+    list.innerHTML = '';
+    RF_DATA.forEach(function(rf, idx) {
+        var item = document.createElement('div');
+        item.className = 'rf-item';
+        item.innerHTML = '<div class="rf-q">' + (idx + 1) + '. ' + rf.text + '</div>'
+            + '<div class="rf-btns">'
+            + '<button class="rf-btn" data-idx="' + idx + '" data-val="true" onclick="checkRF(this)">R</button>'
+            + '<button class="rf-btn" data-idx="' + idx + '" data-val="false" onclick="checkRF(this)">F</button>'
+            + '</div>'
+            + '<span class="rf-result" id="rf-res-' + idx + '"></span>';
+        list.appendChild(item);
+    });
+}
+
+function checkRF(btn) {
+    timerAutoStart(3);
+    var idx = parseInt(btn.dataset.idx);
+    var val = btn.dataset.val === 'true';
+    var correct = val === RF_DATA[idx].ans;
+    var res = document.getElementById('rf-res-' + idx);
+
+    btn.parentNode.querySelectorAll('.rf-btn').forEach(function(b) {
+        b.classList.remove('sel-r', 'sel-f');
+    });
+
+    if (val) {
+        btn.classList.add('sel-r');
+    } else {
+        btn.classList.add('sel-f');
+    }
+
+    res.textContent = correct ? '✓' : '✗';
+    res.className = 'rf-result ' + (correct ? 'ok' : 'err');
+
+    updateScore(3);
+    checkAllRF();
+}
+
+function checkAllRF() {
+    var all = document.querySelectorAll('.rf-result');
+    var done = 0;
+    all.forEach(function(r) { if (r.classList.contains('ok')) done++; });
+    if (done === RF_DATA.length) timerStop(3);
+}
+
+function resetRF() {
+    timerStarted[3] = false;
+    if (timerIds[3]) { clearInterval(timerIds[3]); timerIds[3] = null; }
+    timerSeconds[3] = 0;
+    var el = document.getElementById('timer-3');
+    if (el) { el.textContent = '00:00'; el.classList.remove('running'); }
+    initRF();
+    updateScore(3);
+}
+
+// ===== TAB 4: SATZBAU DATA =====
+var satzbauData = [
+    { parts: ['wir', 'möchten', 'campen', 'gehen', 'in', 'den', 'Alpen'], valid: [['wir', 'möchten', 'campen', 'gehen', 'in', 'den', 'Alpen']], punct: '.' },
+    { parts: ['sie', 'bauen', 'ihr', 'Zelt', 'in', 'einer', 'naturbelassenen', 'Wiese'], valid: [['sie', 'bauen', 'ihr', 'Zelt', 'in', 'einer', 'naturbelassenen', 'Wiese']], punct: '.' },
+    { parts: ['man', 'braucht', 'gute', 'Ausrüstung', 'zum', 'Bergsteigen'], valid: [['man', 'braucht', 'gute', 'Ausrüstung', 'zum', 'Bergsteigen']], punct: '.' },
+    { parts: ['darf', 'man', 'hier', 'wild', 'campen'], valid: [['darf', 'man', 'hier', 'wild', 'campen']], punct: '?' },
+    { parts: ['wir', 'müssen', 'das', 'Naturschutzgebiet', 'respektieren'], valid: [['wir', 'müssen', 'das', 'Naturschutzgebiet', 'respektieren']], punct: '.' },
+    { parts: ['sie', 'lesen', 'über', 'Lawinen', 'und', 'passen', 'auf'], valid: [['sie', 'lesen', 'über', 'Lawinen', 'und', 'passen', 'auf']], punct: '.' },
+    { parts: ['die', 'Wanderlust', 'hat', 'sie', 'wirklich', 'gepackt'], valid: [['die', 'Wanderlust', 'hat', 'sie', 'wirklich', 'gepackt']], punct: '.' },
+    { parts: ['ich', 'genieße', 'die', 'Einsamkeit', 'fernab', 'der', 'Stadt'], valid: [['ich', 'genieße', 'die', 'Einsamkeit', 'fernab', 'der', 'Stadt']], punct: '.' }
+];
+
+var sbDragged = null;
+function getSbCursor(){var c=document.getElementById('sb-insert-cursor');if(!c){c=document.createElement('div');c.id='sb-insert-cursor';c.style.cssText='width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';}return c;}
+function getSbInsertPos(zone,clientX){var chips=Array.from(zone.querySelectorAll('.chip'));for(var i=0;i<chips.length;i++){var r=chips[i].getBoundingClientRect();if(clientX<r.left+r.width/2)return chips[i];}return null;}
+function sbCapitalize(str){return str.charAt(0).toUpperCase()+str.slice(1);}
+function sbUpdateCapitalization(row){var chips=Array.from(row.querySelectorAll('.chip'));chips.forEach(function(c,i){var orig=c.dataset.orig;if(orig===','||orig===';')return;var isProper=orig.charAt(0)===orig.charAt(0).toUpperCase()&&orig.charAt(0)!==orig.charAt(0).toLowerCase();if(isProper){c.textContent=orig;}else{c.textContent=(i===0)?sbCapitalize(orig):orig;}});}
+function sbMakeChip(word){var chip=document.createElement('div');chip.className='chip';chip.textContent=word;chip.dataset.orig=word;chip.draggable=true;chip.addEventListener('dragstart',function(e){sbDragged=chip;e.dataTransfer.setData('text/plain','');setTimeout(function(){chip.style.opacity='0.4';},0);});chip.addEventListener('dragend',function(){chip.style.opacity='';sbDragged=null;var c=document.getElementById('sb-insert-cursor');if(c&&c.parentNode)c.parentNode.removeChild(c);});chip.addEventListener('click',function(){var parent=chip.parentNode;if(!parent)return;if(parent.classList.contains('chips-container')){var idx=parent.id.replace('sb-bank-','');var row=document.getElementById('sb-row-'+idx);row.appendChild(chip);sbUpdateCapitalization(row);sbCheckAuto(parseInt(idx));}else if(parent.classList.contains('sentence-builder')){var idx=parent.id.replace('sb-row-','');var bank=document.getElementById('sb-bank-'+idx);bank.appendChild(chip);chip.classList.remove('correct','incorrect');sbUpdateCapitalization(parent);var existingPunkt=parent.querySelector('.sb-punkt');if(existingPunkt)existingPunkt.parentNode.removeChild(existingPunkt);parent.classList.remove('correct','incorrect');var fb=document.getElementById('sb-fb-'+idx);if(fb){fb.textContent='';fb.className='satzbau-feedback';}}});return chip;}
+function sbRegisterZone(zone,idx){zone.addEventListener('dragover',function(e){e.preventDefault();if(!sbDragged)return;var cursor=getSbCursor();var before=getSbInsertPos(zone,e.clientX);if(before)zone.insertBefore(cursor,before);else zone.appendChild(cursor);});zone.addEventListener('dragleave',function(e){if(!zone.contains(e.relatedTarget)){var c=document.getElementById('sb-insert-cursor');if(c&&c.parentNode===zone)zone.removeChild(c);}});zone.addEventListener('drop',function(e){e.preventDefault();if(!sbDragged)return;var cursor=document.getElementById('sb-insert-cursor');if(cursor&&cursor.parentNode===zone){zone.insertBefore(sbDragged,cursor);zone.removeChild(cursor);}else{zone.appendChild(sbDragged);}sbDragged=null;var row=document.getElementById('sb-row-'+idx);sbUpdateCapitalization(row);sbCheckAuto(idx);});}
+function sbColorRow(idx){var row=document.getElementById('sb-row-'+idx);var chips=Array.from(row.querySelectorAll('.chip'));var order=chips.map(function(c){return c.dataset.orig;});var ok=satzbauData[idx].valid.some(function(v){return JSON.stringify(v)===JSON.stringify(order);});chips.forEach(function(c){c.classList.remove('correct','incorrect');c.classList.add(ok?'correct':'incorrect');});var existing=row.querySelector('.sb-punkt');if(existing)existing.parentNode.removeChild(existing);if(ok){var punkt=document.createElement('span');punkt.className='sb-punkt';punkt.textContent=satzbauData[idx].punct||'.';row.appendChild(punkt);}return ok;}
+function sbCheckAuto(idx){var bank=document.getElementById('sb-bank-'+idx);var row=document.getElementById('sb-row-'+idx);var fb=document.getElementById('sb-fb-'+idx);if(bank.querySelectorAll('.chip').length>0){row.querySelectorAll('.chip').forEach(function(c){c.classList.remove('correct','incorrect');});row.classList.remove('correct','incorrect');fb.textContent='';return;}setTimeout(function(){timerAutoStart(4);var ok=sbColorRow(idx);if(ok){row.classList.add('correct');row.classList.remove('incorrect');fb.className='satzbau-feedback correct';fb.textContent='✓ Korrekt!';sbCheckAllDone();updateScore(4);}else{row.classList.add('incorrect');row.classList.remove('correct');fb.className='satzbau-feedback incorrect';fb.textContent='✗ Falsche Reihenfolge – verschiebe die Chips!';updateScore(4);}},500);}
+function sbCheckAllDone(){var allOk=satzbauData.every(function(_,i){var row=document.getElementById('sb-row-'+i);return row&&row.classList.contains('correct');});if(allOk)timerStop(4);}
+function sbShowSolution(idx){var bank=document.getElementById('sb-bank-'+idx);var row=document.getElementById('sb-row-'+idx);var fb=document.getElementById('sb-fb-'+idx);var solution=satzbauData[idx].valid[0];var allChips={};Array.from(bank.querySelectorAll('.chip')).forEach(function(c){allChips[c.dataset.orig]=c;});Array.from(row.querySelectorAll('.chip')).forEach(function(c){allChips[c.dataset.orig]=c;});while(bank.firstChild)bank.removeChild(bank.firstChild);while(row.firstChild)row.removeChild(row.firstChild);solution.forEach(function(word,i){var chip=allChips[word];if(chip){chip.textContent=(i===0&&word.charAt(0)===word.charAt(0).toLowerCase())?sbCapitalize(word):word;chip.classList.remove('correct','incorrect');row.appendChild(chip);}});fb.textContent='';setTimeout(function(){sbCheckAuto(idx);},100);}
+function sbResetOne(idx){var bank=document.getElementById('sb-bank-'+idx);var row=document.getElementById('sb-row-'+idx);var fb=document.getElementById('sb-fb-'+idx);while(bank.firstChild)bank.removeChild(bank.firstChild);while(row.firstChild)row.removeChild(row.firstChild);row.classList.remove('correct','incorrect');fb.textContent='';fb.className='satzbau-feedback';var parts=satzbauData[idx].parts.slice();for(var i=parts.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=parts[i];parts[i]=parts[j];parts[j]=tmp;}parts.forEach(function(word){bank.appendChild(sbMakeChip(word));});}
+function initSatzbau(){timerStarted[4]=false;if(timerIds[4]){clearInterval(timerIds[4]);timerIds[4]=null;}timerSeconds[4]=0;var el=document.getElementById('timer-4');if(el){el.textContent='00:00';el.classList.remove('running');}var container=document.getElementById('satzbauContainer');container.innerHTML='';satzbauData.forEach(function(ex,idx){var item=document.createElement('div');item.className='satzbau-item';var lbl=document.createElement('div');lbl.className='sb-label';lbl.textContent='Satz '+(idx+1);item.appendChild(lbl);var bank=document.createElement('div');bank.className='chips-container';bank.id='sb-bank-'+idx;var row=document.createElement('div');row.className='sentence-builder';row.id='sb-row-'+idx;var fb=document.createElement('div');fb.className='satzbau-feedback';fb.id='sb-fb-'+idx;var parts=ex.parts.slice();for(var i=parts.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=parts[i];parts[i]=parts[j];parts[j]=tmp;}parts.forEach(function(word){bank.appendChild(sbMakeChip(word));});sbRegisterZone(bank,idx);sbRegisterZone(row,idx);var btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:8px;margin-top:6px;';var solveBtn=document.createElement('button');solveBtn.className='btn';solveBtn.textContent='Lösen';solveBtn.setAttribute('data-idx',idx);solveBtn.addEventListener('click',function(){sbShowSolution(parseInt(this.getAttribute('data-idx')));});var resetBtn=document.createElement('button');resetBtn.className='btn';resetBtn.textContent='↺ Neustart';resetBtn.setAttribute('data-idx',idx);resetBtn.addEventListener('click',function(){sbResetOne(parseInt(this.getAttribute('data-idx')));});btnRow.appendChild(solveBtn);btnRow.appendChild(resetBtn);item.appendChild(bank);item.appendChild(row);item.appendChild(fb);item.appendChild(btnRow);container.appendChild(item);});updateScore(4);}
+function resetSatzbau() { initSatzbau(); }
+
+// ===== TAB 5: WORTSCHATZ =====
+var WS_DATA = [
+    { en: '(to go camping)', art: '', de: 'campen gehen', plural: '' },
+    { en: '(the tent)', art: 'das', de: 'Zelt', plural: '-e' },
+    { en: '(mountain climbing)', art: '', de: 'bergsteigen', plural: '' },
+    { en: '(the avalanche)', art: 'die', de: 'Lawine', plural: '-n' },
+    { en: '(the equipment)', art: 'die', de: 'Ausrüstung', plural: '-en' },
+    { en: '(the provisions)', art: 'der', de: 'Proviant', plural: '-e' },
+    { en: '(the bike tour)', art: 'die', de: 'Fahrradtour', plural: '-en' },
+    { en: '(natural/unspoiled)', art: '', de: 'naturbelassen', plural: '' },
+    { en: '(wanderlust)', art: 'die', de: 'Wanderlust', plural: '(kein Pl.)' },
+    { en: '(to camp in the wild)', art: '', de: 'wild campen', plural: '' },
+    { en: '(the nature reserve)', art: 'das', de: 'Naturschutzgebiet', plural: '-e' },
+    { en: '(solitude)', art: 'die', de: 'Einsamkeit', plural: '(kein Pl.)' }
+];
+
+function makeWsInp(ans, placeholder, width) {
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'ws-inp';
+    inp.placeholder = placeholder;
+    inp.style.width = width + 'px';
+    inp.dataset.ans = ans;
+    inp.setAttribute('autocomplete', 'off');
+    inp.addEventListener('input', function() {
+        timerAutoStart(5);
+        wortschatzCheck(inp);
+        updateScore(5);
+    });
+    return inp;
+}
+
+function wortschatzCheck(inp) {
+    var val = inp.value.trim();
+    var a = inp.dataset.ans;
+    inp.classList.remove('ok', 'no');
+    if (!val) return;
+    if (val === a) { inp.classList.add('ok'); checkAllWs(); return; }
+    if (inp.style.width === '70px') {
+        var cmpVal = val.replace(/./g, function(c) { return c >= 'A' && c <= 'Z' ? String.fromCharCode(c.charCodeAt(0) + 32) : c === 'Ä' ? 'ä' : c === 'Ö' ? 'ö' : c === 'Ü' ? 'ü' : c; });
+        var cmpA = a.replace(/./g, function(c) { return c >= 'A' && c <= 'Z' ? String.fromCharCode(c.charCodeAt(0) + 32) : c === 'Ä' ? 'ä' : c === 'Ö' ? 'ö' : c === 'Ü' ? 'ü' : c; });
+        if (cmpVal === cmpA) { inp.classList.add('ok'); checkAllWs(); return; }
+        if (cmpA.indexOf(cmpVal) === 0) return;
+        inp.classList.add('no');
+    } else {
+        if (a.indexOf(val) === 0) return;
+        inp.classList.add('no');
+    }
+}
+
+function checkAllWs() {
+    var all = document.querySelectorAll('#wsGrid .ws-inp');
+    var ok = 0;
+    all.forEach(function(inp) { if (inp.classList.contains('ok')) ok++; });
+    var total = all.length;
+    if (ok === total && total > 0) timerStop(5);
+}
+
+function initWortschatz() {
+    timerStarted[5] = false;
+    if (timerIds[5]) { clearInterval(timerIds[5]); timerIds[5] = null; }
+    timerSeconds[5] = 0;
+    var el = document.getElementById('timer-5');
+    if (el) { el.textContent = '00:00'; el.classList.remove('running'); }
+
+    var grid = document.getElementById('wsGrid');
+    grid.innerHTML = '';
+
+    WS_DATA.forEach(function(w) {
+        if (!w.art && !w.de) return;
+        var card = document.createElement('div');
+        card.className = 'ws-card';
+
+        var enDiv = document.createElement('div');
+        enDiv.className = 'ws-en';
+        enDiv.textContent = w.en;
+        card.appendChild(enDiv);
+
+        var fields = document.createElement('div');
+        fields.className = 'ws-fields';
+
+        if (w.art) {
+            fields.appendChild(makeWsInp(w.art, 'Artikel', 70));
+        }
+
+        var wordWidth = Math.max(80, w.de.length * 10);
+        fields.appendChild(makeWsInp(w.de, '', wordWidth));
+
+        if (w.plural) {
+            fields.appendChild(makeWsInp(w.plural, '', 60));
+        }
+
+        card.appendChild(fields);
+        grid.appendChild(card);
+    });
+    updateScore(5);
+}
+
+// ===== SCORE TRACKING =====
+function updateScore(tabIdx) {
+    var el = document.getElementById('score-' + tabIdx);
+    if (!el) return;
+
+    var ok = 0, total = 0;
+
+    if (tabIdx === 2) {
+        var inps = document.querySelectorAll('#lueckenContainer .luecke-inp');
+        total = inps.length;
+        inps.forEach(function(inp) { if (inp.classList.contains('ok')) ok++; });
+        if (ok === total && total > 0) timerStop(2);
+    } else if (tabIdx === 3) {
+        total = RF_DATA.length;
+        document.querySelectorAll('.rf-result').forEach(function(r) { if (r.classList.contains('ok')) ok++; });
+    } else if (tabIdx === 4) {
+        total = satzbauData.length;
+        satzbauData.forEach(function(s, i) {
+            var row = document.getElementById('sb-row-' + i);
+            if (row && row.classList.contains('correct')) ok++;
+        });
+    } else if (tabIdx === 5) {
+        var inps = document.querySelectorAll('#wsGrid .ws-inp');
+        total = inps.length;
+        inps.forEach(function(inp) { if (inp.classList.contains('ok')) ok++; });
+    }
+
+    el.textContent = ok + ' / ' + total;
+}
+
+// ===== VOKABEL-HIGHLIGHTING IM LESETEXT =====
+function highlightVocabInText() {
+    var storyText = document.querySelector('.lese-text');
+    if (!storyText) return;
+
+    var words = [];
+    if (typeof WORTSCHATZ !== 'undefined' && WORTSCHATZ.length) {
+        words = WORTSCHATZ.map(function(item) { return item.de; });
+    }
+
+    words = words.filter(function(w) { return w && w.length > 2; });
+    if (words.length === 0) return;
+
+    function walkAndHighlight(node) {
+        if (node.nodeType === 3) {
+            var text = node.nodeValue;
+            var replaced = text;
+            words.forEach(function(word) {
+                var escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var regex = new RegExp('(?<![a-zA-ZäöüÄÖÜß])(' + escaped + ')(?![a-zA-ZäöüÄÖÜß])', 'g');
+                replaced = replaced.replace(regex, '\x01$1\x02');
+            });
+            if (replaced !== text) {
+                var span = document.createElement('span');
+                var parts = replaced.split(/\x01|\x02/);
+                var isHighlight = false;
+                parts.forEach(function(part) {
+                    if (!part) { isHighlight = !isHighlight; return; }
+                    if (isHighlight) {
+                        var hl = document.createElement('span');
+                        hl.className = 'vocab-hl';
+                        hl.title = '📖 Vokabel aus dem Wörter-Tab';
+                        hl.textContent = part;
+                        span.appendChild(hl);
+                    } else {
+                        span.appendChild(document.createTextNode(part));
+                    }
+                    isHighlight = !isHighlight;
+                });
+                node.parentNode.replaceChild(span, node);
+            }
+        } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT') {
+            Array.from(node.childNodes).forEach(walkAndHighlight);
+        }
+    }
+    walkAndHighlight(storyText);
+}
+
+// ===== INIT =====
+initWoerter();
+initRedemittel();
+buildLuecken();
+initRF();
+initSatzbau();
+initWortschatz();
+highlightVocabInText();
+showTab(0);
+</script>
+</body>
+</html>

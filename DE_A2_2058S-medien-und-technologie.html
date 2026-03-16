@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2058S Medien und Technologie</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle, .header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+
+/* NAV */
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+
+.section { display: none; }
+.section.active { display: block; }
+.sec-inner { padding: 28px 30px; }
+
+/* TIMER / CONTROL */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+/* HILFE-BOX */
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* AUSSPRACHE */
+.aussprache-intro { background: #f3e5f5; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; font-size: 0.9rem; color: #4a235a; }
+.regel-box { background: #fff3cd; border: 1.5px solid #f39c12; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; font-size: 0.88rem; line-height: 1.6; }
+.regel-box strong { color: #e67e22; }
+.wort-gruppe { margin-bottom: 20px; }
+.wort-gruppe h3 { font-size: 0.88rem; font-weight: 700; color: #6c3483; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.wort-cards { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+.wort-card { background: #e8d5f5; border: 2px solid #9b59b6; border-radius: 8px; padding: 10px 16px; font-size: 0.95rem; font-weight: 600; color: #4a235a; cursor: pointer; user-select: none; position: relative; }
+.wort-card .akzent { color: #e74c3c; text-decoration: underline; text-decoration-style: dotted; }
+.wort-card:hover { background: #d2aff0; }
+.hinweis { font-size: 0.8rem; color: #888; font-style: italic; margin-top: 4px; }
+.zuordnung-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.sort-zone { flex: 1; min-width: 160px; background: #f9f9f9; border: 2px dashed #9b59b6; border-radius: 8px; padding: 12px; min-height: 80px; }
+.sort-zone h4 { font-size: 0.82rem; color: #6c3483; font-weight: 700; margin-bottom: 8px; }
+.sort-chip { display: inline-block; background: #e8d5f5; border: 1.5px solid #9b59b6; border-radius: 16px; padding: 5px 12px; font-size: 0.82rem; font-weight: 600; color: #4a235a; margin: 3px; cursor: grab; }
+.sort-chip.correct { background: #c8e6c9; border-color: #27ae60; color: #1b5e20; }
+.sort-chip.incorrect { background: #ffcdd2; border-color: #e74c3c; color: #c62828; }
+
+/* DIALOG / ROLLEN */
+.rollen-intro { background: #e8f4f8; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; font-size: 0.88rem; color: #1a5276; }
+.redemittel-box { background: #e8f5e9; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; }
+.redemittel-box h3 { font-size: 0.92rem; font-weight: 700; color: #1b5e20; margin-bottom: 10px; }
+.redemittel-list { list-style: none; padding: 0; }
+.redemittel-list li { font-size: 0.88rem; color: #333; padding: 4px 0; border-bottom: 1px dotted #c8e6c9; }
+.redemittel-list li:last-child { border-bottom: none; }
+.redemittel-hl { color: #6c3483; font-weight: 600; }
+
+/* GENITIV TABLE */
+.genitiv-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 0.88rem; }
+.genitiv-table th { background: #667eea; color: white; padding: 8px 12px; text-align: left; }
+.genitiv-table td { padding: 8px 12px; border-bottom: 1px solid #e0e0e0; }
+.genitiv-table tr:nth-child(even) { background: #f8f9ff; }
+
+/* LÜCKENTEXT */
+.luecken-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; font-size: 0.92rem; line-height: 2.0; color: #333; }
+.gap-inp { width: 130px; border: none; border-bottom: 2px solid #667eea; background: transparent; font-size: 0.9rem; font-family: inherit; color: #333; padding: 2px 4px; outline: none; text-align: center; }
+.gap-inp:focus { border-bottom-color: #764ba2; }
+.gap-inp.ok { border-bottom-color: #27ae60; background: #e8f8f0; color: #27ae60; font-weight: 700; }
+.gap-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+.wortbank { background: #f3e5f5; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; }
+.wortbank strong { font-size: 0.82rem; color: #6c3483; display: block; margin-bottom: 6px; }
+.wb-chip { display: inline-block; background: #fff; border: 1.5px solid #9b59b6; border-radius: 12px; padding: 3px 10px; font-size: 0.82rem; color: #4a235a; margin: 3px; }
+
+/* SATZBAU */
+.satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+.sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip:active { cursor: grabbing; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.sb-chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.sb-chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+
+/* FOOTER */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+/* TAB BANNER */
+.tab-banner { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+
+@media (max-width: 600px) {
+  body { padding: 8px; }
+  .nav { flex-wrap: wrap; }
+  .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+  .nav-btn:last-child { border-right: 1px solid #ddd; }
+  .tab-banner { max-height: 120px; }
+}
+
+/* LISTENING EXERCISE */
+.listen-item { background: #f8f9ff; padding: 12px 18px; margin-bottom: 10px; border-radius: 10px; border-left: 4px solid #9b59b6; font-size: 0.92rem; display: flex; align-items: center; gap: 10px; }
+.listen-gap { width: 40px; border: none; border-bottom: 2px solid #9b59b6; background: transparent; font-size: 0.95rem; font-family: inherit; color: #4a235a; padding: 2px 4px; outline: none; text-align: center; font-weight: 700; }
+.listen-gap:focus { border-bottom-color: #e67e22; }
+.listen-gap.ok { border-bottom-color: #27ae60; background: #e8f8f0; color: #27ae60; }
+.listen-gap.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Medien und Technologie</h1>
+    <p style="font-family: Georgia, serif;">A2.2 – Lektion 2058S &nbsp;|&nbsp; Sprechen</p>
+    <div class="big-emoji">🗣️</div>
+  </div>
+
+  <div class="nav">
+    <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">🔊</span><span class="nav-label">Aussprache</span></div>
+    <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">📺</span><span class="nav-label">Medien & Technik</span></div>
+    <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+    <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+  </div>
+
+<!-- ══════════════════════ TAB 0: AUSSPRACHE ══════════════════════ -->
+<div class="section active" id="sec0">
+  <div class="sec-inner">
+    <div class="control-bar">
+      <div class="btn-row">
+        <button class="btn btn-reset" onclick="resetTimer(0);">↺ Neustart</button>
+      </div>
+      <div class="timer-display">
+        <span id="timer-0">⏱ 0:00</span>
+        <span id="best-0">🏆 --:--</span>
+      </div>
+    </div>
+
+    <img class="tab-banner" src="https://images.pexels.com/photos/3807517/pexels-photo-3807517.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Aussprache üben">
+
+    <div class="aussprache-intro">
+      <strong>Aussprache: das „r“ und die Umlaute</strong><br>
+      Im Deutschen gibt es zwei verschiedene Arten, das „r“ auszusprechen. Klicke auf ein Wort, um die Aussprache-Regel zu sehen!
+    </div>
+
+    <div class="regel-box">
+      <strong>Regel 1 – Vokalisches r:</strong> Nach einem Vokal oder am Ende eines Wortes klingt „r“ wie ein kurzes, unstressed „a“. Beispiel: <em>Comput<strong>er</strong> → klingt wie „Computá“</em><br><br>
+      <strong>Regel 2 – Konsonantisches r:</strong> Am Wortanfang oder nach Konsonanten sprechen wir ein echtes „r“ wie im Französischen. Beispiel: <em><strong>R</strong>egel, f<strong>r</strong>agen → echtes Rollen-r</em>
+    </div>
+
+    <div class="wort-gruppe">
+      <h3>1 · Vokalisches r — Klick um die Aussprache zu sehen</h3>
+      <div class="wort-cards">
+        <div class="wort-card" onclick="revealAkzent(this)">
+          <span class="akzent-hidden">Computer</span>
+          <span class="akzent" style="display:none">Computé<u>r</u> → /ɐ/-Laut (unstressed)</span>
+        </div>
+        <div class="wort-card" onclick="revealAkzent(this)">
+          <span class="akzent-hidden">lieber</span>
+          <span class="akzent" style="display:none">liebé<u>r</u> → /ɐ/-Laut (unstressed)</span>
+        </div>
+        <div class="wort-card" onclick="revealAkzent(this)">
+          <span class="akzent-hidden">lernen</span>
+          <span class="akzent" style="display:none">lé<u>r</u>nen → /ɐ/-Laut (unstressed)</span>
+        </div>
+        <div class="wort-card" onclick="revealAkzent(this)">
+          <span class="akzent-hidden">Peter</span>
+          <span class="akzent" style="display:none">Petė<u>r</u> → /ɐ/-Laut (unstressed)</span>
+        </div>
+        <div class="wort-card" onclick="revealAkzent(this)">
+          <span class="akzent-hidden">wir</span>
+          <span class="akzent" style="display:none">wi<u>r</u> → /ɐ/-Laut (unstressed)</span>
+        </div>
+      </div>
+      <p class="hinweis">💡 Nach Vokalen klingt „r“ immer weich wie „ä“.</p>
+    </div>
+
+    <div class="wort-gruppe">
+      <h3>2 · Konsonantisches r — Klick um die Aussprache zu sehen</h3>
+      <div class="wort-cards">
+        <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+          <span class="akzent-hidden">die Herren</span>
+          <span class="akzent" style="display:none"><u>H</u>é<u>r</u>ren → echtes Rollen-r</span>
+        </div>
+        <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+          <span class="akzent-hidden">Frage</span>
+          <span class="akzent" style="display:none">F<u>r</u>age → echtes Rollen-r</span>
+        </div>
+        <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+          <span class="akzent-hidden">die Ruhe</span>
+          <span class="akzent" style="display:none"><u>R</u>uhe → echtes Rollen-r</span>
+        </div>
+        <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+          <span class="akzent-hidden">krank</span>
+          <span class="akzent" style="display:none">k<u>r</u>ank → echtes Rollen-r</span>
+        </div>
+        <div class="wort-card" onclick="revealAkzent(this)" style="border-color:#27ae60;background:#e8f9ec;">
+          <span class="akzent-hidden">knurren</span>
+          <span class="akzent" style="display:none">knu<u>rr</u>en → echtes Rollen-r</span>
+        </div>
+      </div>
+      <p class="hinweis">💡 Am Wortanfang oder nach Konsonanten: echtes, hartes „r“.</p>
+    </div>
+
+    <h3 style="font-size:0.95rem;color:#4a235a;margin:20px 0 10px;">3 · Zuordnung: Welches r hörst du?</h3>
+    <p class="hinweis" style="margin-bottom:12px;">Ziehe jedes Wort in die richtige Spalte.</p>
+    <div id="sortBank" class="wort-cards" style="margin-bottom:14px;"></div>
+    <div class="zuordnung-row">
+      <div class="sort-zone" id="zone-vokalisch"><h4>vokalisch (weich)</h4></div>
+      <div class="sort-zone" id="zone-konsonantisch"><h4>konsonantisch (hart)</h4></div>
+    </div>
+    <div id="sort-feedback" style="font-size:0.88rem;font-weight:600;min-height:1.4em;margin-top:6px;"></div>
+
+    <h3 style="font-size:0.95rem;color:#4a235a;margin:20px 0 10px;">4 · Hör-Übung: Ergänze ä, ö oder ü</h3>
+    <p class="hinweis" style="margin-bottom:12px;">Welcher Umlaut passt? Nur einen Buchstaben eingeben!</p>
+    <div id="listenContainer" style="margin-bottom:18px;"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TAB 1: MEDIEN & TECHNIK ══════════════════════ -->
+<div class="section" id="sec1">
+  <div class="sec-inner">
+    <div class="control-bar">
+      <div class="btn-row">
+        <button class="btn btn-reset" onclick="resetTimer(1);">↺ Neustart</button>
+      </div>
+      <div class="timer-display">
+        <span id="timer-1">⏱ 0:00</span>
+        <span id="best-1">🏆 --:--</span>
+      </div>
+    </div>
+
+    <img class="tab-banner" src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Medien und Technologie">
+
+    <div class="rollen-intro">
+      <strong>📚 Wiederholung Genitiv</strong><br>
+      Der Genitiv zeigt Besitz oder Zugehörigkeit. Klicke auf die Beispiele unten!
+    </div>
+
+    <table class="genitiv-table">
+      <tr>
+        <th></th>
+        <th>maskulin</th>
+        <th>feminin</th>
+        <th>neutrum</th>
+        <th>Plural</th>
+      </tr>
+      <tr>
+        <td><strong>bestimmter Artikel</strong></td>
+        <td>des Mannes</td>
+        <td>der Frau</td>
+        <td>des Kindes</td>
+        <td>der Kinder</td>
+      </tr>
+      <tr>
+        <td><strong>unbestimmter Artikel</strong></td>
+        <td>eines Mannes</td>
+        <td>einer Frau</td>
+        <td>eines Kindes</td>
+        <td>– (keiner Kinder)</td>
+      </tr>
+    </table>
+
+    <h3 style="font-size:0.95rem;color:#4a235a;margin:18px 0 12px;">Genitiv-Übung: Ergänze die Genitivformen</h3>
+    <div class="luecken-item">
+      <p>1. Die Erfindung <input class="gap-inp" style="width:150px;" data-ans="des Internets" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> hat die Welt verändert.</p>
+    </div>
+    <div class="luecken-item">
+      <p>2. Der Bildschirm <input class="gap-inp" style="width:150px;" data-ans="des Computers" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> ist sehr groß.</p>
+    </div>
+    <div class="luecken-item">
+      <p>3. Die Qualität <input class="gap-inp" style="width:150px;" data-ans="der Verbindung" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> ist schlecht.</p>
+    </div>
+    <div class="luecken-item">
+      <p>4. Die Nutzer <input class="gap-inp" style="width:150px;" data-ans="des Netzwerks" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> sind zufrieden.</p>
+    </div>
+    <div class="luecken-item">
+      <p>5. Der Preis <input class="gap-inp" style="width:150px;" data-ans="der App" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> ist zu hoch.</p>
+    </div>
+
+    <div class="redemittel-box">
+      <h3>💬 Wichtiger Wortschatz</h3>
+      <ul class="redemittel-list">
+        <li><span class="redemittel-hl">der Strom</span> — electricity</li>
+        <li><span class="redemittel-hl">das Netzwerk</span> — network</li>
+        <li><span class="redemittel-hl">die Erfindung</span> — invention</li>
+        <li><span class="redemittel-hl">herunterladen</span> — to download</li>
+        <li><span class="redemittel-hl">der Alltag</span> — everyday life</li>
+        <li><span class="redemittel-hl">hochladen</span> — to upload</li>
+        <li><span class="redemittel-hl">der Anschluss</span> — connection</li>
+        <li><span class="redemittel-hl">entwickeln</span> — to develop</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TAB 2: LÜCKENTEXT ══════════════════════ -->
+<div class="section" id="sec2">
+  <div class="sec-inner">
+    <div class="control-bar">
+      <div class="btn-row">
+        <button class="btn btn-reset" onclick="showLueckenLoesung();">💡 Lösung</button>
+        <button class="btn btn-reset" onclick="resetLuecken();">↺ Neustart</button>
+      </div>
+      <div class="timer-display">
+        <span id="timer-2">⏱ 0:00</span>
+        <span id="best-2">🏆 --:--</span>
+      </div>
+    </div>
+
+    <img class="tab-banner" src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Lückentext Übung">
+
+    <div class="hilfe-box">
+      <strong>✏️ Lückentext: Medien und Technologie</strong><br>
+      Ergänze die fehlenden Wörter aus der Wortbank. Die Farbe zeigt dir, ob dein Wort stimmt!
+    </div>
+
+    <div class="wortbank">
+      <strong>Wortbank:</strong>
+      <span class="wb-chip">Strom</span>
+      <span class="wb-chip">Netzwerk</span>
+      <span class="wb-chip">Erfindung</span>
+      <span class="wb-chip">herunterladen</span>
+      <span class="wb-chip">Alltags</span>
+      <span class="wb-chip">hochladen</span>
+      <span class="wb-chip">Anschluss</span>
+      <span class="wb-chip">entwickeln</span>
+      <span class="wb-chip">Genitiv</span>
+      <span class="wb-chip">bahnbrechende</span>
+    </div>
+
+    <div id="lueckenContainer">
+      <div class="luecken-item">1. Ohne _____ funktioniert kein elektrisches Gerät. <input class="gap-inp" data-ans="Strom" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">2. Das soziale _____ verbindet Menschen weltweit. <input class="gap-inp" data-ans="Netzwerk" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">3. Die _____ des Buchdrucks war revolutionär. <input class="gap-inp" data-ans="Erfindung" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">4. Ich möchte einen Film _____. <input class="gap-inp" data-ans="herunterladen" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">5. Technologie ist ein Teil unseres _____. <input class="gap-inp" data-ans="Alltags" data-alts="Alltag" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">6. Kannst du das Foto bitte _____? <input class="gap-inp" data-ans="hochladen" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">7. Der Internet-_____ ist heute sehr schnell. <input class="gap-inp" data-ans="Anschluss" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">8. Firmen _____ ständig neue Apps. <input class="gap-inp" data-ans="entwickeln" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">9. Im _____ zeigt man Besitz oder Zugehörigkeit. <input class="gap-inp" data-ans="Genitiv" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+
+      <div class="luecken-item">10. Das Smartphone war eine _____ Erfindung. <input class="gap-inp" data-ans="bahnbrechende" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder=""></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ TAB 3: SATZBAU ══════════════════════ -->
+<div class="section" id="sec3">
+  <div class="sec-inner">
+    <div class="control-bar">
+      <div class="btn-row">
+        <button class="btn btn-reset" onclick="resetSatzbau();">↺ Neustart</button>
+      </div>
+      <div class="timer-display">
+        <span id="timer-3">⏱ 0:00</span>
+        <span id="best-3">🏆 --:--</span>
+      </div>
+    </div>
+
+    <img class="tab-banner" src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Satzbau Übung">
+
+    <div class="hilfe-box" style="background:#e8ecff;">
+      <strong>🧩 Satzbau: Bringe die Wörter in die richtige Reihenfolge!</strong><br>
+      Ziehe die Chips in die untere Zeile. Die Farbe zeigt dir, ob dein Satz stimmt.
+    </div>
+
+    <div id="satzbauContainer"></div>
+  </div>
+</div>
+
+  <div class="author-footer">
+    <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+    <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+  </div>
+</div><!-- /container -->
+
+<script>
+// ─── TAB NAVIGATION ───────────────────────────────────────────────
+function showTab(i) {
+  document.querySelectorAll('.section').forEach(function(s,j){ s.classList.toggle('active', j===i); });
+  document.querySelectorAll('.nav-btn').forEach(function(b,j){ b.classList.toggle('active', j===i); });
+}
+
+// ─── TIMER ────────────────────────────────────────────────────────
+const timerKey = 'daf-2058s-best-';
+var timers = [null,null,null,null];
+var seconds = [0,0,0,0];
+var timerStarted = [false,false,false,false];
+
+function fmtTime(sec) {
+  var m = Math.floor(sec / 60);
+  var s = sec % 60;
+  return m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function timerAutoStart(i) {
+  if (timerStarted[i]) return;
+  timerStarted[i] = true;
+  timers[i] = setInterval(function() {
+    seconds[i]++;
+    document.getElementById('timer-' + i).textContent = '⏱ ' + fmtTime(seconds[i]);
+  }, 1000);
+}
+
+function timerStop(i) {
+  if (!timerStarted[i]) return;
+  clearInterval(timers[i]);
+  timerStarted[i] = false;
+  var key = timerKey + i;
+  var prev = localStorage.getItem(key);
+  if (!prev || seconds[i] < parseInt(prev)) {
+    localStorage.setItem(key, seconds[i]);
+  }
+  loadBestTimes();
+}
+
+function resetTimer(i) {
+  if (timerStarted[i]) { clearInterval(timers[i]); timerStarted[i] = false; }
+  seconds[i] = 0;
+  document.getElementById('timer-' + i).textContent = '⏱ 0:00';
+}
+
+function loadBestTimes() {
+  for (var i = 0; i < 4; i++) {
+    var key = timerKey + i;
+    var best = localStorage.getItem(key);
+    if (best) {
+      document.getElementById('best-' + i).textContent = '🏆 ' + fmtTime(parseInt(best));
+    }
+  }
+}
+loadBestTimes();
+
+// ─── AUSSPRACHE REVEAL ────────────────────────────────────────────
+function revealAkzent(card) {
+  var hidden = card.querySelector('.akzent-hidden');
+  var shown = card.querySelector('.akzent');
+  if (hidden.style.display !== 'none') {
+    hidden.style.display = 'none';
+    shown.style.display = 'inline';
+  } else {
+    hidden.style.display = 'inline';
+    shown.style.display = 'none';
+  }
+}
+
+// ─── ZUORDNUNG vokalisch / konsonantisch ────────────────────────────
+var sortData = [
+  { wort: 'Computer', zone: 'vokalisch' },
+  { wort: 'lieber', zone: 'vokalisch' },
+  { wort: 'lernen', zone: 'vokalisch' },
+  { wort: 'Peter', zone: 'vokalisch' },
+  { wort: 'wir', zone: 'vokalisch' },
+  { wort: 'die Herren', zone: 'konsonantisch' },
+  { wort: 'Frage', zone: 'konsonantisch' },
+  { wort: 'die Ruhe', zone: 'konsonantisch' },
+  { wort: 'krank', zone: 'konsonantisch' },
+  { wort: 'knurren', zone: 'konsonantisch' }
+];
+var draggedSort = null;
+
+function initSort() {
+  var bank = document.getElementById('sortBank');
+  bank.innerHTML = '';
+  document.getElementById('zone-vokalisch').innerHTML = '<h4>vokalisch (weich)</h4>';
+  document.getElementById('zone-konsonantisch').innerHTML = '<h4>konsonantisch (hart)</h4>';
+  document.getElementById('sort-feedback').textContent = '';
+  var items = sortData.slice();
+  for (var i = items.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = items[i]; items[i] = items[j]; items[j] = tmp;
+  }
+  items.forEach(function(item) {
+    var chip = document.createElement('span');
+    chip.className = 'sort-chip';
+    chip.textContent = item.wort;
+    chip.dataset.zone = item.zone;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', function(e) {
+      draggedSort = chip;
+      e.dataTransfer.setData('text/plain', '');
+      setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+      chip.style.opacity = '';
+      draggedSort = null;
+    });
+    bank.appendChild(chip);
+  });
+  ['zone-vokalisch', 'zone-konsonantisch'].forEach(function(zid) {
+    var zone = document.getElementById(zid);
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      if (!draggedSort) return;
+      timerAutoStart(0);
+      zone.appendChild(draggedSort);
+      var expected = zid.replace('zone-', '');
+      if (draggedSort.dataset.zone === expected) {
+        draggedSort.classList.add('correct');
+        draggedSort.classList.remove('incorrect');
+      } else {
+        draggedSort.classList.add('incorrect');
+        draggedSort.classList.remove('correct');
+      }
+      draggedSort = null;
+      checkSortDone();
+    });
+  });
+}
+
+function checkSortDone() {
+  var bank = document.getElementById('sortBank');
+  if (bank.querySelectorAll('.sort-chip').length > 0) return;
+  var allChips = document.querySelectorAll('.sort-chip');
+  var allCorrect = true;
+  allChips.forEach(function(c) { if (!c.classList.contains('correct')) allCorrect = false; });
+  var fb = document.getElementById('sort-feedback');
+  if (allCorrect) {
+    fb.style.color = '#27ae60';
+    fb.textContent = '✓ Alle richtig! Sehr gut!';
+    timerStop(0);
+  } else {
+    fb.style.color = '#e74c3c';
+    fb.textContent = '✗ Einige Wörter sind falsch zugeordnet. Korrigiere sie!';
+  }
+}
+initSort();
+
+// ─── LISTENING: ä, ö, ü FILL ─────────────────────────────────────
+var listenData = [
+  { text: 'h___ren', ans: 'ö' },
+  { text: 'die Auftr___ge', ans: 'ä' },
+  { text: 'aufz___hlen', ans: 'ä' },
+  { text: 'die F___ße', ans: 'ü' },
+  { text: 'das Sonnenblumen___l', ans: 'ö' },
+  { text: 'die Er___ffnung', ans: 'ö' },
+  { text: 'die Arbeitsbl___tter', ans: 'ä' },
+  { text: 'fr___h', ans: 'ü' },
+  { text: '___bertreiben', ans: 'ü' }
+];
+
+function listenCheck(inp) {
+  var ans = inp.dataset.ans;
+  var val = inp.value.trim();
+  inp.classList.remove('ok', 'no');
+  if (!val) return;
+  if (val === ans || val === 'ä' && ans === 'ä' || val === 'ö' && ans === 'ö' || val === 'ü' && ans === 'ü' || val === 'Ä' && ans === 'ä' || val === 'Ö' && ans === 'ö' || val === 'Ü' && ans === 'ü') {
+    inp.classList.add('ok');
+  } else if (val.length > 0) {
+    inp.classList.add('no');
+  }
+}
+
+function initListen() {
+  var container = document.getElementById('listenContainer');
+  container.innerHTML = '';
+  listenData.forEach(function(item, idx) {
+    var div = document.createElement('div');
+    div.className = 'listen-item';
+    var text = item.text;
+    var idx_blank = text.indexOf('___');
+    var before = text.substring(0, idx_blank);
+    var after = text.substring(idx_blank + 3);
+    div.innerHTML = before + '<input class="listen-gap" data-ans="' + item.ans + '" oninput="listenCheck(this)" placeholder="">' + after + '.';
+    container.appendChild(div);
+  });
+}
+initListen();
+
+/* ══════════════════════ LÜCKENTEXT ══════════════════════ */
+function liveCheck(inp, timerAutoStartFn, allInputsSel, timerStopFn) {
+  var ans = inp.dataset.ans || '';
+  var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+  var allValid = [ans].concat(alts);
+  var ch0 = ans.charAt(0);
+  var caseSensitive = ch0 >= 'A' && ch0 <= 'Z' || ch0 === 'Ä' || ch0 === 'Ö' || ch0 === 'Ü';
+  var val = inp.value.trim();
+  var cmpVal = caseSensitive ? val : val.replace(/./g, function(c) { return c >= 'A' && c <= 'Z' ? String.fromCharCode(c.charCodeAt(0) + 32) : c >= 'Ä' && c === 'Ä' ? 'ä' : c === 'Ö' ? 'ö' : c === 'Ü' ? 'ü' : c; });
+  var cmpValid = allValid.map(function(a) {
+    return caseSensitive ? a : a.replace(/./g, function(c) { return c >= 'A' && c <= 'Z' ? String.fromCharCode(c.charCodeAt(0) + 32) : c >= 'Ä' && c === 'Ä' ? 'ä' : c === 'Ö' ? 'ö' : c === 'Ü' ? 'ü' : c; });
+  });
+  inp.classList.remove('ok', 'no');
+  if (!cmpVal) return;
+  if (cmpValid.indexOf(cmpVal) !== -1) {
+    inp.classList.add('ok');
+    if (timerAutoStartFn) timerAutoStartFn();
+    if (timerStopFn && allInputsSel) {
+      var alle = Array.from(document.querySelectorAll(allInputsSel));
+      if (alle.every(function(i) { return i.classList.contains('ok'); })) timerStopFn();
+    }
+    return;
+  }
+  for (var i = 0; i < cmpValid.length; i++) {
+    if (cmpValid[i].indexOf(cmpVal) === 0) {
+      if (timerAutoStartFn) timerAutoStartFn();
+      return;
+    }
+  }
+  inp.classList.add('no');
+}
+
+function showLueckenLoesung() {
+  var inputs = document.querySelectorAll('#lueckenContainer .gap-inp');
+  inputs.forEach(function(inp) {
+    inp.value = inp.dataset.ans;
+    inp.classList.add('ok');
+  });
+}
+
+function resetLuecken() {
+  var inputs = document.querySelectorAll('#lueckenContainer .gap-inp');
+  inputs.forEach(function(inp) {
+    inp.value = '';
+    inp.classList.remove('ok', 'no');
+  });
+  resetTimer(2);
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 3 — SATZBAU (satzbau-drag-drop Skill)
+   ════════════════════════════════════════════════════════════ */
+var satzbauData = [
+  { parts: ['die', 'Erfindung', 'des', 'Internets', 'war', 'bahnbrechend'], valid: [['die', 'Erfindung', 'des', 'Internets', 'war', 'bahnbrechend']], punct: '.' },
+  { parts: ['ich', 'lade', 'oft', 'Musik', 'herunter'], valid: [['ich', 'lade', 'oft', 'Musik', 'herunter']], punct: '.' },
+  { parts: ['ohne', 'Strom', 'funktioniert', 'kein', 'Computer'], valid: [['ohne', 'Strom', 'funktioniert', 'kein', 'Computer']], punct: '.' },
+  { parts: ['das', 'Netzwerk', 'der', 'Schule', 'ist', 'langsam'], valid: [['das', 'Netzwerk', 'der', 'Schule', 'ist', 'langsam']], punct: '.' },
+  { parts: ['kannst', 'du', 'das', 'Foto', 'hochladen'], valid: [['kannst', 'du', 'das', 'Foto', 'hochladen']], punct: '?' },
+  { parts: ['Technologie', 'gehört', 'zu', 'unserem', 'Alltag'], valid: [['Technologie', 'gehört', 'zu', 'unserem', 'Alltag']], punct: '.' },
+  { parts: ['die', 'Qualität', 'der', 'Verbindung', 'ist', 'schlecht'], valid: [['die', 'Qualität', 'der', 'Verbindung', 'ist', 'schlecht']], punct: '.' },
+  { parts: ['Firmen', 'entwickeln', 'ständig', 'neue', 'Apps'], valid: [['Firmen', 'entwickeln', 'ständig', 'neue', 'Apps']], punct: '.' }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase()
+                    && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) {
+            c.textContent = orig;
+        } else {
+            c.textContent = (i === 0) ? sbCapitalize(orig) : orig;
+        }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else {
+            zone.appendChild(sbDragged);
+        }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) {
+            c.classList.remove('correct', 'incorrect');
+        });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '✓ Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '✗ Falsche Reihenfolge – verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx); var row = document.getElementById('sb-row-' + idx); var fb = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = Array.from(bank.querySelectorAll('.chip')).concat(Array.from(row.querySelectorAll('.chip')));
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        for (var j = 0; j < allChips.length; j++) {
+            if (allChips[j] && allChips[j].dataset.orig === word) {
+                var chip = allChips[j]; allChips[j] = null;
+                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+                chip.classList.remove('correct', 'incorrect');
+                row.appendChild(chip); break;
+            }
+        }
+    });
+    fb.textContent = ''; setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = '\u{1F4A1} Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '\u21BA Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() {
+  if (timerStarted[3]) { clearInterval(timers[3]); timerStarted[3] = false; }
+  seconds[3] = 0;
+  document.getElementById('timer-3').textContent = '⏱ 0:00';
+  initSatzbau();
+}
+
+initSatzbau();
+loadBestTimes();
+</script>
+</body>
+</html>
