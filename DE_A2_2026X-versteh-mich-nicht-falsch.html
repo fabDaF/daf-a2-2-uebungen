@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A2.2 – 2026X Versteh mich nicht falsch</title>
+    <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle, .header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+.sec-inner { padding: 28px 30px; }
+
+/* ── VORENTLASTUNG ─────────────────────────────────────── */
+.intro-box { background: #f0f4ff; border-radius: 10px; padding: 18px 22px; margin-bottom: 22px; border-left: 4px solid #667eea; }
+.intro-box p { font-size: 0.95em; color: #444; line-height: 1.7; margin-bottom: 8px; }
+.intro-box p:last-child { margin-bottom: 0; }
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 18px; }
+.vocab-card { background: #f8f9ff; border-radius: 10px; overflow: hidden; border: 1px solid #e0e0e0; text-align: center; }
+.vocab-card img { width: 100%; height: 140px; object-fit: cover; }
+.vocab-card .vc-label { padding: 10px; font-weight: 600; color: #667eea; font-size: 0.92em; }
+.vocab-card .vc-en { font-size: 0.82em; color: #888; padding: 0 10px 10px; }
+
+/* ── LÜCKENTEXT ────────────────────────────────────────── */
+.luecken-text { line-height: 2.2; font-size: 0.95em; color: #444; }
+.gap-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.gap-inp:focus { border-bottom-color: #667eea; }
+.gap-inp.correct { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.gap-inp.wrong { border-bottom-color: #e74c3c; color: #e74c3c; }
+.wortbank { background: #f0f4ff; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; font-size: 0.9em; color: #444; }
+.wortbank strong { color: #667eea; }
+.wb-chip { display: inline-block; background: white; border: 1px solid #667eea; color: #667eea; padding: 3px 10px; border-radius: 12px; margin: 3px 2px; font-size: 0.92em; }
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* ── ZUORDNUNG ─────────────────────────────────────────── */
+.zuord-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f0f4ff; border-radius: 10px; min-height: 60px; margin-bottom: 22px; border: 2px dashed #c5cae9; }
+.zuord-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.zuord-cat { border-radius: 10px; border: 2px solid #e0e0e0; overflow: hidden; }
+.zuord-cat-hdr { padding: 10px 14px; font-weight: 700; font-size: 0.88em; text-align: center; letter-spacing: 0.04em; }
+.cat-miss .zuord-cat-hdr { background: #e8f5e9; color: #2e7d32; }
+.cat-klar .zuord-cat-hdr { background: #fce4ec; color: #c62828; }
+.cat-koerp .zuord-cat-hdr { background: #e3f2fd; color: #1565c0; }
+.zuord-drop { min-height: 80px; padding: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+.zuord-drop.drag-over { background: #e8ecff; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.selected { background: #667eea; color: white; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+
+/* ── SATZBAU ───────────────────────────────────────────── */
+.satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+.sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+
+/* ── WORTSCHATZ ────────────────────────────────────────── */
+.vocab-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vocab-en { font-weight: 600; color: #764ba2; min-width: 140px; font-size: 0.95em; }
+.vocab-arrow { color: #ccc; font-size: 1.2em; }
+.vocab-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vocab-inputs input { border: none; border-bottom: 2px solid #667eea; background: #fff; padding: 4px 8px; font-family: inherit; font-size: 0.95em; outline: none; transition: all 0.2s; }
+.vocab-inputs input:focus { border-bottom-color: #764ba2; background: #f0f7ff; }
+.vocab-inputs input.correct { border-bottom-color: #27ae60; background: #e8f8f0; }
+.vocab-inputs input.wrong { border-bottom-color: #e74c3c; background: #fdeaea; }
+.vocab-inputs input.art { width: 70px; }
+.vocab-inputs input.wort { width: 130px; }
+.vocab-inputs input.plural { width: 140px; }
+.vocab-hint { color: #27ae60; font-weight: 600; font-size: 0.8em; margin-left: 6px; }
+
+/* ── CONTROL BAR & TIMER ──────────────────────────────── */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+/* ── FOOTER ────────────────────────────────────────────── */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .vocab-item { flex-direction: column; align-items: flex-start; }
+    .zuord-cols { grid-template-columns: 1fr; }
+}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Versteh mich nicht falsch</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2026X &nbsp;|&nbsp; Extra-Übungen: Kommunikation &amp; Missverständnisse</p>
+        <div class="big-emoji">🗣️</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📖</span><span class="nav-label">Vorentlastung</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">🔀</span><span class="nav-label">Zuordnung</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 0 — VORENTLASTUNG
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section active" id="sec0">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">📖 Vorentlastung — Kommunikation &amp; Missverständnisse</h2>
+            <div class="intro-box">
+                <p>In dieser Lektion geht es um <strong>Missverständnisse und Kommunikation</strong>. Was machst du, wenn jemand dich nicht versteht? Wie kannst du etwas klarer erklären? Du lernst wichtige Redemittel für schwierige Gesprächssituationen.</p>
+                <p>Schau dir die Bilder an und lies die Wörter. Kennst du einige davon schon?</p>
+            </div>
+            <div class="vocab-grid">
+                <div class="vocab-card">
+                    <img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Missverständnis">
+                    <div class="vc-label">das Missverständnis</div>
+                    <div class="vc-en">misunderstanding</div>
+                </div>
+                <div class="vocab-card">
+                    <img src="https://images.pexels.com/photos/7516363/pexels-photo-7516363.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="erklären">
+                    <div class="vc-label">genauer erklären</div>
+                    <div class="vc-en">to explain more precisely</div>
+                </div>
+                <div class="vocab-card">
+                    <img src="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="klarstellen">
+                    <div class="vc-label">etwas klarstellen</div>
+                    <div class="vc-en">to clarify something</div>
+                </div>
+                <div class="vocab-card">
+                    <img src="https://images.pexels.com/photos/5668859/pexels-photo-5668859.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="wiederholen">
+                    <div class="vc-label">etwas wiederholen</div>
+                    <div class="vc-en">to repeat something</div>
+                </div>
+                <div class="vocab-card">
+                    <img src="https://images.pexels.com/photos/8199562/pexels-photo-8199562.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Körpersprache">
+                    <div class="vc-label">die Körpersprache</div>
+                    <div class="vc-en">body language</div>
+                </div>
+                <div class="vocab-card">
+                    <img src="https://images.pexels.com/photos/5668473/pexels-photo-5668473.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="gestikulieren">
+                    <div class="vc-label">gestikulieren</div>
+                    <div class="vc-en">to gesticulate</div>
+                </div>
+                <div class="vocab-card">
+                    <img src="https://images.pexels.com/photos/5699456/pexels-photo-5699456.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Meinung vertreten">
+                    <div class="vc-label">eine Meinung vertreten</div>
+                    <div class="vc-en">to hold an opinion</div>
+                </div>
+                <div class="vocab-card">
+                    <img src="https://images.pexels.com/photos/7176319/pexels-photo-7176319.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="verdeutlichen">
+                    <div class="vc-label">etwas verdeutlichen</div>
+                    <div class="vc-en">to illustrate / make clear</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 1 — LÜCKENTEXT
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec1">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">✏️ Lückentext</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="document.querySelectorAll('#sec1 .gap-inp:not(.correct)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('correct');})">Lösungen</button>
+                    <button class="btn btn-reset" onclick="document.querySelectorAll('#sec1 .gap-inp').forEach(function(i){i.value='';i.classList.remove('correct','wrong');});timerResetOne(1);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-1">00:00</span></span>
+                    <span>🏆 <span id="best-1">--:--</span></span>
+                </div>
+            </div>
+            <div class="wortbank"><strong>Wortbank:</strong> <span class="wb-chip">Missverständnis</span> <span class="wb-chip">wiederholen</span> <span class="wb-chip">akustisch</span> <span class="wb-chip">erklären</span> <span class="wb-chip">klarstellen</span> <span class="wb-chip">verdeutlichen</span> <span class="wb-chip">Meinung</span> <span class="wb-chip">ausdrücken</span> <span class="wb-chip">Körpersprache</span> <span class="wb-chip">gestikulieren</span> <span class="wb-chip">verständigen</span> <span class="wb-chip">unklar</span></div>
+            <div class="luecken-text">
+                <p>1. Hier muss ein <input class="gap-inp" data-ans="Missverständnis" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> vorliegen, denn ich habe das nicht so gemeint.</p>
+                <p>2. Kannst du den Satz bitte <input class="gap-inp" data-ans="wiederholen" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder="">? Ich habe dich nicht verstanden.</p>
+                <p>3. Ich habe dich <input class="gap-inp" data-ans="akustisch" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> nicht verstanden. Kannst du bitte lauter sprechen?</p>
+                <p>4. Der Lehrer hat die Aufgabe genauer <input class="gap-inp" data-ans="erklärt" data-alts="erklären" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder="">, damit alle es verstehen.</p>
+                <p>5. Ich möchte <input class="gap-inp" data-ans="klarstellen" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder="">, dass ich etwas anderes gemeint habe.</p>
+                <p>6. Das Herz auf dem Auto <input class="gap-inp" data-ans="verdeutlicht" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> die Liebe zum Reisen.</p>
+                <p>7. In einer Diskussion vertrete ich meine <input class="gap-inp" data-ans="Meinung" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> sehr klar.</p>
+                <p>8. Bernd ist verwirrt, denn seine Freundin drückt sich <input class="gap-inp" data-ans="unklar" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> aus.</p>
+                <p>9. <input class="gap-inp" data-ans="Körpersprache" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder=""> ist sehr wichtig für die nonverbale Kommunikation.</p>
+                <p>10. Im Urlaub hat mich keiner verstanden. Ich musste <input class="gap-inp" data-ans="gestikulieren" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder="">.</p>
+                <p>11. Wenn man keine gemeinsame Sprache hat, muss man sich mit Händen und Füßen <input class="gap-inp" data-ans="verständigen" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder="">.</p>
+                <p>12. Du musst dich klarer <input class="gap-inp" data-ans="ausdrücken" oninput="liveCheck(this, function(){timerAutoStart(1)}, '#sec1 .gap-inp', function(){timerStop(1)})" placeholder="">, sonst versteht dich keiner.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 2 — ZUORDNUNG
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec2">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">🔀 Zuordnung — Redemittel sortieren</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showZuordLoesung()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="initZuordnung()">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-2">00:00</span></span>
+                    <span>🏆 <span id="best-2">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ordne die Redemittel der richtigen Kategorie zu. Ziehe die Chips oder klicke sie an und dann auf die passende Kategorie.
+            </div>
+            <div class="zuord-chips" id="zuordBank"></div>
+            <div class="zuord-cols">
+                <div class="zuord-cat cat-miss">
+                    <div class="zuord-cat-hdr">🤔 Missverständnis</div>
+                    <div class="zuord-drop" id="zuord-miss" data-cat="miss"></div>
+                </div>
+                <div class="zuord-cat cat-klar">
+                    <div class="zuord-cat-hdr">💡 Klarstellung</div>
+                    <div class="zuord-drop" id="zuord-klar" data-cat="klar"></div>
+                </div>
+                <div class="zuord-cat cat-koerp">
+                    <div class="zuord-cat-hdr">🤲 Körpersprache</div>
+                    <div class="zuord-drop" id="zuord-koerp" data-cat="koerp"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 3 — SATZBAU
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec3">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">🧩 Satzbau</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="sbShowAll()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetSatzbau(); timerResetOne(3);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-3">00:00</span></span>
+                    <span>🏆 <span id="best-3">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ordne die Wörter zu einem korrekten Satz. Ziehe die Chips in die richtige Reihenfolge.
+            </div>
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 4 — WORTSCHATZ
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec4">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">🔠 Wortschatz</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetVocab(); timerResetOne(4);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-4">00:00</span></span>
+                    <span>🏆 <span id="best-4">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Übersetze die Wörter ins Deutsche. Bei Nomen: Artikel + Wort + Plural!
+            </div>
+            <div id="vocabContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   NAVIGATION
+   ════════════════════════════════════════════════════════════ */
+function showTab(n) {
+    document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
+    document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===n); });
+}
+
+/* ════════════════════════════════════════════════════════════
+   TIMER SYSTEM
+   ════════════════════════════════════════════════════════════ */
+var timers = [null, null, null, null, null];
+var timerSecs = [0, 0, 0, 0, 0];
+var timerRunning = [false, false, false, false, false];
+
+function timerKey(tab) { return 'daf-2026x-best-' + tab; }
+function timerFmt(s) { return Math.floor(s/60) + ':' + (s%60<10?'0':'') + (s%60); }
+
+function timerAutoStart(tab) {
+    if (timerRunning[tab]) return;
+    timerRunning[tab] = true;
+    timers[tab] = setInterval(function() {
+        timerSecs[tab]++;
+        var el = document.getElementById('timer-' + tab);
+        if (el) el.textContent = timerFmt(timerSecs[tab]);
+    }, 1000);
+}
+
+function timerStop(tab) {
+    if (!timerRunning[tab]) return;
+    clearInterval(timers[tab]);
+    timerRunning[tab] = false;
+    var cur = timerSecs[tab];
+    var best = localStorage.getItem(timerKey(tab));
+    if (!best || cur < parseInt(best)) {
+        localStorage.setItem(timerKey(tab), cur);
+        var bEl = document.getElementById('best-' + tab);
+        if (bEl) bEl.textContent = timerFmt(cur);
+    }
+}
+
+function timerResetOne(tab) {
+    clearInterval(timers[tab]);
+    timerRunning[tab] = false;
+    timerSecs[tab] = 0;
+    var el = document.getElementById('timer-' + tab);
+    if (el) el.textContent = '00:00';
+}
+
+function timerLoadBest(tab) {
+    var best = localStorage.getItem(timerKey(tab));
+    var bEl = document.getElementById('best-' + tab);
+    if (bEl) bEl.textContent = best ? timerFmt(parseInt(best)) : '--:--';
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 1 — LÜCKENTEXT (liveCheck)
+   ════════════════════════════════════════════════════════════ */
+function liveCheck(inp, timerAutoStartFn, allInputsSel, timerStopFn) {
+    var ans = inp.dataset.ans || '';
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+    var allValid = [ans].concat(alts);
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase()
+                     && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var val = inp.value.trim();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpValid = allValid.map(function(a) { return caseSensitive ? a : a.toLowerCase(); });
+    inp.classList.remove('correct', 'wrong');
+    if (!cmpVal) return;
+    if (cmpValid.indexOf(cmpVal) !== -1) {
+        inp.classList.add('correct');
+        if (timerAutoStartFn) timerAutoStartFn();
+        if (timerStopFn && allInputsSel) {
+            var alle = Array.from(document.querySelectorAll(allInputsSel));
+            if (alle.every(function(i) { return i.classList.contains('correct'); })) timerStopFn();
+        }
+        return;
+    }
+    for (var i = 0; i < cmpValid.length; i++) {
+        if (cmpValid[i].indexOf(cmpVal) === 0) {
+            if (timerAutoStartFn) timerAutoStartFn();
+            return;
+        }
+    }
+    inp.classList.add('wrong');
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 2 — ZUORDNUNG
+   ════════════════════════════════════════════════════════════ */
+var ZUORD_DATA = [
+    { text: 'Wie bitte?',                           cat: 'miss' },
+    { text: 'akustisch nicht verstehen',             cat: 'miss' },
+    { text: 'ein Missverständnis liegt vor',         cat: 'miss' },
+    { text: 'etwas wiederholen',                     cat: 'miss' },
+    { text: 'etwas klarstellen',                     cat: 'klar' },
+    { text: 'etwas verdeutlichen',                   cat: 'klar' },
+    { text: 'sich unklar ausdrücken',               cat: 'klar' },
+    { text: 'eine Meinung vertreten',                cat: 'klar' },
+    { text: 'etwas genauer erklären',               cat: 'klar' },
+    { text: 'gestikulieren',                         cat: 'koerp' },
+    { text: 'die Körpersprache',                    cat: 'koerp' },
+    { text: 'sich mit Händen und Füßen verständigen', cat: 'koerp' }
+];
+
+var zuordSelected = null;
+
+function zuordShuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+}
+
+function colorZuordChip(chip) {
+    var zone = chip.closest('.zuord-drop');
+    chip.classList.remove('correct', 'incorrect');
+    if (zone) {
+        chip.classList.add(chip.dataset.cat === zone.dataset.cat ? 'correct' : 'incorrect');
+    }
+}
+
+function colorAllZuordChips() {
+    document.querySelectorAll('#sec2 .chip').forEach(colorZuordChip);
+    timerAutoStart(2);
+    checkZuordAllOk();
+}
+
+function checkZuordAllOk() {
+    var chips = document.querySelectorAll('#sec2 .chip');
+    var allInZone = Array.from(chips).every(function(c){ return c.closest('.zuord-drop'); });
+    var allCorrect = Array.from(chips).every(function(c){ return c.classList.contains('correct'); });
+    if (allInZone && allCorrect && chips.length > 0) timerStop(2);
+}
+
+function initZuordnung() {
+    var bank = document.getElementById('zuordBank');
+    bank.innerHTML = '';
+    document.getElementById('zuord-miss').innerHTML = '';
+    document.getElementById('zuord-klar').innerHTML = '';
+    document.getElementById('zuord-koerp').innerHTML = '';
+    zuordSelected = null;
+    timerResetOne(2);
+
+    zuordShuffle(ZUORD_DATA).forEach(function(item) {
+        var chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = item.text;
+        chip.dataset.cat = item.cat;
+        chip.draggable = true;
+
+        chip.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text/plain', '');
+            zuordSelected = chip;
+            setTimeout(function(){ chip.style.opacity = '0.4'; }, 0);
+        });
+        chip.addEventListener('dragend', function() {
+            chip.style.opacity = '';
+            zuordSelected = null;
+            colorAllZuordChips();
+        });
+        chip.addEventListener('click', function() {
+            if (chip.classList.contains('selected')) {
+                chip.classList.remove('selected');
+                zuordSelected = null;
+            } else {
+                document.querySelectorAll('#sec2 .chip.selected').forEach(function(c){ c.classList.remove('selected'); });
+                chip.classList.add('selected');
+                zuordSelected = chip;
+            }
+        });
+
+        bank.appendChild(chip);
+    });
+
+    ['zuord-miss', 'zuord-klar', 'zuord-koerp'].forEach(function(id) {
+        var zone = document.getElementById(id);
+        zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault(); zone.classList.remove('drag-over');
+            if (zuordSelected) { zone.appendChild(zuordSelected); zuordSelected = null; colorAllZuordChips(); }
+        });
+        zone.addEventListener('click', function() {
+            if (zuordSelected && zuordSelected.classList.contains('selected')) {
+                zone.appendChild(zuordSelected);
+                zuordSelected.classList.remove('selected');
+                zuordSelected = null;
+                colorAllZuordChips();
+            }
+        });
+    });
+
+    bank.addEventListener('dragover', function(e){ e.preventDefault(); });
+    bank.addEventListener('drop', function(e){
+        e.preventDefault();
+        if (zuordSelected) { bank.appendChild(zuordSelected); zuordSelected = null; colorAllZuordChips(); }
+    });
+    bank.addEventListener('click', function(e){
+        if (e.target === bank && zuordSelected && zuordSelected.classList.contains('selected')) {
+            bank.appendChild(zuordSelected);
+            zuordSelected.classList.remove('selected');
+            zuordSelected = null;
+            colorAllZuordChips();
+        }
+    });
+}
+
+function showZuordLoesung() {
+    timerStop(2);
+    ZUORD_DATA.forEach(function(item) {
+        document.querySelectorAll('#sec2 .chip').forEach(function(chip) {
+            if (chip.textContent === item.text) {
+                document.getElementById('zuord-' + item.cat).appendChild(chip);
+            }
+        });
+    });
+    colorAllZuordChips();
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 3 — SATZBAU (satzbau-drag-drop Skill)
+   ════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    {
+        parts: ['du', 'das', 'kannst', 'bitte', 'wiederholen'],
+        valid: [['kannst', 'du', 'das', 'bitte', 'wiederholen']],
+        punct: '?'
+    },
+    {
+        parts: ['ich', 'habe', 'dich', 'akustisch', 'nicht', 'verstanden'],
+        valid: [['ich', 'habe', 'dich', 'akustisch', 'nicht', 'verstanden']],
+        punct: '.'
+    },
+    {
+        parts: ['hier', 'muss', 'ein', 'Missverständnis', 'vorliegen'],
+        valid: [['hier', 'muss', 'ein', 'Missverständnis', 'vorliegen']],
+        punct: '.'
+    },
+    {
+        parts: ['ich', 'möchte', 'das', 'noch', 'einmal', 'klarstellen'],
+        valid: [['ich', 'möchte', 'das', 'noch', 'einmal', 'klarstellen']],
+        punct: '.'
+    },
+    {
+        parts: ['er', 'drückt', 'sich', 'immer', 'unklar', 'aus'],
+        valid: [['er', 'drückt', 'sich', 'immer', 'unklar', 'aus']],
+        punct: '.'
+    },
+    {
+        parts: ['im', 'Urlaub', 'habe', 'ich', 'mich', 'mit', 'Händen', 'und', 'Füßen', 'verständigt'],
+        valid: [['im', 'Urlaub', 'habe', 'ich', 'mich', 'mit', 'Händen', 'und', 'Füßen', 'verständigt']],
+        punct: '.'
+    },
+    {
+        parts: ['sie', 'vertritt', 'ihre', 'Meinung', 'sehr', 'vehement'],
+        valid: [['sie', 'vertritt', 'ihre', 'Meinung', 'sehr', 'vehement']],
+        punct: '.'
+    }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase()
+                    && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) {
+            c.textContent = orig;
+        } else {
+            c.textContent = (i === 0) ? sbCapitalize(orig) : orig;
+        }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    if (word === ',' || word === ';') chip.classList.add('punct-chip');
+
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else {
+            zone.appendChild(sbDragged);
+        }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) {
+            c.classList.remove('correct', 'incorrect');
+        });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '✓ Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '✗ Falsche Reihenfolge – verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = {};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c)  { allChips[c.dataset.orig] = c; });
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        var chip = allChips[word];
+        if (chip) {
+            if (word !== ',' && word !== ';') {
+                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+            }
+            chip.classList.remove('correct', 'incorrect');
+            row.appendChild(chip);
+        }
+    });
+    fb.textContent = '';
+    setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbShowAll() {
+    for (var i = 0; i < satzbauData.length; i++) sbShowSolution(i);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = 'Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '↺ Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() { initSatzbau(); }
+
+/* ════════════════════════════════════════════════════════════
+   TAB 4 — WORTSCHATZ
+   ════════════════════════════════════════════════════════════ */
+var WORTSCHATZ = [
+    { id:1,  type:"n", en:"misunderstanding",    artikel:"das", de:"Missverst\u00e4ndnis", plural:"Missverst\u00e4ndnisse" },
+    { id:2,  type:"n", en:"body language",        artikel:"die", de:"K\u00f6rpersprache",   plural:"\u2013" },
+    { id:3,  type:"n", en:"opinion",              artikel:"die", de:"Meinung",              plural:"Meinungen" },
+    { id:4,  type:"n", en:"explanation",           artikel:"die", de:"Erkl\u00e4rung",      plural:"Erkl\u00e4rungen" },
+    { id:5,  type:"n", en:"discussion",            artikel:"die", de:"Diskussion",          plural:"Diskussionen" },
+    { id:6,  type:"v", en:"to repeat",             de:"wiederholen" },
+    { id:7,  type:"v", en:"to clarify",            de:"klarstellen" },
+    { id:8,  type:"v", en:"to illustrate",         de:"verdeutlichen" },
+    { id:9,  type:"v", en:"to gesticulate",        de:"gestikulieren" },
+    { id:10, type:"v", en:"to express oneself",    de:"sich ausdr\u00fccken" },
+    { id:11, type:"v", en:"to explain",            de:"erkl\u00e4ren" },
+    { id:12, type:"v", en:"to communicate",        de:"sich verst\u00e4ndigen" }
+];
+
+function vocabShuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+}
+
+function initVocab() {
+    var container = document.getElementById('vocabContainer');
+    container.innerHTML = '';
+    vocabShuffle(WORTSCHATZ).forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'vocab-item';
+        card.style.marginBottom = '0';
+        var enDiv = document.createElement('div');
+        enDiv.className = 'vocab-en';
+        enDiv.textContent = item.en;
+        card.appendChild(enDiv);
+        var arrow = document.createElement('div');
+        arrow.className = 'vocab-arrow';
+        arrow.textContent = '→';
+        card.appendChild(arrow);
+        var inputs = document.createElement('div');
+        inputs.className = 'vocab-inputs';
+        if (item.type === 'n') {
+            var artInp = document.createElement('input');
+            artInp.type = 'text'; artInp.className = 'vocab-inp art';
+            artInp.placeholder = 'Artikel'; artInp.dataset.ans = item.artikel;
+            artInp.dataset.field = 'art'; artInp.setAttribute('autocomplete','off');
+            artInp.addEventListener('input', function() { vocabLiveCheck(this); timerAutoStart(4); checkVocabAllOk(); });
+            inputs.appendChild(artInp);
+            var wortInp = document.createElement('input');
+            wortInp.type = 'text'; wortInp.className = 'vocab-inp wort';
+            wortInp.placeholder = 'Deutsch'; wortInp.dataset.ans = item.de;
+            wortInp.dataset.field = 'word'; wortInp.setAttribute('autocomplete','off');
+            wortInp.addEventListener('input', function() { vocabLiveCheck(this); timerAutoStart(4); checkVocabAllOk(); });
+            inputs.appendChild(wortInp);
+            var plInp = document.createElement('input');
+            plInp.type = 'text'; plInp.className = 'vocab-inp plural';
+            plInp.placeholder = 'Plural'; plInp.dataset.ans = item.plural;
+            plInp.dataset.field = 'plural'; plInp.setAttribute('autocomplete','off');
+            if (item.plural === '\u2013') {
+                plInp.value = '\u2013'; plInp.disabled = true;
+                plInp.classList.add('correct'); plInp.style.opacity = '0.6';
+            } else {
+                plInp.addEventListener('input', function() { vocabLiveCheck(this); timerAutoStart(4); checkVocabAllOk(); });
+            }
+            inputs.appendChild(plInp);
+        } else {
+            var inp = document.createElement('input');
+            inp.type = 'text'; inp.className = 'vocab-inp wort';
+            inp.placeholder = 'Deutsch'; inp.dataset.ans = item.de;
+            inp.dataset.field = 'word'; inp.style.width = '200px';
+            inp.setAttribute('autocomplete','off');
+            inp.addEventListener('input', function() { vocabLiveCheck(this); timerAutoStart(4); checkVocabAllOk(); });
+            inputs.appendChild(inp);
+        }
+        card.appendChild(inputs);
+        container.appendChild(card);
+    });
+}
+
+function vocabLiveCheck(inp) {
+    var user = inp.value;
+    var answer = inp.dataset.ans;
+    var field = inp.dataset.field;
+    inp.classList.remove('correct', 'wrong');
+    if (!user) return;
+    var cmpUser   = (field === 'art') ? user.toLowerCase().trim() : user.trim();
+    var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+    if (cmpUser === cmpAnswer) { inp.classList.add('correct'); }
+    else if (cmpAnswer.indexOf(cmpUser) === 0) { /* Prefix — neutral */ }
+    else { inp.classList.add('wrong'); }
+}
+
+function checkVocabAllOk() {
+    var inputs = document.querySelectorAll('#sec4 .vocab-inp');
+    var allOk = inputs.length > 0 && Array.from(inputs).every(function(i) {
+        return i.disabled || i.classList.contains('correct');
+    });
+    if (allOk) timerStop(4);
+}
+
+function showVocabLoesung() {
+    timerStop(4);
+    document.querySelectorAll('#sec4 .vocab-inp').forEach(function(inp) {
+        if (!inp.disabled) {
+            inp.value = inp.dataset.ans;
+            inp.classList.add('correct'); inp.classList.remove('wrong');
+        }
+    });
+}
+
+function resetVocab() {
+    document.querySelectorAll('#sec4 .vocab-inp').forEach(function(inp) {
+        if (!inp.disabled) {
+            inp.value = ''; inp.classList.remove('correct', 'wrong');
+        }
+    });
+    timerResetOne(4);
+}
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════ */
+initZuordnung();
+initSatzbau();
+initVocab();
+for (var t = 1; t <= 4; t++) timerLoadBest(t);
+</script>
+</body>
+</html>
