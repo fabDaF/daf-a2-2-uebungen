@@ -80,7 +80,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .mc-exercise { margin-top: 16px; }
 .mc-question { margin-bottom: 24px; }
 .mc-question > div:first-child { font-weight: 600; color: #333; margin-bottom: 10px; font-size: 0.95em; }
-.mc-opts { display: flex; flex-direction: column; gap: 8px; }
+.mc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
 .mc-opt { padding: 10px 16px; border: 1.5px solid #c5cae9; border-radius: 20px; background: #fff; cursor: pointer; font-size: 11px; letter-spacing: 0.3px; transition: all .2s; text-align: left; }
 .mc-opt:hover { border-color: #667eea; background: #eef0ff; }
 .mc-opt.selected { border-color: #667eea; background: #eef0ff; }
@@ -417,7 +417,7 @@ Die
 </div>
 </div>
 <div class="mc-question">
-<div>Was bedeutet „Probezeit"?</div>
+<div>Was bedeutet „Probezeit“?</div>
 <div class="mc-opts">
 <button class="mc-opt" data-q="2" data-opt="0">Eine Testphase am Anfang der Arbeit</button>
 <button class="mc-opt" data-q="2" data-opt="1">Urlaub am Anfang</button>
@@ -444,7 +444,7 @@ Die
 </div>
 </div>
 <div class="mc-question">
-<div>Was bedeutet „sich bewerben"?</div>
+<div>Was bedeutet „sich bewerben“?</div>
 <div class="mc-opts">
 <button class="mc-opt" data-q="5" data-opt="0">Sich um eine Stelle bemühen</button>
 <button class="mc-opt" data-q="5" data-opt="1">Etwas kaufen</button>
@@ -453,7 +453,7 @@ Die
 </div>
 </div>
 <div class="mc-question">
-<div>Was ist „Berufserfahrung"?</div>
+<div>Was ist „Berufserfahrung“?</div>
 <div class="mc-opts">
 <button class="mc-opt" data-q="6" data-opt="0">Erfahrung, die man bei der Arbeit gesammelt hat</button>
 <button class="mc-opt" data-q="6" data-opt="1">Erfahrung beim Kochen</button>

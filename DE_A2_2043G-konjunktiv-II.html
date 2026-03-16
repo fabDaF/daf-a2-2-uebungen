@@ -37,8 +37,8 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .progress-dot.done { background: #27ae60; }
 .progress-dot.active { background: #667eea; }
 .mc-q { font-weight: 700; color: #333; margin-bottom: 14px; font-size: 0.97em; }
-.mc-opts { display: flex; flex-direction: column; gap: 8px; }
-.mc-opt { padding: 10px 16px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 0.9em; color: #444; transition: all 0.2s; }
+.mc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc-opt { padding: 10px 16px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 11px; color: #444; transition: all 0.2s; }
 .mc-opt:hover { border-color: #667eea; color: #667eea; }
 .mc-opt.correct { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
 .mc-opt.wrong { border-color: #e74c3c; background: #fce4ec; color: #c62828; }
@@ -57,7 +57,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .luecken-inp:focus { border-bottom-color: #667eea; }
 .luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
 .luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
-.wortkasten { background: #f0f4ff; border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; font-size: 0.9em; color: #444; }
+.wortkasten { background: #f0f4ff; border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; font-size: 11px; color: #444; }
 .wortkasten strong { color: #667eea; }
 
 /* ── SATZBAU ────────────────────────────────────────────────── */
@@ -71,7 +71,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
 .chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
 .sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
-.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
 .satzbau-feedback.correct { color: #27ae60; }
 .satzbau-feedback.incorrect { color: #e74c3c; }
 
@@ -79,7 +79,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .mc-item { margin-bottom: 18px; }
 .mc-question { font-weight: 600; color: #333; margin-bottom: 10px; font-size: 0.96em; }
 .mc-answers { display: flex; flex-direction: column; gap: 8px; }
-.mc-answer { padding: 10px 16px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 0.9em; color: #444; transition: all 0.2s; }
+.mc-answer { padding: 10px 16px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 11px; color: #444; transition: all 0.2s; }
 .mc-answer:hover { border-color: #667eea; color: #667eea; }
 .mc-answer.correct { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
 .mc-answer.wrong { border-color: #e74c3c; background: #fce4ec; color: #c62828; }
@@ -150,11 +150,11 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
             <div class="intro-box">
                 <p>Schauen wir uns einige Beispielsätze an:</p>
-                <p>1. „Ich <span class="hl">würde</span> gerne in Berlin <span class="hl">studieren</span>."</p>
-                <p>2. „Sie <span class="hl">hätte</span> lieber einen anderen Job."</p>
-                <p>3. „Wenn ich reich <span class="hl">wäre</span>, <span class="hl">würde</span> ich um die Welt <span class="hl">reisen</span>."</p>
-                <p>4. „Er <span class="hl">könnte</span> besser Deutsch sprechen."</p>
-                <p>5. „Wir <span class="hl">würden</span> gerne nach Spanien <span class="hl">fliegen</span>."</p>
+                <p>1. „Ich <span class=“hl">würde</span> gerne in Berlin <span class="hl">studieren</span>."</p>
+                <p>2. „Sie <span class=“hl">hätte</span> lieber einen anderen Job."</p>
+                <p>3. „Wenn ich reich <span class=“hl">wäre</span>, <span class="hl">würde</span> ich um die Welt <span class="hl">reisen</span>."</p>
+                <p>4. „Er <span class=“hl">könnte</span> besser Deutsch sprechen."</p>
+                <p>5. „Wir <span class=“hl">würden</span> gerne nach Spanien <span class="hl">fliegen</span>."</p>
             </div>
 
             <div style="margin-top: 24px;">
@@ -179,10 +179,10 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
                 <!-- STEP 2 -->
                 <div class="discovery-step" id="step1">
-                    <div class="mc-q">Schritt 2: Was fällt bei „hätte", „wäre", „könnte" auf?</div>
+                    <div class="mc-q">Schritt 2: Was fällt bei „hätte“, „wäre“, „könnte“ auf?</div>
                     <div class="mc-opts">
                         <div class="mc-opt" onclick="checkDiscovery(1, this, true)">Diese Verben haben eigene Konjunktiv-II-Formen</div>
-                        <div class="mc-opt" onclick="checkDiscovery(1, this, false)">Sie verwenden „würde"</div>
+                        <div class="mc-opt" onclick="checkDiscovery(1, this, false)">Sie verwenden „würde“</div>
                         <div class="mc-opt" onclick="checkDiscovery(1, this, false)">Sie stehen am Satzende</div>
                         <div class="mc-opt" onclick="checkDiscovery(1, this, false)">Sie sind im Präsens</div>
                     </div>
@@ -206,7 +206,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
                     <div class="mc-q">Schritt 4: Welche Verben haben eigene Konjunktiv-II-Formen?</div>
                     <div class="mc-opts">
                         <div class="mc-opt" onclick="checkDiscovery(3, this, true)">sein, haben, werden, Modalverben</div>
-                        <div class="mc-opt" onclick="checkDiscovery(3, this, false)">Nur „sein"</div>
+                        <div class="mc-opt" onclick="checkDiscovery(3, this, false)">Nur „sein“</div>
                         <div class="mc-opt" onclick="checkDiscovery(3, this, false)">Alle regelmäßigen Verben</div>
                         <div class="mc-opt" onclick="checkDiscovery(3, this, false)">Nur Verben mit Vokalwechsel</div>
                     </div>
@@ -215,7 +215,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
                 <!-- REGEL-KARTE -->
                 <div class="regel-karte" id="regel-karte-disc">
-                    <h3>Konjugation von „würde":</h3>
+                    <h3>Konjugation von „würde“:</h3>
                     <table class="regel-table">
                         <tr><td>ich würde</td><td>wir würden</td></tr>
                         <tr><td>du würdest</td><td>ihr würdet</td></tr>
@@ -266,8 +266,8 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
                     <button class="btn" onclick="resetTab2()">↺ Neustart</button>
                 </div>
                 <div class="timer-display">
-                    <span>🏆 <span id="best2">--:--</span></span>
-                    <span id="timer2">00:00</span>
+                    <span>🏆 <span id="best-2">--:--</span></span>
+                    <span id="timer-2">00:00</span>
                 </div>
             </div>
 
@@ -291,8 +291,8 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
                     <button class="btn" onclick="resetTab3()">↺ Neustart</button>
                 </div>
                 <div class="timer-display">
-                    <span>🏆 <span id="best3">--:--</span></span>
-                    <span id="timer3">00:00</span>
+                    <span>🏆 <span id="best-3">--:--</span></span>
+                    <span id="timer-3">00:00</span>
                 </div>
             </div>
 
@@ -312,8 +312,8 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
                     <button class="btn" onclick="resetTab4()">↺ Neustart</button>
                 </div>
                 <div class="timer-display">
-                    <span>🏆 <span id="best4">--:--</span></span>
-                    <span id="timer4">00:00</span>
+                    <span>🏆 <span id="best-4">--:--</span></span>
+                    <span id="timer-4">00:00</span>
                 </div>
             </div>
 
@@ -564,7 +564,7 @@ function resetTab3() {
 
 const mc4 = [
     { q: 'Wie bildet man den Konjunktiv II für die meisten Verben?', opts: ['würde + Infinitiv', 'haben + Partizip II', 'sein + zu + Infinitiv', 'werden + Partizip'], correct: 0 },
-    { q: 'Was ist die Konjunktiv-II-Form von „sein"?', opts: ['wäre', 'würde sein', 'sei', 'ist'], correct: 0 },
+    { q: 'Was ist die Konjunktiv-II-Form von „sein“?', opts: ['wäre', 'würde sein', 'sei', 'ist'], correct: 0 },
     { q: 'Ich ___ gerne mehr Geld.', opts: ['hätte', 'habe', 'würde haben', 'bin'], correct: 0 },
     { q: 'Welcher Satz ist im Konjunktiv II?', opts: ['Ich würde gerne reisen.', 'Ich reise gerne.', 'Ich bin gereist.', 'Ich werde reisen.'], correct: 0 },
     { q: 'Wenn ich Zeit hätte, ___ ich ins Kino gehen.', opts: ['würde', 'werde', 'bin', 'habe'], correct: 0 },
