@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lokal- und Direktionaladverbien – Interaktive DaF-Übung (A2.2)</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle, .header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+.sec-inner { padding: 28px 30px; }
+
+/* ── ENTDECKUNGS-TAB ───────────────────────────────────────────── */
+.entdeck-intro { background: #f3e5f5; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; border-left: 5px solid #9c27b0; font-size: 0.97rem; line-height: 1.75; }
+.entdeck-intro h3 { color: #6a1b9a; margin-bottom: 10px; font-size: 1.05rem; }
+.hl { background: #e1bee7; border-radius: 4px; padding: 0 4px; color: #4a148c; font-weight: 700; }
+.mc-step { display: none; background: #fafbff; border-radius: 12px; padding: 18px 22px; margin-bottom: 16px; border: 1px solid #c5cae9; }
+.mc-step.active { display: block; }
+.mc-step h4 { color: #3949ab; margin-bottom: 12px; font-size: 0.97rem; }
+.mc-options { display: flex; flex-direction: column; gap: 8px; }
+.mc-btn { padding: 9px 16px; border: 2px solid #c5cae9; border-radius: 8px; background: #fff; cursor: pointer; text-align: left; font-size: 0.92rem; transition: all .2s; }
+.mc-btn:hover { border-color: #667eea; background: #f3f4ff; }
+.mc-btn.correct { border-color: #43a047; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.mc-btn.wrong { border-color: #e53935; background: #ffebee; color: #c62828; }
+.mc-feedback { margin-top: 10px; font-size: 0.88rem; min-height: 1.3em; }
+.mc-feedback.ok { color: #2e7d32; font-weight: 700; }
+.mc-feedback.err { color: #c62828; }
+.progress-dots { display: flex; gap: 8px; margin-bottom: 20px; }
+.pdot { width: 14px; height: 14px; border-radius: 50%; background: #c5cae9; transition: background .3s; }
+.pdot.done { background: #667eea; }
+.regel-karte { display: none; background: linear-gradient(135deg, #e8eaf6, #ede7f6); border-radius: 14px; padding: 22px 26px; border-left: 5px solid #3949ab; margin-top: 10px; }
+.regel-karte h3 { color: #1a237e; margin-bottom: 12px; font-size: 1.05rem; }
+.regel-karte ul { margin-left: 18px; }
+.regel-karte li { color: #333; line-height: 1.8; font-size: 0.95rem; }
+.regel-karte .rk-example { background: #fff; border-radius: 8px; padding: 10px 14px; margin-top: 12px; border-left: 3px solid #7c4dff; font-size: 0.9rem; color: #333; }
+.regel-karte .rk-example b { color: #3949ab; }
+
+/* ── REGEL-TAB ─────────────────────────────────────────────────── */
+.regel-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92em; }
+.regel-table th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 10px 14px; text-align: left; }
+.regel-table td { padding: 10px 14px; border-bottom: 1px solid #eee; }
+.regel-table tr:nth-child(even) { background: #f8f9ff; }
+.regel-highlight { background: #e8eaf6; border-radius: 10px; padding: 16px 20px; margin: 16px 0; border-left: 4px solid #667eea; }
+.regel-highlight h4 { color: #3949ab; margin-bottom: 8px; }
+.regel-highlight p { font-size: 0.93em; color: #444; line-height: 1.7; }
+
+/* ── LÜCKENTEXT ────────────────────────────────────────────────── */
+.luecken-block { padding: 28px 30px; }
+.luecken-text { line-height: 2.2; font-size: 0.95em; color: #444; }
+.luecken-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 14px; border-radius: 10px; border-left: 4px solid #667eea; position: relative; }
+.luecken-badge { position: absolute; top: 10px; right: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 0.7em; padding: 3px 10px; border-radius: 12px; font-weight: 600; }
+.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.luecken-inp:focus { border-bottom-color: #667eea; }
+.luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+.correction-hint { color: #27ae60; font-weight: 600; font-size: 0.85em; margin-left: 4px; white-space: nowrap; }
+.wortkasten { background: #f0f4ff; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; font-size: 0.9em; color: #444; }
+.wortkasten strong { color: #667eea; }
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* ── SATZBAU ───────────────────────────────────────────────────── */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.chip { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+.sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
+
+/* ── MULTIPLE CHOICE ───────────────────────────────────────────── */
+.mc-exercise { background: #f8f9ff; padding: 16px 20px; margin-bottom: 14px; border-radius: 10px; border-left: 4px solid #667eea; }
+.mc-exercise .mc-question { font-size: 1.05em; color: #333; margin-bottom: 10px; line-height: 1.7; }
+.mc-exercise .mc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc-exercise .mc-opt { padding: 4px 14px; border: 1.5px solid #c5cae9; border-radius: 20px; background: #fff; cursor: pointer; font-size: 11px; letter-spacing: 0.3px; transition: all .2s; }
+.mc-exercise .mc-opt:hover { border-color: #667eea; background: #eef0ff; }
+.mc-exercise .mc-opt.correct { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.mc-exercise .mc-opt.wrong { border-color: #e74c3c; background: #ffebee; color: #c62828; }
+.mc-exercise .mc-exfb { margin-top: 8px; font-size: 0.85em; min-height: 1.2em; }
+.mc-exercise .mc-exfb.ok { color: #2e7d32; font-weight: 700; }
+.mc-exercise .mc-exfb.err { color: #c62828; }
+
+/* ── CONTROL BAR & TIMER ──────────────────────────────────────── */
+.control-bar { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+.sec-title { font-size: 1.1em; font-weight: 700; color: #667eea; margin-bottom: 16px; }
+
+/* ── FOOTER ────────────────────────────────────────────────────── */
+.author-footer { text-align: center; padding: 18px; font-size: 0.82em; color: #aaa; }
+.author-footer a { color: #aaa; text-decoration: none; }
+.author-name { font-weight: 600; }
+
+/* ── RESPONSIVE ────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Lokal- und Direktionaladverbien</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2027G &nbsp;|&nbsp; Grammatik: Wo? Wohin? Woher?</p>
+        <div class="big-emoji">🧭</div>
+    </div>
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">🔍</span><span class="nav-label">Entdecken</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">📋</span><span class="nav-label">Regel</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🎯</span><span class="nav-label">Multiple Choice</span></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 0 — ENTDECKEN (induktive Regelentdeckung)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section active" id="sec-0">
+        <div class="sec-inner">
+            <div class="entdeck-intro">
+                <h3>Lies die Sätze und achte auf die markierten Wörter:</h3>
+                <p style="margin-bottom:0.3em"><strong>Gruppe A — Wo?</strong><br>
+                    1. Das Hotel ist <span class="hl">hier</span>.<br>
+                    2. Die Rezeption ist <span class="hl">vorne links</span>.<br>
+                    3. Der Pool ist <span class="hl">hinten rechts</span>.<br>
+                    4. Das Restaurant ist <span class="hl">dort</span>.
+                </p>
+                <p style="margin-top:0.8em"><strong>Gruppe B — Wohin?</strong><br>
+                    5. Komm bitte <span class="hl">herein</span>!<br>
+                    6. Geh bitte nach <span class="hl">draußen</span>.<br>
+                    7. Ich gehe <span class="hl">dorthin</span>.
+                </p>
+                <p style="margin-top:0.8em"><strong>Gruppe C — Woher?</strong><br>
+                    8. Er kommt <span class="hl">von dort</span>.<br>
+                    9. Die Kinder kommen <span class="hl">von draußen</span>.
+                </p>
+            </div>
+
+            <div class="progress-dots">
+                <div class="pdot" id="pdot0"></div>
+                <div class="pdot" id="pdot1"></div>
+                <div class="pdot" id="pdot2"></div>
+                <div class="pdot" id="pdot3"></div>
+            </div>
+
+            <!-- MC Schritt 0 -->
+            <div class="mc-step active" id="mc-step0">
+                <h4>Schritt 1: Was beschreiben die Wörter in Gruppe A (Sätze 1–4)?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">Eine Richtung (Wohin?)</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,true)">Einen Ort / eine Position (Wo?)</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">Einen Ausgangspunkt (Woher?)</button>
+                </div>
+                <div class="mc-feedback" id="mcfb0"></div>
+            </div>
+
+            <!-- MC Schritt 1 -->
+            <div class="mc-step" id="mc-step1">
+                <h4>Schritt 2: Was beschreiben die Wörter in Gruppe B (Sätze 5–7)?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">Einen Ort / eine Position (Wo?)</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">Einen Ausgangspunkt (Woher?)</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,true)">Eine Richtung / ein Ziel (Wohin?)</button>
+                </div>
+                <div class="mc-feedback" id="mcfb1"></div>
+            </div>
+
+            <!-- MC Schritt 2 -->
+            <div class="mc-step" id="mc-step2">
+                <h4>Schritt 3: Schau dir „herein" und „draußen" an. Was ist der Unterschied?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(2,this,true)">„herein" = hinein (in etwas), „nach draußen" = hinaus (aus etwas)</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">Beide bedeuten dasselbe</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">„herein" = Woher?, „draußen" = Wo?</button>
+                </div>
+                <div class="mc-feedback" id="mcfb2"></div>
+            </div>
+
+            <!-- MC Schritt 3 -->
+            <div class="mc-step" id="mc-step3">
+                <h4>Schritt 4: Was ist der Unterschied zwischen „hin" und „her"?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Es gibt keinen Unterschied</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,true)">„hin" = vom Sprecher weg, „her" = zum Sprecher</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">„hin" = zum Sprecher, „her" = vom Sprecher weg</button>
+                </div>
+                <div class="mc-feedback" id="mcfb3"></div>
+            </div>
+
+            <!-- Regelkarte -->
+            <div class="regel-karte" id="regelkarte">
+                <h3>Die Regel:</h3>
+                <ul>
+                    <li><b>Lokaladverbien</b> (hier, dort, vorne, hinten, links, rechts) beantworten die Frage <b>Wo?</b></li>
+                    <li><b>Direktionaladverbien</b> (herein, hinaus, dorthin, nach draußen) beantworten die Frage <b>Wohin?</b></li>
+                    <li><b>Herkunftsadverbien</b> (von dort, von hier, von draußen) beantworten die Frage <b>Woher?</b></li>
+                    <li><b>hin</b> = vom Sprecher weg &nbsp;|&nbsp; <b>her</b> = zum Sprecher</li>
+                </ul>
+                <div class="rk-example">
+                    <b>Wo?</b> Das Hotel ist <b>hier</b>.<br>
+                    <b>Wohin?</b> Komm bitte <b>herein</b>!<br>
+                    <b>Woher?</b> Er kommt <b>von draußen</b>.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 1 — REGEL (Übersicht Adverbien)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec-1">
+        <div class="sec-inner">
+            <div class="sec-title">📋 Lokal- und Direktionaladverbien — Übersicht</div>
+
+            <div class="regel-highlight">
+                <h4>Lokaladverbien → Wo?</h4>
+                <p>Lokaladverbien beschreiben einen <b>Ort</b> oder eine <b>Position</b>. Sie beantworten die Frage <b>„Wo?"</b></p>
+            </div>
+
+            <table class="regel-table">
+                <tr><th>Adverb</th><th>Bedeutung</th><th>Beispiel</th></tr>
+                <tr><td><b>hier</b></td><td>nahe beim Sprecher</td><td>Das Ticket ist <b>hier</b>.</td></tr>
+                <tr><td><b>dort</b></td><td>weit vom Sprecher</td><td>Der Bahnhof ist <b>dort</b>.</td></tr>
+                <tr><td><b>vorne</b></td><td>vorderer Bereich</td><td>Die Rezeption ist <b>vorne</b>.</td></tr>
+                <tr><td><b>hinten</b></td><td>hinterer Bereich</td><td>Der Pool ist <b>hinten</b>.</td></tr>
+                <tr><td><b>links</b></td><td>linke Seite</td><td>Das Restaurant ist <b>links</b>.</td></tr>
+                <tr><td><b>rechts</b></td><td>rechte Seite</td><td>Die Toilette ist <b>rechts</b>.</td></tr>
+                <tr><td><b>vorne links</b></td><td>Kombination</td><td>Der Aufzug ist <b>vorne links</b>.</td></tr>
+                <tr><td><b>hinten rechts</b></td><td>Kombination</td><td>Der Garten ist <b>hinten rechts</b>.</td></tr>
+            </table>
+
+            <div class="regel-highlight" style="margin-top: 24px;">
+                <h4>Direktionaladverbien → Wohin?</h4>
+                <p>Direktionaladverbien beschreiben eine <b>Richtung</b> oder ein <b>Ziel</b>. Sie beantworten die Frage <b>„Wohin?"</b></p>
+            </div>
+
+            <table class="regel-table">
+                <tr><th>Adverb</th><th>Bedeutung</th><th>Beispiel</th></tr>
+                <tr><td><b>hin</b></td><td>vom Sprecher weg</td><td>Wo gehst du <b>hin</b>?</td></tr>
+                <tr><td><b>dorthin</b></td><td>zu einem entfernten Ort</td><td>Ich möchte <b>dorthin</b> fahren.</td></tr>
+                <tr><td><b>herein / rein</b></td><td>hinein (in etwas)</td><td>Komm bitte <b>herein</b>!</td></tr>
+                <tr><td><b>hinaus / raus</b></td><td>nach draußen (aus etwas)</td><td>Geh bitte <b>hinaus</b>!</td></tr>
+                <tr><td><b>nach drinnen</b></td><td>ins Innere</td><td>Geh <b>nach drinnen</b>!</td></tr>
+                <tr><td><b>nach draußen</b></td><td>ins Freie</td><td>Geh <b>nach draußen</b>!</td></tr>
+            </table>
+
+            <div class="regel-highlight" style="margin-top: 24px;">
+                <h4>Herkunftsadverbien → Woher?</h4>
+                <p>Herkunftsadverbien beschreiben den <b>Ausgangspunkt</b>. Sie beantworten die Frage <b>„Woher?"</b></p>
+            </div>
+
+            <table class="regel-table">
+                <tr><th>Adverb</th><th>Bedeutung</th><th>Beispiel</th></tr>
+                <tr><td><b>von hier</b></td><td>von diesem Ort</td><td>Ich komme <b>von hier</b>.</td></tr>
+                <tr><td><b>von dort</b></td><td>von jenem Ort</td><td>Er kommt <b>von dort</b>.</td></tr>
+                <tr><td><b>von drinnen</b></td><td>aus dem Inneren</td><td>Musik kommt <b>von drinnen</b>.</td></tr>
+                <tr><td><b>von draußen</b></td><td>von außen</td><td>Die Kinder kommen <b>von draußen</b>.</td></tr>
+            </table>
+
+            <div class="regel-highlight" style="margin-top: 24px;">
+                <h4>hin ↔ her</h4>
+                <p><b>hin</b> = vom Sprecher weg (dorthin, hinaus, hinein)<br>
+                <b>her</b> = zum Sprecher (hierher, heraus, herein)</p>
+            </div>
+
+            <table class="regel-table">
+                <tr><th>hin (weg)</th><th>her (zum Sprecher)</th></tr>
+                <tr><td>Wo gehst du <b>hin</b>?</td><td>Wo kommst du <b>her</b>?</td></tr>
+                <tr><td>Geh <b>hinaus</b>!</td><td>Komm <b>herein</b>!</td></tr>
+                <tr><td>Ich fahre <b>dorthin</b>.</td><td>Komm <b>hierher</b>!</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 2 — LÜCKENTEXT (min. 12 Sätze)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec-2">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showLueckenLoesung()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetLuecken()">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-2">0:00</span></span>
+                    <span>🏆 <span id="best-2">–</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ergänze die Lücke mit dem passenden Adverb.<br>
+                <strong>Wortkasten:</strong> hin · her · herein · hinaus · rein · raus · dorthin · hierher · von dort · von draußen · hier · dort
+            </div>
+            <div id="lueckenContainer"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 3 — SATZBAU (6–8 Sätze, Drag & Drop)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec-3">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="satzbauData.forEach(function(_,i){sbShowSolution(i);})">Lösungen</button>
+                    <button class="btn btn-reset" onclick="initSatzbau(); timerResetOne(3);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-3">0:00</span></span>
+                    <span>🏆 <span id="best-3">–</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Bringe die Wörter in die richtige Reihenfolge. Achte auf die Verbposition!
+            </div>
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 4 — MULTIPLE CHOICE
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec-4">
+        <div class="sec-inner">
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="showMcLoesung()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetMcExercises()">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-4">0:00</span></span>
+                    <span>🏆 <span id="best-4">–</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Wähle die richtige Antwort. Welche Frage passt? Welches Adverb ist korrekt?
+            </div>
+            <div id="mcExContainer"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════════════════ */
+function showTab(n) {
+    document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
+    document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===n); });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIMER SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+var timers = {};
+function timerKey(tab) { return 'daf-2027g-best-' + tab; }
+function timerFmt(s) { return Math.floor(s/60) + ':' + (s%60<10?'0':'') + (s%60); }
+
+function timerAutoStart(tab) {
+    if (timers[tab]) return;
+    timers[tab] = { s: 0, iv: setInterval(function() {
+        timers[tab].s++;
+        var el = document.getElementById('timer-' + tab);
+        if (el) el.textContent = timerFmt(timers[tab].s);
+    }, 1000) };
+}
+
+function timerStop(tab) {
+    if (!timers[tab]) return;
+    clearInterval(timers[tab].iv);
+    var cur = timers[tab].s;
+    var best = localStorage.getItem(timerKey(tab));
+    if (!best || cur < parseInt(best)) {
+        localStorage.setItem(timerKey(tab), cur);
+        var el = document.getElementById('best-' + tab);
+        if (el) el.textContent = '🏆 ' + timerFmt(cur);
+    }
+}
+
+function timerResetOne(tab) {
+    if (timers[tab]) { clearInterval(timers[tab].iv); delete timers[tab]; }
+    var el = document.getElementById('timer-' + tab);
+    if (el) el.textContent = '0:00';
+}
+
+function loadBestTimes() {
+    [2,3,4].forEach(function(tab) {
+        var best = localStorage.getItem(timerKey(tab));
+        if (best) { var el = document.getElementById('best-' + tab); if(el) el.textContent = '🏆 ' + timerFmt(parseInt(best)); }
+    });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ENTDECKUNGS-TAB (MC-System)
+   ═══════════════════════════════════════════════════════════════ */
+var mcDone = [false, false, false, false];
+
+function mcCheck(step, btn, correct) {
+    var btns = btn.parentElement.querySelectorAll('.mc-btn');
+    btns.forEach(function(b) { b.disabled = true; b.classList.remove('correct','wrong'); });
+    var fb = document.getElementById('mcfb' + step);
+    if (correct) {
+        btn.classList.add('correct');
+        fb.textContent = '\u2713 Richtig! Weiter zum nächsten Schritt.';
+        fb.className = 'mc-feedback ok';
+        mcDone[step] = true;
+        document.getElementById('pdot' + step).classList.add('done');
+        setTimeout(function() {
+            var next = document.getElementById('mc-step' + (step + 1));
+            if (next) { next.classList.add('active'); }
+            else { document.getElementById('regelkarte').style.display = 'block'; }
+        }, 700);
+    } else {
+        btn.classList.add('wrong');
+        fb.textContent = '\u2717 Nicht ganz — schau nochmal genau hin und versuche es erneut.';
+        fb.className = 'mc-feedback err';
+        setTimeout(function() {
+            btns.forEach(function(b) { b.disabled = false; b.classList.remove('wrong','correct'); });
+            fb.textContent = '';
+            fb.className = 'mc-feedback';
+        }, 1400);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LÜCKENTEXT (Tab 2)
+   ═══════════════════════════════════════════════════════════════ */
+var LUECKEN_DATA = [
+    { id:1, text: '„Komm bitte ___!" — Die Mutter ruft das Kind ins Haus.', ans: 'herein', alts: ['rein'], size: 90 },
+    { id:2, text: '„Geh bitte ___!" — Der Lehrer schickt die Schüler auf den Schulhof.', ans: 'hinaus', alts: ['raus'], size: 80 },
+    { id:3, text: 'Wo kommst du ___? — Ich komme von der Arbeit.', ans: 'her', size: 60 },
+    { id:4, text: 'Wo gehst du ___? — Ich gehe zum Supermarkt.', ans: 'hin', size: 60 },
+    { id:5, text: 'Der Strand ist wunderschön. Ich möchte ___ fahren.', ans: 'dorthin', size: 90 },
+    { id:6, text: 'Komm schnell ___! Ich brauche deine Hilfe.', ans: 'hierher', alts: ['her'], size: 90 },
+    { id:7, text: 'Es ist kalt draußen. Geh lieber nach ___.', ans: 'drinnen', size: 90 },
+    { id:8, text: 'Die Kinder kommen ___ herein. Sie sind ganz nass.', ans: 'von draußen', size: 130 },
+    { id:9, text: 'Der Lärm kommt ___. Was passiert auf der Straße?', ans: 'von draußen', size: 130 },
+    { id:10, text: 'Das Museum ist sehr interessant. Warst du schon ___?', ans: 'dort', alts: ['da'], size: 70 },
+    { id:11, text: 'Siehst du das Café ___? Da war ich gestern.', ans: 'dort', size: 70 },
+    { id:12, text: 'Die Katze will nach draußen. Lass sie bitte ___.', ans: 'raus', alts: ['hinaus'], size: 80 }
+];
+
+function initLuecken() {
+    var container = document.getElementById('lueckenContainer');
+    container.innerHTML = '';
+    LUECKEN_DATA.forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'luecken-item';
+        var badge = document.createElement('span');
+        badge.className = 'luecken-badge';
+        badge.textContent = '#' + item.id;
+        card.appendChild(badge);
+        var parts = item.text.split('___');
+        var span = document.createElement('span');
+        span.className = 'luecken-text';
+        span.appendChild(document.createTextNode(parts[0]));
+        var inp = document.createElement('input');
+        inp.type = 'text';
+        inp.className = 'luecken-inp';
+        inp.style.width = item.size + 'px';
+        inp.dataset.ans = item.ans;
+        if (item.alts) inp.dataset.alts = item.alts.join('|');
+        inp.placeholder = '';
+        inp.setAttribute('autocomplete', 'off');
+        inp.addEventListener('input', function() {
+            timerAutoStart(2);
+            liveCheck(inp);
+            checkLueckenAllOk();
+        });
+        span.appendChild(inp);
+        if (parts[1]) span.appendChild(document.createTextNode(parts[1]));
+        card.appendChild(span);
+        container.appendChild(card);
+    });
+}
+
+function liveCheck(inp) {
+    var val = inp.value.trim();
+    var ans = inp.dataset.ans || '';
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+    var allValid = [ans].concat(alts);
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase() && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpValid = allValid.map(function(a) { return caseSensitive ? a : a.toLowerCase(); });
+    inp.classList.remove('ok', 'no');
+    if (!cmpVal) return;
+    if (cmpValid.indexOf(cmpVal) !== -1) { inp.classList.add('ok'); return; }
+    for (var i = 0; i < cmpValid.length; i++) {
+        if (cmpValid[i].indexOf(cmpVal) === 0) return;
+    }
+    inp.classList.add('no');
+}
+
+function showHint(inp) {
+    var next = inp.nextElementSibling;
+    if (next && next.classList.contains('correction-hint')) next.remove();
+    if (!inp.classList.contains('ok')) {
+        var hint = document.createElement('span');
+        hint.className = 'correction-hint';
+        hint.textContent = inp.dataset.ans;
+        inp.insertAdjacentElement('afterend', hint);
+    }
+    inp.value = inp.dataset.ans;
+    inp.classList.add('ok');
+    inp.classList.remove('no');
+}
+
+function checkLueckenAllOk() {
+    var inputs = document.querySelectorAll('#sec-2 .luecken-inp');
+    var allOk = inputs.length > 0 && Array.from(inputs).every(function(i) { return i.classList.contains('ok'); });
+    if (allOk) timerStop(2);
+}
+
+function showLueckenLoesung() {
+    document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp) { showHint(inp); });
+    timerStop(2);
+}
+
+function resetLuecken() {
+    document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('ok', 'no');
+        var next = inp.nextElementSibling;
+        if (next && next.classList.contains('correction-hint')) next.remove();
+    });
+    timerResetOne(2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SATZBAU (Tab 3) — Skill: satzbau-drag-drop
+   ═══════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    {
+        parts: ['komm', 'bitte', 'herein'],
+        valid: [['komm', 'bitte', 'herein']],
+        punct: '!'
+    },
+    {
+        parts: ['wo', 'gehst', 'du', 'hin'],
+        valid: [['wo', 'gehst', 'du', 'hin']],
+        punct: '?'
+    },
+    {
+        parts: ['die', 'Kinder', 'kommen', 'von', 'draußen', 'herein'],
+        valid: [['die', 'Kinder', 'kommen', 'von', 'draußen', 'herein']],
+        punct: '.'
+    },
+    {
+        parts: ['ich', 'möchte', 'dorthin', 'fahren'],
+        valid: [['ich', 'möchte', 'dorthin', 'fahren']],
+        punct: '.'
+    },
+    {
+        parts: ['geh', 'bitte', 'nach', 'draußen'],
+        valid: [['geh', 'bitte', 'nach', 'draußen']],
+        punct: '!'
+    },
+    {
+        parts: ['wo', 'kommst', 'du', 'her'],
+        valid: [['wo', 'kommst', 'du', 'her']],
+        punct: '?'
+    },
+    {
+        parts: ['das', 'Hotel', 'ist', 'vorne', 'links'],
+        valid: [['das', 'Hotel', 'ist', 'vorne', 'links']],
+        punct: '.'
+    },
+    {
+        parts: ['lass', 'die', 'Katze', 'bitte', 'raus'],
+        valid: [['lass', 'die', 'Katze', 'bitte', 'raus']],
+        punct: '!'
+    }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase() && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) { c.textContent = orig; }
+        else { c.textContent = (i === 0) ? sbCapitalize(orig) : orig; }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    if (word === ',' || word === ';') chip.classList.add('punct-chip');
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else { zone.appendChild(sbDragged); }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('correct', 'incorrect'); });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '✓ Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '✗ Falsche Reihenfolge – verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = {};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        var chip = allChips[word];
+        if (chip) {
+            if (word !== ',' && word !== ';') {
+                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+            }
+            chip.classList.remove('correct', 'incorrect');
+            row.appendChild(chip);
+        }
+    });
+    fb.textContent = '';
+    setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = 'Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '↺ Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() { initSatzbau(); }
+
+/* ═══════════════════════════════════════════════════════════════
+   MULTIPLE CHOICE (Tab 4)
+   ═══════════════════════════════════════════════════════════════ */
+var MC_DATA = [
+    { id:1, q:'Welche Frage passt? — Das Hotel ist <b>hier</b>.', opts:['Wo?','Wohin?','Woher?'], correct:0, explain:'„hier" beschreibt einen Ort → Wo?' },
+    { id:2, q:'Welche Frage passt? — Ich gehe <b>dorthin</b>.', opts:['Wo?','Wohin?','Woher?'], correct:1, explain:'„dorthin" beschreibt eine Richtung → Wohin?' },
+    { id:3, q:'Welche Frage passt? — Er kommt <b>von dort</b>.', opts:['Wo?','Wohin?','Woher?'], correct:2, explain:'„von dort" beschreibt den Ausgangspunkt → Woher?' },
+    { id:4, q:'Welches Adverb passt? — Komm bitte ___! (in das Haus)', opts:['hinaus','herein','dorthin'], correct:1, explain:'„herein" = zum Sprecher, in etwas hinein.' },
+    { id:5, q:'Welches Adverb passt? — Geh bitte ___! (aus dem Haus)', opts:['herein','hierher','hinaus'], correct:2, explain:'„hinaus" = vom Sprecher weg, aus etwas heraus.' },
+    { id:6, q:'Was ist richtig? — Wo gehst du ___?', opts:['her','hin','dort'], correct:1, explain:'„gehen" = vom Sprecher weg → „hin".' },
+    { id:7, q:'Was ist richtig? — Wo kommst du ___?', opts:['hin','her','dorthin'], correct:1, explain:'„kommen" = zum Sprecher → „her".' },
+    { id:8, q:'Was passt? — Die Kinder kommen ___ herein.', opts:['von draußen','nach drinnen','dorthin'], correct:0, explain:'„von draußen" = Woher? Die Kinder kommen von draußen.' },
+    { id:9, q:'Was passt? — Die Rezeption ist ___.', opts:['dorthin','vorne links','von hier'], correct:1, explain:'„vorne links" beschreibt eine Position → Wo?' },
+    { id:10, q:'Was ist der Unterschied zwischen „hin" und „her"?', opts:['kein Unterschied','hin = zum Sprecher, her = weg','hin = weg vom Sprecher, her = zum Sprecher'], correct:2, explain:'„hin" = vom Sprecher weg, „her" = zum Sprecher.' }
+];
+
+function initMcExercises() {
+    var container = document.getElementById('mcExContainer');
+    container.innerHTML = '';
+    MC_DATA.forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'mc-exercise';
+        card.dataset.id = item.id;
+        var q = document.createElement('div');
+        q.className = 'mc-question';
+        q.innerHTML = '<strong>#' + item.id + '</strong> ' + item.q;
+        card.appendChild(q);
+        var opts = document.createElement('div');
+        opts.className = 'mc-opts';
+        item.opts.forEach(function(opt, oi) {
+            var btn = document.createElement('button');
+            btn.className = 'mc-opt';
+            btn.textContent = opt;
+            btn.addEventListener('click', function() {
+                timerAutoStart(4);
+                var allBtns = opts.querySelectorAll('.mc-opt');
+                allBtns.forEach(function(b) { b.disabled = true; b.classList.remove('correct','wrong'); });
+                var fb = card.querySelector('.mc-exfb');
+                if (oi === item.correct) {
+                    btn.classList.add('correct');
+                    fb.className = 'mc-exfb ok';
+                    fb.textContent = '✓ ' + item.explain;
+                    checkMcAllOk();
+                } else {
+                    btn.classList.add('wrong');
+                    fb.className = 'mc-exfb err';
+                    fb.textContent = '✗ ' + item.explain;
+                    setTimeout(function() {
+                        allBtns.forEach(function(b) { b.disabled = false; b.classList.remove('wrong','correct'); });
+                        fb.textContent = '';
+                        fb.className = 'mc-exfb';
+                    }, 2000);
+                }
+            });
+            opts.appendChild(btn);
+        });
+        card.appendChild(opts);
+        var fb = document.createElement('div');
+        fb.className = 'mc-exfb';
+        card.appendChild(fb);
+        container.appendChild(card);
+    });
+}
+
+function checkMcAllOk() {
+    var allCards = document.querySelectorAll('#sec-4 .mc-exercise');
+    var allOk = Array.from(allCards).every(function(card) {
+        return card.querySelector('.mc-opt.correct') !== null;
+    });
+    if (allOk) timerStop(4);
+}
+
+function showMcLoesung() {
+    MC_DATA.forEach(function(item) {
+        var cards = document.querySelectorAll('#sec-4 .mc-exercise');
+        cards.forEach(function(card) {
+            if (parseInt(card.dataset.id) === item.id) {
+                var btns = card.querySelectorAll('.mc-opt');
+                btns.forEach(function(b, i) {
+                    b.disabled = true;
+                    b.classList.remove('correct','wrong');
+                    if (i === item.correct) b.classList.add('correct');
+                });
+                var fb = card.querySelector('.mc-exfb');
+                fb.className = 'mc-exfb ok';
+                fb.textContent = '✓ ' + item.explain;
+            }
+        });
+    });
+    timerStop(4);
+}
+
+function resetMcExercises() {
+    initMcExercises();
+    timerResetOne(4);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INITIALISIERUNG
+   ═══════════════════════════════════════════════════════════════ */
+initLuecken();
+initSatzbau();
+initMcExercises();
+loadBestTimes();
+</script>
+</body>
+</html>
