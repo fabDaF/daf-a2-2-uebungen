@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2031V Dienstleistungen erwerben</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle, .header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; padding: 22px 24px 28px; }
+.section.active { display: block; }
+
+/* CONTROL BAR */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+/* HILFE-BOX */
+.hilfe-box, .help-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* VOKABELKARTEN TAB 0 */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-top: 14px; }
+.vcard { background: #f8f9ff; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #e8ecff; }
+.vcard:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,0.15); }
+.vcard img { width: 100%; height: 110px; object-fit: cover; display: block; }
+.vcard-body { padding: 10px 12px; }
+.vcard-de { font-weight: 700; color: #333; font-size: 0.95em; }
+.vcard-art { color: #667eea; font-size: 0.82em; font-weight: 500; }
+.vcard-en { display: none; color: #999; font-size: 0.82em; font-style: italic; margin-top: 3px; }
+.vcard.flipped .vcard-en { display: block; }
+.vcard.flipped .vcard-body { background: #f0f4ff; }
+.vcard-example { font-size: 0.8em; color: #666; margin-top: 5px; line-height: 1.4; font-style: italic; display: none; }
+.vcard.flipped .vcard-example { display: block; }
+
+/* REDEMITTEL QA */
+.qa-grid { display: flex; flex-direction: column; gap: 10px; }
+.qa-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 10px; overflow: hidden; }
+.qa-q { background: #3d2066; color: white; padding: 12px 16px; font-size: 0.92em; display: flex; align-items: center; }
+.qa-a { background: #e8d5f5; color: #4a148c; padding: 12px 16px; font-size: 0.92em; cursor: pointer; display: flex; align-items: center; transition: background 0.2s; }
+.qa-a:hover { background: #d9c0eb; }
+.qa-a .ans { display: none; }
+.qa-a .placeholder { color: #999; font-style: italic; }
+.qa-a.open .ans { display: inline; }
+.qa-a.open .placeholder { display: none; }
+
+/* LÜCKENTEXT */
+.luecken-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05em; line-height: 2.2; color: #333; }
+.luecken-inp, .gap-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; padding: 2px 6px; font-family: inherit; font-size: 0.95em; outline: none; transition: border-color 0.2s; width: 160px; }
+.luecken-inp:focus, .gap-inp:focus { border-bottom-color: #667eea; }
+.gap-inp.correct, .luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.gap-inp.partial { border-bottom-color: #f39c12; }
+.gap-inp.wrong, .luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+.wortbank { background: #f0f4ff; padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; font-size: 0.9em; }
+.wb-chip { display: inline-block; background: white; border: 1px solid #dde3ff; border-radius: 14px; padding: 3px 10px; margin: 3px; font-size: 0.88em; color: #555; }
+
+/* TEXT & FRAGEN */
+.lese-text { font-family: Georgia, 'Times New Roman', serif; background: #f8f9fa; border-radius: 10px; padding: 22px 26px; font-size: 1.0em; line-height: 1.9; color: #333; margin-bottom: 18px; }
+.lese-text p { margin-bottom: 12px; }
+.lese-text p:last-child { margin-bottom: 0; }
+.rf-list { margin-top: 18px; }
+.rf-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+.rf-item:last-child { border-bottom: none; }
+.rf-item > div:first-child { flex: 1; min-width: 200px; font-size: 0.95em; color: #333; }
+.rf-btns { display: flex; gap: 6px; }
+.rf-btn { padding: 4px 14px; border: 1.5px solid #c5cae9; border-radius: 20px; background: #fff; cursor: pointer; font-size: 11px; letter-spacing: 0.3px; transition: all .2s; }
+.rf-btn:hover { border-color: #667eea; background: #eef0ff; }
+.rf-btn.sel-r { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.rf-btn.sel-f { border-color: #e74c3c; background: #ffebee; color: #c62828; }
+.rf-result { font-size: 1.1em; min-width: 24px; text-align: center; }
+.rf-result.ok { color: #27ae60; }
+.rf-result.err { color: #e74c3c; }
+
+/* SATZBAU */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.satzbau-item { margin-bottom: 22px; }
+.sb-label { font-weight: 600; color: #667eea; font-size: 0.88em; margin-bottom: 6px; }
+
+/* WORTSCHATZ */
+.vocab-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vocab-en { font-weight: 600; color: #764ba2; min-width: 140px; font-size: 0.95em; }
+.vocab-arrow { color: #ccc; font-size: 1.2em; }
+.vocab-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vocab-inputs input { border: none; border-bottom: 2px solid #667eea; background: #fff; padding: 4px 8px; font-family: inherit; font-size: 0.95em; outline: none; transition: all 0.2s; }
+.vocab-inputs input:focus { border-bottom-color: #764ba2; background: #f0f7ff; }
+.vocab-inputs input.correct { border-bottom-color: #27ae60; background: #e8f8f0; }
+.vocab-inputs input.wrong { border-bottom-color: #e74c3c; background: #fdeaea; }
+.vocab-inputs input.art { width: 70px; }
+.vocab-inputs input.wort { width: 130px; }
+.vocab-inputs input.plural { width: 140px; }
+.vocab-hint { color: #27ae60; font-weight: 600; font-size: 0.8em; margin-left: 6px; }
+
+/* Vokabel-Hervorhebung im Lesetext */
+.vocab-hl { background: #ffe9a0; border-radius: 3px; padding: 1px 3px; font-weight: 600; cursor: help; }
+
+/* FOOTER */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .qa-pair { grid-template-columns: 1fr; }
+    .vocab-item { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Dienstleistungen erwerben</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2031V &nbsp;|&nbsp; Wortschatz &amp; Üben</p>
+        <div class="big-emoji">🏢</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📸</span><span class="nav-label">Wörter</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">💬</span><span class="nav-label">Redemittel</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">📖</span><span class="nav-label">Text &amp; Fragen</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(5)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+<!-- TAB 0: WÖRTER -->
+<div class="section active" id="tab0">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn" onclick="document.querySelectorAll('.vcard').forEach(function(c){c.classList.add('flipped');});">Alle aufdecken</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-0">00:00</span></span><span class="best-time">🏆 <span id="best-0">--:--</span></span></div>
+  </div>
+  <div class="hilfe-box">💡 Klicke auf eine Karte, um die englische Übersetzung und einen Beispielsatz zu sehen.</div>
+  <div class="vocab-grid">
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Dienstleistung">
+      <div class="vcard-body">
+        <div class="vcard-de">die Dienstleistung</div>
+        <div class="vcard-art">Pl. die Dienstleistungen</div>
+        <div class="vcard-en">service</div>
+        <div class="vcard-example">\u201EDer Kunde erwartet eine gute Dienstleistung.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1319460/pexels-photo-1319460.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Friseur">
+      <div class="vcard-body">
+        <div class="vcard-de">der Friseur</div>
+        <div class="vcard-art">Pl. die Friseure</div>
+        <div class="vcard-en">hairdresser</div>
+        <div class="vcard-example">\u201EDer Friseur hat am Freitag einen Termin frei.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/6348105/pexels-photo-6348105.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Postbote">
+      <div class="vcard-body">
+        <div class="vcard-de">der Postbote</div>
+        <div class="vcard-art">Pl. die Postboten</div>
+        <div class="vcard-en">postman</div>
+        <div class="vcard-example">\u201EDer Postbote hat dir ein Paket gebracht.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3943723/pexels-photo-3943723.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Bankangestellter">
+      <div class="vcard-body">
+        <div class="vcard-de">der Bankangestellte</div>
+        <div class="vcard-art">Pl. die Bankangestellten</div>
+        <div class="vcard-en">bank clerk</div>
+        <div class="vcard-example">\u201EDer Bankangestellte hilft bei finanziellen Fragen.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1453499/pexels-photo-1453499.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Gärtner">
+      <div class="vcard-body">
+        <div class="vcard-de">der G\u00e4rtner</div>
+        <div class="vcard-art">Pl. die G\u00e4rtner</div>
+        <div class="vcard-en">gardener</div>
+        <div class="vcard-example">\u201EWann kommt der G\u00e4rtner?\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Termin ausmachen">
+      <div class="vcard-body">
+        <div class="vcard-de">einen Termin ausmachen</div>
+        <div class="vcard-art">macht aus \u00b7 machte aus \u00b7 hat ausgemacht</div>
+        <div class="vcard-en">to make an appointment</div>
+        <div class="vcard-example">\u201EK\u00f6nnen wir einen Termin ausmachen?\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="vereinbaren">
+      <div class="vcard-body">
+        <div class="vcard-de">vereinbaren</div>
+        <div class="vcard-art">vereinbart \u00b7 vereinbarte \u00b7 hat vereinbart</div>
+        <div class="vcard-en">to arrange / to agree</div>
+        <div class="vcard-example">\u201EWir haben einen Termin vereinbart.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Hotel">
+      <div class="vcard-body">
+        <div class="vcard-de">das Hotel</div>
+        <div class="vcard-art">Pl. die Hotels</div>
+        <div class="vcard-en">hotel</div>
+        <div class="vcard-example">\u201EWie gef\u00e4llt Ihnen unser Hotel?\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="reservieren">
+      <div class="vcard-body">
+        <div class="vcard-de">reservieren</div>
+        <div class="vcard-art">reserviert \u00b7 reservierte \u00b7 hat reserviert</div>
+        <div class="vcard-en">to reserve</div>
+        <div class="vcard-example">\u201EIch habe ein Zimmer reserviert.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/1838554/pexels-photo-1838554.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Rezeption">
+      <div class="vcard-body">
+        <div class="vcard-de">die Rezeption</div>
+        <div class="vcard-art">Pl. die Rezeptionen</div>
+        <div class="vcard-en">reception</div>
+        <div class="vcard-example">\u201EVerzeihung, wo ist die Rezeption?\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Auskunft">
+      <div class="vcard-body">
+        <div class="vcard-de">die Auskunft</div>
+        <div class="vcard-art">Pl. die Ausk\u00fcnfte</div>
+        <div class="vcard-en">information</div>
+        <div class="vcard-example">\u201EK\u00f6nnen Sie uns eine Auskunft geben?\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Bürgeramt">
+      <div class="vcard-body">
+        <div class="vcard-de">das B\u00fcrgeramt</div>
+        <div class="vcard-art">Pl. die B\u00fcrger\u00e4mter</div>
+        <div class="vcard-en">citizens' office</div>
+        <div class="vcard-example">\u201EDas B\u00fcrgeramt befindet sich im Rathaus.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/5668473/pexels-photo-5668473.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Beamter">
+      <div class="vcard-body">
+        <div class="vcard-de">der Beamte</div>
+        <div class="vcard-art">Pl. die Beamten</div>
+        <div class="vcard-en">civil servant</div>
+        <div class="vcard-example">\u201EBeamte haben geregelte Arbeitszeiten.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/585419/pexels-photo-585419.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Handwerker">
+      <div class="vcard-body">
+        <div class="vcard-de">der Handwerker</div>
+        <div class="vcard-art">Pl. die Handwerker</div>
+        <div class="vcard-en">craftsman</div>
+        <div class="vcard-example">\u201EUnsere Handwerker sind leider alle im Einsatz.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Florist">
+      <div class="vcard-body">
+        <div class="vcard-de">der Florist</div>
+        <div class="vcard-art">Pl. die Floristen</div>
+        <div class="vcard-en">florist</div>
+        <div class="vcard-example">\u201EDie Floristin hat heute viel zu tun.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3662136/pexels-photo-3662136.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Metzger">
+      <div class="vcard-body">
+        <div class="vcard-de">der Metzger</div>
+        <div class="vcard-art">Pl. die Metzger</div>
+        <div class="vcard-en">butcher</div>
+        <div class="vcard-example">\u201EDer Metzger schlachtet Tiere und verarbeitet ihr Fleisch.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/5439381/pexels-photo-5439381.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Kundenberater">
+      <div class="vcard-body">
+        <div class="vcard-de">der Kundenberater</div>
+        <div class="vcard-art">Pl. die Kundenberater</div>
+        <div class="vcard-en">customer advisor</div>
+        <div class="vcard-example">\u201EUnser Kundenberater hilft Ihnen gerne weiter.\u201C</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3184660/pexels-photo-3184660.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Auftrag">
+      <div class="vcard-body">
+        <div class="vcard-de">der Auftrag</div>
+        <div class="vcard-art">Pl. die Auftr\u00e4ge</div>
+        <div class="vcard-en">order / commission</div>
+        <div class="vcard-example">\u201EWir freuen uns auf Ihren Auftrag!\u201C</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: REDEMITTEL -->
+<div class="section" id="tab1">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="document.querySelectorAll('.qa-a').forEach(function(a){a.classList.remove('open');});">Alle schlie\u00dfen</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-1">00:00</span></span><span class="best-time">🏆 <span id="best-1">--:--</span></span></div>
+  </div>
+  <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">💡 Klicke auf die rechte Seite, um die Antwort zu sehen.</p>
+  <div class="qa-grid">
+    <div class="qa-pair">
+      <div class="qa-q">Ich m\u00f6chte einen Termin beim Friseur ausmachen.</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">\u2026</span><span class="ans">Gerne! Wann passt es Ihnen? Am Montag h\u00e4tte ich noch einen Platz frei.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">War der Postbote schon da?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">\u2026</span><span class="ans">Ja, er hat zwei Briefe und ein Paket gebracht.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Ich brauche eine Auskunft zum neuen Reisepass.</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">\u2026</span><span class="ans">Daf\u00fcr m\u00fcssen Sie zum B\u00fcrgeramt gehen. Das befindet sich im Rathaus.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Ich m\u00f6chte einen Blumenstrau\u00df in Auftrag geben.</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">\u2026</span><span class="ans">Nat\u00fcrlich! Welche Blumen sollen es sein?</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">K\u00f6nnen Sie mir bei meinen Finanzen helfen?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">\u2026</span><span class="ans">Ja, als Bankangestellter berate ich Sie gerne. Vereinbaren wir einen Termin!</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Ich h\u00e4tte gerne ein Zimmer in Ihrem Hotel reserviert.</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">\u2026</span><span class="ans">Willkommen! Ihr Zimmer ist fertig. Die Rezeptionistin gibt Ihnen den Schl\u00fcssel.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Unser Garten ist ein Chaos. K\u00f6nnen Sie helfen?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">\u2026</span><span class="ans">Kein Problem! Unser G\u00e4rtner kommt morgen und schneidet die Hecke.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Wir brauchen einen Handwerker f\u00fcr die K\u00fcche.</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">\u2026</span><span class="ans">Leider sind gerade alle Handwerker im Einsatz. Ich notiere Ihren Auftrag.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: LÜCKENTEXT -->
+<div class="section" id="tab2">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-show" onclick="document.querySelectorAll('#tab2 .gap-inp:not(.correct)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('correct');})">L\u00f6sungen</button><button class="btn btn-reset" onclick="document.querySelectorAll('#tab2 .gap-inp').forEach(function(i){i.value='';i.classList.remove('correct','partial','wrong');});resetTimer(2);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-2">00:00</span></span><span class="best-time">🏆 <span id="best-2">--:--</span></span></div>
+  </div>
+  <div class="wortbank"><strong>Wortbank:</strong> <span class="wb-chip">Friseur</span> <span class="wb-chip">Postbote</span> <span class="wb-chip">Bankangestellter</span> <span class="wb-chip">G\u00e4rtner</span> <span class="wb-chip">Termin</span> <span class="wb-chip">vereinbart</span> <span class="wb-chip">Hotel</span> <span class="wb-chip">reserviert</span> <span class="wb-chip">Rezeption</span> <span class="wb-chip">Auskunft</span> <span class="wb-chip">B\u00fcrgeramt</span> <span class="wb-chip">Beamte</span></div>
+  <div class="luecken-text">
+    <p>1. Meine Haare sind viel zu lang \u2013 ich muss zum <input class="gap-inp" data-ans="Friseur" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">!</p>
+    <p>2. Der <input class="gap-inp" data-ans="Postbote" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> hat heute zwei Briefe und ein Paket gebracht.</p>
+    <p>3. Simon ist <input class="gap-inp" data-ans="Bankangestellter" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">. Er arbeitet in einer gro\u00dfen Bank.</p>
+    <p>4. Wann kommt der <input class="gap-inp" data-ans="G\u00e4rtner" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">? Die Hecke muss geschnitten werden.</p>
+    <p>5. K\u00f6nnen wir einen <input class="gap-inp" data-ans="Termin" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> ausmachen? Ich m\u00f6chte meine Haare schneiden lassen.</p>
+    <p>6. Wir haben den Termin f\u00fcr n\u00e4chsten Montag <input class="gap-inp" data-ans="vereinbart" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">.</p>
+    <p>7. Wie gef\u00e4llt Ihnen unser <input class="gap-inp" data-ans="Hotel" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">? Haben Sie gut geschlafen?</p>
+    <p>8. Tut mir leid, aber dieser Tisch ist bereits <input class="gap-inp" data-ans="reserviert" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">.</p>
+    <p>9. Ich warte auf dich an der <input class="gap-inp" data-ans="Rezeption" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">.</p>
+    <p>10. K\u00f6nnen Sie mir eine <input class="gap-inp" data-ans="Auskunft" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> geben? Wir sind neu in der Stadt.</p>
+    <p>11. Zum <input class="gap-inp" data-ans="B\u00fcrgeramt" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> geht man, wenn man einen neuen Reisepass braucht.</p>
+    <p>12. <input class="gap-inp" data-ans="Beamte" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> haben geregelte Arbeitszeiten.</p>
+  </div>
+</div>
+
+<!-- TAB 3: TEXT & FRAGEN -->
+<div class="section" id="tab3">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="document.querySelectorAll('.rf-btn').forEach(function(b){b.classList.remove('sel-r','sel-f');});document.querySelectorAll('.rf-result').forEach(function(r){r.textContent='';r.className='rf-result';});">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-3">00:00</span></span><span class="best-time">🏆 <span id="best-3">--:--</span></span></div>
+  </div>
+  <div class="lese-text">
+    <p>Lisa ist vor einem Monat in eine neue Stadt gezogen. Sie muss viele Dienstleistungen erwerben, denn in der neuen Wohnung gibt es viel zu tun.</p>
+    <p>Zuerst geht sie zum B\u00fcrgeramt, weil sie einen neuen Personalausweis braucht. Der Beamte ist sehr freundlich und hilft ihr gerne. Danach macht sie einen Termin beim Friseur aus, denn ihre Haare sind viel zu lang. Der Friseur hat am Donnerstag noch einen Platz frei.</p>
+    <p>Am n\u00e4chsten Tag kommt der Postbote und bringt ein gro\u00dfes Paket. Es sind neue M\u00f6bel f\u00fcr die K\u00fcche! Aber Lisa kann sie nicht allein aufbauen. Sie ruft einen Handwerker an, der n\u00e4chste Woche kommen kann.</p>
+    <p>Au\u00dferdem braucht Lisa einen G\u00e4rtner f\u00fcr den Garten. Die Pflanzen wachsen \u00fcberall und die Hecke muss geschnitten werden. Zum Gl\u00fcck hat ihr Nachbar einen guten G\u00e4rtner empfohlen. Lisa vereinbart einen Termin f\u00fcr Samstag.</p>
+    <p>F\u00fcr das Wochenende hat sie au\u00dferdem ein Hotel reserviert, weil ihre Eltern zu Besuch kommen. Am Informationsstand bekommt sie Ausk\u00fcnfte \u00fcber Restaurants und Sehensw\u00fcrdigkeiten in der Stadt.</p>
+  </div>
+
+  <h3 style="margin-top:20px;color:#667eea;">Richtig oder Falsch?</h3>
+  <div class="rf-list">
+    <div class="rf-item">
+      <div>1. Lisa ist vor einem Monat umgezogen.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>2. Lisa geht zum B\u00fcrgeramt, weil sie einen Reisepass braucht.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>3. Der Friseur hat am Donnerstag einen freien Termin.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>4. Lisa baut die neuen M\u00f6bel allein auf.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>5. Der Handwerker kann n\u00e4chste Woche kommen.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>6. Lisa hat selbst einen guten G\u00e4rtner gefunden.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>7. Lisas Eltern kommen am Wochenende zu Besuch.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>8. Lisa hat ein Restaurant f\u00fcr ihre Eltern reserviert.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: SATZBAU -->
+<div class="section" id="tab4">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-show" onclick="for(var i=0;i<satzbauData.length;i++){sbShowSolution(i);}">L\u00f6sungen</button><button class="btn btn-reset" onclick="initSatzbau && initSatzbau(); resetTimer(4);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-4">00:00</span></span><span class="best-time">🏆 <span id="best-4">--:--</span></span></div>
+  </div>
+  <div class="hilfe-box">🧩 Ordne die W\u00f6rter zu einem korrekten Satz. Ziehe die Chips in die richtige Reihenfolge!</div>
+  <div id="satzbauContainer"></div>
+</div>
+
+<!-- TAB 5: WORTSCHATZ -->
+<div class="section" id="tab5">
+  <h2>📚 Wortschatz</h2>
+  <div class="control-bar">
+    <div class="btn-row">
+      <button class="btn btn-show" onclick="showVocabLoesung()">L\u00f6sungen</button>
+      <button class="btn btn-reset" onclick="resetVocab(); resetTimer(5);">Neu starten</button>
+    </div>
+    <div class="timer-display">
+      <span class="current-time">⏱ <span id="timer-5">00:00</span></span>
+      <span class="best-time">🏆 <span id="best-5">--:--</span></span>
+    </div>
+  </div>
+  <div class="help-box">
+    <strong>Aufgabe:</strong> \u00dcbersetze die W\u00f6rter ins Deutsche. Bei Nomen: Artikel + Wort + Plural!
+  </div>
+  <div id="vocabContainer"></div>
+</div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+function showTab(i){document.querySelectorAll('.section').forEach(function(s,j){s.classList.toggle('active',j===i);});document.querySelectorAll('.nav-btn').forEach(function(b,j){b.classList.toggle('active',j===i);});}
+const timers=[null,null,null,null,null,null],elapsed=[0,0,0,0,0,0],running=[false,false,false,false,false,false];
+function timerKey(t){return 'daf-2031v-best-'+t;}
+function timerFmt(sec){const m=Math.floor(sec/60),s=sec%60;return m+':'+(s<10?'0':'')+s;}
+function timerAutoStart(i){
+  if(running[i])return;
+  running[i]=true;
+  timers[i]=setInterval(function(){elapsed[i]++;document.getElementById('timer-'+i).textContent=timerFmt(elapsed[i]);},1000);
+}
+function timerStop(i){
+  if(!running[i])return;
+  clearInterval(timers[i]);running[i]=false;
+  var k=timerKey(i);var prev=localStorage.getItem(k);
+  if(!prev||elapsed[i]<parseInt(prev)){localStorage.setItem(k,elapsed[i]);document.getElementById('best-'+i).textContent='Bestzeit: '+timerFmt(elapsed[i]);}
+}
+function resetTimer(i){clearInterval(timers[i]);running[i]=false;elapsed[i]=0;document.getElementById('timer-'+i).textContent='00:00';}
+function timerLoadBest(i){var b=localStorage.getItem(timerKey(i));if(b)document.getElementById('best-'+i).textContent='Bestzeit: '+timerFmt(parseInt(b));}
+for(var _t=0;_t<6;_t++)timerLoadBest(_t);
+
+/* ════════════════════════════════════════════════════════════
+   TAB 2 — LÜCKENTEXT (liveCheck)
+   ════════════════════════════════════════════════════════════ */
+function liveCheck(inp, timerAutoStartFn, allInputsSel, timerStopFn) {
+    var ans = inp.dataset.ans || '';
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+    var allValid = [ans].concat(alts);
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase()
+                     && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var val = inp.value.trim();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpValid = allValid.map(function(a) {
+        return caseSensitive ? a : a.toLowerCase();
+    });
+    inp.classList.remove('correct', 'partial', 'wrong');
+    if (!cmpVal) return;
+    if (cmpValid.indexOf(cmpVal) !== -1) {
+        inp.classList.add('correct');
+        if (timerAutoStartFn) timerAutoStartFn();
+        if (timerStopFn && allInputsSel) {
+            var alle = Array.from(document.querySelectorAll(allInputsSel));
+            if (alle.every(function(i) { return i.classList.contains('correct'); })) timerStopFn();
+        }
+        return;
+    }
+    for (var i = 0; i < cmpValid.length; i++) {
+        if (cmpValid[i].indexOf(cmpVal) === 0) {
+            inp.classList.add('partial');
+            if (timerAutoStartFn) timerAutoStartFn();
+            return;
+        }
+    }
+    inp.classList.add('wrong');
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 3 — TEXT & FRAGEN (Richtig/Falsch)
+   ════════════════════════════════════════════════════════════ */
+function rfCheck(btn,chosen,correct){const row=btn.closest('.rf-item');row.querySelectorAll('.rf-btn').forEach(b=>{b.classList.remove('sel-r','sel-f');});btn.classList.add(chosen==='R'?'sel-r':'sel-f');const res=row.querySelector('.rf-result');if(chosen===correct){res.textContent='\u2705';res.className='rf-result ok';}else{res.textContent='\u274C';res.className='rf-result err';}}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 4 — SATZBAU (satzbau-drag-drop Skill)
+   ════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    { parts: ['ich', 'muss', 'zum', 'Friseur', 'gehen'], valid: [['ich', 'muss', 'zum', 'Friseur', 'gehen']], punct: '.' },
+    { parts: ['der', 'Postbote', 'hat', 'ein', 'Paket', 'gebracht'], valid: [['der', 'Postbote', 'hat', 'ein', 'Paket', 'gebracht']], punct: '.' },
+    { parts: ['wir', 'haben', 'einen', 'Termin', 'vereinbart'], valid: [['wir', 'haben', 'einen', 'Termin', 'vereinbart']], punct: '.' },
+    { parts: ['der', 'Beamte', 'hilft', 'mir', 'beim', 'B\u00fcrgeramt'], valid: [['der', 'Beamte', 'hilft', 'mir', 'beim', 'B\u00fcrgeramt']], punct: '.' },
+    { parts: ['ich', 'm\u00f6chte', 'ein', 'Zimmer', 'reservieren'], valid: [['ich', 'm\u00f6chte', 'ein', 'Zimmer', 'reservieren']], punct: '.' },
+    { parts: ['der', 'G\u00e4rtner', 'schneidet', 'die', 'Hecke'], valid: [['der', 'G\u00e4rtner', 'schneidet', 'die', 'Hecke']], punct: '.' },
+    { parts: ['k\u00f6nnen', 'Sie', 'mir', 'eine', 'Auskunft', 'geben'], valid: [['k\u00f6nnen', 'Sie', 'mir', 'eine', 'Auskunft', 'geben']], punct: '?' },
+    { parts: ['die', 'Floristin', 'nimmt', 'den', 'Auftrag', 'entgegen'], valid: [['die', 'Floristin', 'nimmt', 'den', 'Auftrag', 'entgegen']], punct: '.' }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase()
+                    && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) {
+            c.textContent = orig;
+        } else {
+            c.textContent = (i === 0) ? sbCapitalize(orig) : orig;
+        }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    if (word === ',' || word === ';') chip.classList.add('punct-chip');
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else {
+            zone.appendChild(sbDragged);
+        }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) {
+            c.classList.remove('correct', 'incorrect');
+        });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(4);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '\u2713 Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '\u2717 Falsche Reihenfolge \u2013 verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(4);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx); var row = document.getElementById('sb-row-' + idx); var fb = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = Array.from(bank.querySelectorAll('.chip')).concat(Array.from(row.querySelectorAll('.chip')));
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        for (var j = 0; j < allChips.length; j++) {
+            if (allChips[j] && allChips[j].dataset.orig === word) {
+                var chip = allChips[j]; allChips[j] = null;
+                if (word !== ',' && word !== ';') {
+                    chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+                }
+                chip.classList.remove('correct', 'incorrect');
+                row.appendChild(chip); break;
+            }
+        }
+    });
+    fb.textContent = ''; setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = '\uD83D\uDCA1 L\u00f6sen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '\u21BA Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() { initSatzbau(); }
+initSatzbau();
+
+/* ════════════════════════════════════════════════════════════
+   TAB 5 — WORTSCHATZ
+   ════════════════════════════════════════════════════════════ */
+var WORTSCHATZ = [
+    { id:1,  type:"n", en:"service",                artikel:"die", de:"Dienstleistung",    plural:"Dienstleistungen" },
+    { id:2,  type:"n", en:"hairdresser",             artikel:"der", de:"Friseur",           plural:"Friseure" },
+    { id:3,  type:"n", en:"postman",                 artikel:"der", de:"Postbote",          plural:"Postboten" },
+    { id:4,  type:"n", en:"bank clerk",              artikel:"der", de:"Bankangestellte",   plural:"Bankangestellten" },
+    { id:5,  type:"n", en:"gardener",                artikel:"der", de:"G\u00e4rtner",      plural:"G\u00e4rtner" },
+    { id:6,  type:"n", en:"appointment",             artikel:"der", de:"Termin",            plural:"Termine" },
+    { id:7,  type:"n", en:"hotel",                   artikel:"das", de:"Hotel",             plural:"Hotels" },
+    { id:8,  type:"n", en:"reception",               artikel:"die", de:"Rezeption",         plural:"Rezeptionen" },
+    { id:9,  type:"n", en:"information",             artikel:"die", de:"Auskunft",          plural:"Ausk\u00fcnfte" },
+    { id:10, type:"n", en:"citizens' office",        artikel:"das", de:"B\u00fcrgeramt",    plural:"B\u00fcrger\u00e4mter" },
+    { id:11, type:"n", en:"civil servant",           artikel:"der", de:"Beamte",            plural:"Beamten" },
+    { id:12, type:"n", en:"craftsman",               artikel:"der", de:"Handwerker",        plural:"Handwerker" },
+    { id:13, type:"n", en:"florist",                 artikel:"der", de:"Florist",           plural:"Floristen" },
+    { id:14, type:"n", en:"butcher",                 artikel:"der", de:"Metzger",           plural:"Metzger" },
+    { id:15, type:"n", en:"customer advisor",        artikel:"der", de:"Kundenberater",     plural:"Kundenberater" },
+    { id:16, type:"n", en:"order / commission",      artikel:"der", de:"Auftrag",           plural:"Auftr\u00e4ge" },
+    { id:17, type:"v", en:"to arrange / to agree",   de:"vereinbaren" },
+    { id:18, type:"v", en:"to reserve",              de:"reservieren" }
+];
+
+function initVocab() {
+    var container = document.getElementById('vocabContainer');
+    container.innerHTML = '';
+    var shuffled = WORTSCHATZ.slice().sort(function() { return Math.random() - 0.5; });
+    shuffled.forEach(function(item) {
+        var div = document.createElement('div');
+        div.className = 'vocab-item';
+        div.dataset.id = item.id;
+        var en = document.createElement('span');
+        en.className = 'vocab-en';
+        en.textContent = item.en;
+        div.appendChild(en);
+        var arrow = document.createElement('span');
+        arrow.className = 'vocab-arrow';
+        arrow.textContent = '\u2192';
+        div.appendChild(arrow);
+        var inputs = document.createElement('div');
+        inputs.className = 'vocab-inputs';
+        if (item.type === 'n') {
+            var artInp = document.createElement('input');
+            artInp.className = 'art';
+            artInp.placeholder = 'Artikel';
+            artInp.dataset.answer = item.artikel;
+            artInp.dataset.field = 'art';
+            artInp.onfocus = function() { timerAutoStart(5); };
+            artInp.oninput = function() { vocabLiveCheck(this); checkVocabAllDone(); };
+            inputs.appendChild(artInp);
+            var wordInp = document.createElement('input');
+            wordInp.className = 'wort';
+            wordInp.placeholder = 'Deutsch';
+            wordInp.dataset.answer = item.de;
+            wordInp.dataset.field = 'wort';
+            wordInp.onfocus = function() { timerAutoStart(5); };
+            wordInp.oninput = function() { vocabLiveCheck(this); checkVocabAllDone(); };
+            inputs.appendChild(wordInp);
+            var pluralInp = document.createElement('input');
+            pluralInp.className = 'plural';
+            pluralInp.placeholder = 'Plural';
+            pluralInp.dataset.answer = item.plural;
+            pluralInp.dataset.field = 'plural';
+            pluralInp.onfocus = function() { timerAutoStart(5); };
+            pluralInp.oninput = function() { vocabLiveCheck(this); checkVocabAllDone(); };
+            inputs.appendChild(pluralInp);
+        } else {
+            var deInp = document.createElement('input');
+            deInp.className = 'wort';
+            deInp.style.width = '180px';
+            deInp.placeholder = 'Deutsch';
+            deInp.dataset.answer = item.de;
+            deInp.dataset.field = 'wort';
+            deInp.onfocus = function() { timerAutoStart(5); };
+            deInp.oninput = function() { vocabLiveCheck(this); checkVocabAllDone(); };
+            inputs.appendChild(deInp);
+        }
+        div.appendChild(inputs);
+        container.appendChild(div);
+    });
+}
+
+function vocabLiveCheck(inp) {
+    var user = inp.value;
+    var answer = inp.dataset.answer;
+    var field = inp.dataset.field;
+    inp.classList.remove('correct', 'wrong');
+    if (user.length === 0) return;
+    var cmpUser = (field === 'art') ? user.toLowerCase() : user;
+    var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+    if (cmpUser === cmpAnswer) { inp.classList.add('correct'); }
+    else if (cmpAnswer.indexOf(cmpUser) === 0) { /* prefix */ }
+    else { inp.classList.add('wrong'); }
+}
+
+function checkVocabAllDone() {
+    var inputs = document.querySelectorAll('#tab5 .vocab-inputs input');
+    if (inputs.length === 0) return;
+    var allCorrect = true;
+    inputs.forEach(function(inp) { if (!inp.classList.contains('correct')) allCorrect = false; });
+    if (allCorrect) timerStop(5);
+}
+
+function showVocabLoesung() {
+    document.querySelectorAll('#tab5 .vocab-inputs input').forEach(function(inp) {
+        var field = inp.dataset.field;
+        var user = inp.value.trim();
+        var answer = inp.dataset.answer;
+        var cmpUser = (field === 'art') ? user.toLowerCase() : user;
+        var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+        var existing = inp.nextElementSibling;
+        if (existing && existing.classList.contains('vocab-hint')) existing.remove();
+        if (cmpUser === cmpAnswer) {
+            inp.classList.remove('wrong'); inp.classList.add('correct');
+        } else {
+            inp.classList.add('wrong');
+            var hint = document.createElement('span');
+            hint.className = 'vocab-hint';
+            hint.textContent = inp.dataset.answer;
+            inp.insertAdjacentElement('afterend', hint);
+        }
+    });
+}
+
+function resetVocab() {
+    document.querySelectorAll('#tab5 .vocab-inputs input').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('correct', 'wrong');
+        var next = inp.nextElementSibling;
+        if (next && next.classList.contains('vocab-hint')) next.remove();
+    });
+}
+
+/* ════════════════════════════════════════════════════════════
+   VOKABEL-HIGHLIGHTING IM LESETEXT
+   ════════════════════════════════════════════════════════════ */
+function highlightVocabInText() {
+    var storyText = document.querySelector('.story-text') || document.querySelector('.lese-text');
+    if (!storyText) return;
+    var words = [];
+    if (typeof WORTSCHATZ !== 'undefined' && WORTSCHATZ.length) {
+        words = WORTSCHATZ.map(function(item) { return item.de; });
+    }
+    words = words.filter(function(w) { return w && w.length > 3; });
+    if (words.length === 0) return;
+    function walkAndHighlight(node) {
+        if (node.nodeType === 3) {
+            var text = node.nodeValue;
+            var replaced = text;
+            words.forEach(function(word) {
+                var escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var regex = new RegExp('(?<![a-zA-Z\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df])(' + escaped + ')(?![a-zA-Z\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df])', 'g');
+                replaced = replaced.replace(regex, '\x01$1\x02');
+            });
+            if (replaced !== text) {
+                var span = document.createElement('span');
+                var parts = replaced.split(/\x01|\x02/);
+                var isHighlight = false;
+                parts.forEach(function(part) {
+                    if (!part) { isHighlight = !isHighlight; return; }
+                    if (isHighlight) {
+                        var hl = document.createElement('span');
+                        hl.className = 'vocab-hl';
+                        hl.title = '\uD83D\uDCD6 Vokabel aus der Vorentlastung';
+                        hl.textContent = part;
+                        span.appendChild(hl);
+                    } else {
+                        span.appendChild(document.createTextNode(part));
+                    }
+                    isHighlight = !isHighlight;
+                });
+                node.parentNode.replaceChild(span, node);
+            }
+        } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT') {
+            Array.from(node.childNodes).forEach(walkAndHighlight);
+        }
+    }
+    walkAndHighlight(storyText);
+}
+
+initVocab();
+highlightVocabInText();
+</script>
+</body>
+</html>
