@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2037G Modalpartikeln</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle, .header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+.sec-inner { padding: 28px 30px; }
+
+/* ── ENTDECKUNGS-TAB ─────────────────────────────────────── */
+.entdeck-intro { background: #f3e5f5; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; border-left: 5px solid #9c27b0; font-size: 0.97rem; line-height: 1.75; }
+.entdeck-intro h3 { color: #6a1b9a; margin-bottom: 10px; font-size: 1.05rem; }
+.hl { background: #e1bee7; border-radius: 4px; padding: 0 4px; color: #4a148c; font-weight: 700; }
+.mc-step { display: none; background: #fafbff; border-radius: 12px; padding: 18px 22px; margin-bottom: 16px; border: 1px solid #c5cae9; }
+.mc-step.active { display: block; }
+.mc-step h4 { color: #3949ab; margin-bottom: 12px; font-size: 0.97rem; }
+.mc-options { display: flex; flex-direction: column; gap: 8px; }
+.mc-btn { padding: 9px 16px; border: 2px solid #c5cae9; border-radius: 8px; background: #fff; cursor: pointer; text-align: left; font-size: 0.92rem; transition: all .2s; }
+.mc-btn:hover { border-color: #667eea; background: #f3f4ff; }
+.mc-btn.correct { border-color: #43a047; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.mc-btn.wrong { border-color: #e53935; background: #ffebee; color: #c62828; }
+.mc-feedback { margin-top: 10px; font-size: 0.88rem; min-height: 1.3em; }
+.mc-feedback.ok { color: #2e7d32; font-weight: 700; }
+.mc-feedback.err { color: #c62828; }
+.progress-dots { display: flex; gap: 8px; margin-bottom: 20px; }
+.pdot { width: 14px; height: 14px; border-radius: 50%; background: #c5cae9; transition: background .3s; }
+.pdot.done { background: #667eea; }
+.regel-karte { display: none; background: linear-gradient(135deg, #e8eaf6, #ede7f6); border-radius: 14px; padding: 22px 26px; border-left: 5px solid #3949ab; margin-top: 10px; }
+.regel-karte h3 { color: #1a237e; margin-bottom: 12px; font-size: 1.05rem; }
+.regel-karte ul { margin-left: 18px; }
+.regel-karte li { color: #333; line-height: 1.8; font-size: 0.95rem; }
+.regel-karte .rk-example { background: #fff; border-radius: 8px; padding: 10px 14px; margin-top: 12px; border-left: 3px solid #7c4dff; font-size: 0.9rem; color: #333; }
+.regel-karte .rk-example b { color: #3949ab; }
+
+/* ── REGEL-TAB ────────────────────────────────────────────── */
+.regel-table { width: 100%; border-collapse: collapse; margin-bottom: 22px; font-size: 0.92em; }
+.regel-table th { background: #667eea; color: white; padding: 10px 14px; text-align: left; font-weight: 600; }
+.regel-table td { padding: 8px 14px; border-bottom: 1px solid #eee; }
+.regel-table tr:nth-child(even) td { background: #f8f9ff; }
+.regel-table .verb-form { color: #667eea; font-weight: 700; }
+.regel-note { background: #fff3e0; border-left: 4px solid #ff9800; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 18px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* ── LÜCKENTEXT ────────────────────────────────────────────── */
+.luecken-text { line-height: 2.2; font-size: 0.95em; color: #444; }
+.gap-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; padding: 0 4px; transition: border-color 0.2s; vertical-align: middle; }
+.gap-inp:focus { border-bottom-color: #667eea; }
+.gap-inp.correct { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.gap-inp.wrong { border-bottom-color: #e74c3c; color: #e74c3c; }
+.wortbank { background: #f0f4ff; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; font-size: 0.9em; color: #444; }
+.wortbank strong { color: #667eea; }
+.wb-chip { display: inline-block; background: white; border: 1px solid #667eea; color: #667eea; padding: 3px 10px; border-radius: 12px; margin: 3px 2px; font-size: 0.92em; }
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* ── SATZBAU ───────────────────────────────────────────────── */
+.satzbau-item { background: #f8f9ff; padding: 16px 20px; margin-bottom: 20px; border-radius: 10px; border-left: 4px solid #667eea; }
+.sb-label { font-weight: 600; color: #5a3e9e; margin-bottom: 6px; font-size: 0.95em; }
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.selected { background: #667eea; color: white; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+
+/* ── MULTIPLE CHOICE (Tab 4) ──────────────────────────────── */
+.mc4-item { background: #f8f9ff; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; border-left: 4px solid #667eea; }
+.mc4-question { font-size: 0.95em; color: #333; margin-bottom: 10px; font-weight: 500; }
+.mc4-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc4-opt { padding: 7px 16px; border: 2px solid #c5cae9; border-radius: 8px; background: #fff; cursor: pointer; font-size: 0.88rem; transition: all .2s; }
+.mc4-opt:hover { border-color: #667eea; background: #f3f4ff; }
+.mc4-opt.correct { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; cursor: default; }
+.mc4-opt.wrong { border-color: #e74c3c; background: #ffebee; color: #c62828; }
+
+/* ── CONTROL BAR & TIMER ──────────────────────────────────── */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+/* ── FOOTER ────────────────────────────────────────────────── */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Modalpartikeln</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2037G &nbsp;|&nbsp; Grammatik: Kleine Wörter, große Wirkung</p>
+        <div class="big-emoji">💬</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">🔍</span><span class="nav-label">Entdecken</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">📋</span><span class="nav-label">Regel</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🎯</span><span class="nav-label">Multiple Choice</span></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 0 — ENTDECKEN
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section active" id="sec0">
+        <div class="sec-inner">
+            <div class="entdeck-intro">
+                <h3>Lies die Sätze und achte auf die markierten Wörter:</h3>
+                <p>Diese Aufgabe ist <span class="hl">aber</span> schwierig!</p>
+                <p>Verstehst du uns <span class="hl">denn</span>?</p>
+                <p>Komm <span class="hl">doch</span> mal vorbei!</p>
+                <p>Das ist <span class="hl">eben</span> so.</p>
+                <p>Was machst du <span class="hl">eigentlich</span> beruflich?</p>
+                <p>Das war <span class="hl">ja</span> klar!</p>
+                <p>Lies den Text bitte <span class="hl">mal</span> laut vor.</p>
+                <p>Ob die Lösung <span class="hl">wohl</span> richtig ist?</p>
+            </div>
+
+            <div class="progress-dots">
+                <div class="pdot" id="pdot0"></div>
+                <div class="pdot" id="pdot1"></div>
+                <div class="pdot" id="pdot2"></div>
+                <div class="pdot" id="pdot3"></div>
+            </div>
+
+            <div class="mc-step active" id="mc-step0">
+                <h4>Schritt 1: Was fällt bei den markierten Wörtern auf?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">Sie sind Verben und beschreiben eine Handlung</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,true)">Sie verändern nicht die Bedeutung, aber die Stimmung oder den Ton des Satzes</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">Sie verbinden zwei Sätze miteinander</button>
+                </div>
+                <div class="mc-feedback" id="mcfb0"></div>
+            </div>
+
+            <div class="mc-step" id="mc-step1">
+                <h4>Schritt 2: Vergleiche „Verstehst du uns?“ und „Verstehst du uns denn?“ — Was bewirkt „denn“?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">Es verneint die Frage</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,true)">Es macht die Frage freundlicher und zeigt echtes Interesse</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">Es macht den Satz formeller</button>
+                </div>
+                <div class="mc-feedback" id="mcfb1"></div>
+            </div>
+
+            <div class="mc-step" id="mc-step2">
+                <h4>Schritt 3: „Das ist eben so.“ — Was drückt „eben“ hier aus?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">Überraschung über die Situation</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">Unsicherheit über die Aussage</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,true)">Dass man die Situation akzeptieren muss — es ist nicht zu ändern</button>
+                </div>
+                <div class="mc-feedback" id="mcfb2"></div>
+            </div>
+
+            <div class="mc-step" id="mc-step3">
+                <h4>Schritt 4: Kann man die markierten Wörter weglassen, ohne dass der Satz grammatisch falsch wird?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(3,this,true)">Ja, der Satz bleibt korrekt, verliert aber seine besondere Stimmung</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Nein, ohne diese Wörter ist der Satz ungrammatisch</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Nur manche kann man weglassen</button>
+                </div>
+                <div class="mc-feedback" id="mcfb3"></div>
+            </div>
+
+            <div class="regel-karte" id="regelkarte">
+                <h3>Die Regel:</h3>
+                <ul>
+                    <li><b>Modalpartikeln</b> sind kleine Wörter, die den <b>Ton</b> oder die <b>Stimmung</b> eines Satzes verändern</li>
+                    <li>Sie sind <b>grammatisch optional</b> — der Satz funktioniert auch ohne sie</li>
+                    <li>Aber sie machen die Sprache <b>natürlicher und lebendiger</b></li>
+                    <li>Wichtige Modalpartikeln: <b>aber, denn, doch, eben/halt, eigentlich, ja, mal, wohl</b></li>
+                </ul>
+                <div class="rk-example">
+                    <b>aber</b> = Überraschung · <b>denn</b> = freundliche Frage · <b>doch</b> = Bitte/Erinnerung<br>
+                    <b>eben/halt</b> = Akzeptanz · <b>eigentlich</b> = Wirklichkeit · <b>ja</b> = Erwartung<br>
+                    <b>mal</b> = freundliche Bitte · <b>wohl</b> = Unsicherheit/Vermutung
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 1 — REGEL
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec1">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">📋 Modalpartikeln — Übersicht</h2>
+
+            <div class="regel-note">
+                <strong>Was sind Modalpartikeln?</strong><br>
+                Modalpartikeln sind kleine Wörter, die die <strong>Stimmung</strong> oder den <strong>Ton</strong> eines Satzes verändern. Sie stehen meist im <strong>Mittelfeld</strong> des Satzes (nach dem Verb). Man kann sie weglassen, ohne dass der Satz grammatisch falsch wird — aber die Sprache klingt dann weniger natürlich.
+            </div>
+
+            <table class="regel-table">
+                <tr><th>Partikel</th><th>Funktion</th><th>Beispiel</th></tr>
+                <tr><td class="verb-form">aber</td><td>Überraschung, Erstaunen</td><td>Diese Aufgabe ist <b>aber</b> schwierig!</td></tr>
+                <tr><td class="verb-form">denn</td><td>freundliche Frage / Vorwurf</td><td>Verstehst du uns <b>denn</b>?</td></tr>
+                <tr><td class="verb-form">doch</td><td>Bitte, Vorwurf, Erinnerung</td><td>Komm <b>doch</b> mal vorbei!</td></tr>
+                <tr><td class="verb-form">eben / halt</td><td>Akzeptanz: nicht zu ändern</td><td>Das ist <b>eben</b> so.</td></tr>
+                <tr><td class="verb-form">eigentlich</td><td>Wirklichkeit, freundliche Frage</td><td>Was machst du <b>eigentlich</b> beruflich?</td></tr>
+                <tr><td class="verb-form">ja</td><td>Erwartung, Überraschung</td><td>Das war <b>ja</b> klar!</td></tr>
+                <tr><td class="verb-form">mal</td><td>freundliche Bitte</td><td>Lies den Text bitte <b>mal</b> laut vor.</td></tr>
+                <tr><td class="verb-form">wohl</td><td>Unsicherheit, Vermutung</td><td>Ob die Lösung <b>wohl</b> richtig ist?</td></tr>
+            </table>
+
+            <div class="regel-note">
+                <strong>Tipp:</strong> Modalpartikeln sind <strong>unbetont</strong>. Man spricht sie leise und schnell. Sie stehen nie am Satzanfang (außer in Ausrufen mit „aber“: „Aber das ist teuer!“).
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 2 — LÜCKENTEXT
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec2">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">✏️ Lückentext — Modalpartikeln einsetzen</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="document.querySelectorAll('#sec2 .gap-inp:not(.correct)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('correct');});timerStop(2);">Lösungen</button>
+                    <button class="btn btn-reset" onclick="document.querySelectorAll('#sec2 .gap-inp').forEach(function(i){i.value='';i.classList.remove('correct','wrong');});timerResetOne(2);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-2">00:00</span></span>
+                    <span>🏆 <span id="best-2">--:--</span></span>
+                </div>
+            </div>
+            <div class="wortbank"><strong>Modalpartikeln:</strong> <span class="wb-chip">aber</span> <span class="wb-chip">denn</span> <span class="wb-chip">doch</span> <span class="wb-chip">eben</span> <span class="wb-chip">eigentlich</span> <span class="wb-chip">ja</span> <span class="wb-chip">mal</span> <span class="wb-chip">wohl</span></div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Setze die passende Modalpartikel ein. Der Hinweis in Klammern zeigt die Funktion.
+            </div>
+            <div class="luecken-text">
+                <p>1. <input class="gap-inp" data-ans="Eigentlich" style="width:100px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(Wirklichkeit)"> wollte ich heute zu Hause bleiben.</p>
+                <p>2. Wo warst du <input class="gap-inp" data-ans="denn" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(freundl. Frage)"> gestern Abend?</p>
+                <p>3. Ruf mich <input class="gap-inp" data-ans="doch" data-alts="mal" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(Bitte)"> bitte an!</p>
+                <p>4. Warum kommst du <input class="gap-inp" data-ans="denn" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(freundl. Frage)"> so spät?</p>
+                <p>5. Das Wetter ist <input class="gap-inp" data-ans="aber" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(Überraschung)"> schön heute!</p>
+                <p>6. Kannst du mir <input class="gap-inp" data-ans="mal" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(freundl. Bitte)"> helfen?</p>
+                <p>7. Du weißt <input class="gap-inp" data-ans="ja" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(Erwartung)"> schon, dass morgen Feiertag ist.</p>
+                <p>8. Das ist <input class="gap-inp" data-ans="eben" data-alts="halt" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(Akzeptanz)"> so — daran kann man nichts ändern.</p>
+                <p>9. Ob er <input class="gap-inp" data-ans="wohl" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(Unsicherheit)"> noch kommt?</p>
+                <p>10. Gib mir <input class="gap-inp" data-ans="mal" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(freundl. Bitte)"> bitte das Salz!</p>
+                <p>11. Die Konjugation ist <input class="gap-inp" data-ans="ja" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(Überraschung)"> einfach!</p>
+                <p>12. Könntet ihr <input class="gap-inp" data-ans="denn" style="width:80px" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#sec2 .gap-inp', function(){timerStop(2)})" placeholder="(Vorwurf)"> nicht pünktlich kommen?</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 3 — SATZBAU
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec3">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">🧩 Satzbau</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="sbShowAll()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="resetSatzbau(); timerResetOne(3);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-3">00:00</span></span>
+                    <span>🏆 <span id="best-3">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ordne die Wörter zu einem korrekten Satz mit Modalpartikel. Ziehe die Chips in die richtige Reihenfolge.
+            </div>
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TAB 4 — MULTIPLE CHOICE
+         ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec4">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">🎯 Multiple Choice — Welche Modalpartikel passt?</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn btn-show" onclick="mc4ShowAll()">Lösungen</button>
+                    <button class="btn btn-reset" onclick="mc4Reset(); timerResetOne(4);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-4">00:00</span></span>
+                    <span>🏆 <span id="best-4">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Wähle die passende Modalpartikel für den Kontext. Klicke auf die richtige Antwort.
+            </div>
+            <div id="mc4Container"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   NAVIGATION
+   ════════════════════════════════════════════════════════════ */
+function showTab(n) {
+    document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
+    document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===n); });
+}
+
+/* ════════════════════════════════════════════════════════════
+   TIMER SYSTEM
+   ════════════════════════════════════════════════════════════ */
+var timers = [null, null, null, null, null];
+var timerSecs = [0, 0, 0, 0, 0];
+var timerRunning = [false, false, false, false, false];
+
+function timerKey(tab) { return 'daf-2037g-best-' + tab; }
+function timerFmt(s) { return Math.floor(s/60) + ':' + (s%60<10?'0':'') + (s%60); }
+
+function timerAutoStart(tab) {
+    if (timerRunning[tab]) return;
+    timerRunning[tab] = true;
+    timers[tab] = setInterval(function() {
+        timerSecs[tab]++;
+        var el = document.getElementById('timer-' + tab);
+        if (el) el.textContent = timerFmt(timerSecs[tab]);
+    }, 1000);
+}
+
+function timerStop(tab) {
+    if (!timerRunning[tab]) return;
+    clearInterval(timers[tab]);
+    timerRunning[tab] = false;
+    var cur = timerSecs[tab];
+    var best = localStorage.getItem(timerKey(tab));
+    if (!best || cur < parseInt(best)) {
+        localStorage.setItem(timerKey(tab), cur);
+        var bEl = document.getElementById('best-' + tab);
+        if (bEl) bEl.textContent = timerFmt(cur);
+    }
+}
+
+function timerResetOne(tab) {
+    clearInterval(timers[tab]);
+    timerRunning[tab] = false;
+    timerSecs[tab] = 0;
+    var el = document.getElementById('timer-' + tab);
+    if (el) el.textContent = '00:00';
+}
+
+function timerLoadBest(tab) {
+    var best = localStorage.getItem(timerKey(tab));
+    var bEl = document.getElementById('best-' + tab);
+    if (bEl) bEl.textContent = best ? timerFmt(parseInt(best)) : '--:--';
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 0 — ENTDECKEN (MC-System)
+   ════════════════════════════════════════════════════════════ */
+var mcDone = [false, false, false, false];
+
+function mcCheck(step, btn, correct) {
+    var btns = btn.parentElement.querySelectorAll('.mc-btn');
+    btns.forEach(function(b) { b.disabled = true; b.classList.remove('correct','wrong'); });
+    var fb = document.getElementById('mcfb' + step);
+    if (correct) {
+        btn.classList.add('correct');
+        fb.textContent = '\u2713 Richtig! Weiter zum n\u00e4chsten Schritt.';
+        fb.className = 'mc-feedback ok';
+        mcDone[step] = true;
+        document.getElementById('pdot' + step).classList.add('done');
+        setTimeout(function() {
+            var next = document.getElementById('mc-step' + (step + 1));
+            if (next) { next.classList.add('active'); }
+            else { document.getElementById('regelkarte').style.display = 'block'; }
+        }, 700);
+    } else {
+        btn.classList.add('wrong');
+        fb.textContent = '\u2717 Nicht ganz \u2014 schau nochmal genau hin und versuche es erneut.';
+        fb.className = 'mc-feedback err';
+        setTimeout(function() {
+            btns.forEach(function(b) { b.disabled = false; b.classList.remove('wrong','correct'); });
+            fb.textContent = '';
+            fb.className = 'mc-feedback';
+        }, 1400);
+    }
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 2 — LÜCKENTEXT (liveCheck)
+   ════════════════════════════════════════════════════════════ */
+function liveCheck(inp, timerAutoStartFn, allInputsSel, timerStopFn) {
+    var ans = inp.dataset.ans || '';
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+    var allValid = [ans].concat(alts);
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase()
+                     && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var val = inp.value.trim();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpValid = allValid.map(function(a) { return caseSensitive ? a : a.toLowerCase(); });
+    inp.classList.remove('correct', 'wrong');
+    if (!cmpVal) return;
+    if (cmpValid.indexOf(cmpVal) !== -1) {
+        inp.classList.add('correct');
+        if (timerAutoStartFn) timerAutoStartFn();
+        if (timerStopFn && allInputsSel) {
+            var alle = Array.from(document.querySelectorAll(allInputsSel));
+            if (alle.every(function(i) { return i.classList.contains('correct'); })) timerStopFn();
+        }
+        return;
+    }
+    for (var i = 0; i < cmpValid.length; i++) {
+        if (cmpValid[i].indexOf(cmpVal) === 0) {
+            if (timerAutoStartFn) timerAutoStartFn();
+            return;
+        }
+    }
+    inp.classList.add('wrong');
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 3 — SATZBAU
+   ════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    {
+        parts: ['das', 'Wetter', 'ist', 'aber', 'schön', 'heute'],
+        valid: [['das', 'Wetter', 'ist', 'aber', 'schön', 'heute']],
+        punct: '!'
+    },
+    {
+        parts: ['kannst', 'du', 'mir', 'mal', 'bitte', 'helfen'],
+        valid: [['kannst', 'du', 'mir', 'mal', 'bitte', 'helfen'], ['kannst', 'du', 'mir', 'bitte', 'mal', 'helfen']],
+        punct: '?'
+    },
+    {
+        parts: ['du', 'weißt', 'ja', 'schon', ',', 'dass', 'morgen', 'Feiertag', 'ist'],
+        valid: [['du', 'weißt', 'ja', 'schon', ',', 'dass', 'morgen', 'Feiertag', 'ist']],
+        punct: '.'
+    },
+    {
+        parts: ['das', 'ist', 'eben', 'so'],
+        valid: [['das', 'ist', 'eben', 'so'], ['das', 'ist', 'halt', 'so']],
+        punct: '.'
+    },
+    {
+        parts: ['komm', 'doch', 'mal', 'vorbei'],
+        valid: [['komm', 'doch', 'mal', 'vorbei']],
+        punct: '!'
+    },
+    {
+        parts: ['wo', 'warst', 'du', 'denn', 'gestern', 'Abend'],
+        valid: [['wo', 'warst', 'du', 'denn', 'gestern', 'Abend']],
+        punct: '?'
+    },
+    {
+        parts: ['ob', 'er', 'wohl', 'noch', 'kommt'],
+        valid: [['ob', 'er', 'wohl', 'noch', 'kommt']],
+        punct: '?'
+    },
+    {
+        parts: ['was', 'machst', 'du', 'eigentlich', 'beruflich'],
+        valid: [['was', 'machst', 'du', 'eigentlich', 'beruflich']],
+        punct: '?'
+    }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase()
+                    && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) { c.textContent = orig; }
+        else { c.textContent = (i === 0) ? sbCapitalize(orig) : orig; }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    if (word === ',' || word === ';') chip.classList.add('punct-chip');
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else { zone.appendChild(sbDragged); }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+    zone.addEventListener('click', function(e) {
+        if (e.target !== zone && !e.target.classList.contains('chip')) return;
+        if (e.target.classList.contains('chip')) {
+            var c = e.target;
+            if (c.classList.contains('selected')) { c.classList.remove('selected'); sbDragged = null; }
+            else {
+                document.querySelectorAll('#sec3 .chip.selected').forEach(function(x){ x.classList.remove('selected'); });
+                c.classList.add('selected'); sbDragged = c;
+            }
+            return;
+        }
+        if (sbDragged && sbDragged.classList.contains('selected')) {
+            zone.appendChild(sbDragged);
+            sbDragged.classList.remove('selected');
+            sbDragged = null;
+            var row = document.getElementById('sb-row-' + idx);
+            sbUpdateCapitalization(row);
+            sbCheckAuto(idx);
+        }
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('correct', 'incorrect'); });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '\u2713 Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '\u2717 Falsche Reihenfolge \u2013 verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = {};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c)  { allChips[c.dataset.orig] = c; });
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        var chip = allChips[word];
+        if (chip) {
+            if (word !== ',' && word !== ';') { chip.textContent = (i === 0) ? sbCapitalize(word) : word; }
+            chip.classList.remove('correct', 'incorrect');
+            row.appendChild(chip);
+        }
+    });
+    fb.textContent = '';
+    setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbShowAll() { for (var i = 0; i < satzbauData.length; i++) sbShowSolution(i); }
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = ''; fb.className = 'satzbau-feedback';
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+        var bank = document.createElement('div');
+        bank.className = 'chips-container'; bank.id = 'sb-bank-' + idx;
+        var row = document.createElement('div');
+        row.className = 'sentence-builder'; row.id = 'sb-row-' + idx;
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback'; fb.id = 'sb-fb-' + idx;
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn'; solveBtn.textContent = 'L\u00f6sen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() { sbShowSolution(parseInt(this.getAttribute('data-idx'))); });
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn'; resetBtn.textContent = '\u21ba Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() { sbResetOne(parseInt(this.getAttribute('data-idx'))); });
+        btnRow.appendChild(solveBtn); btnRow.appendChild(resetBtn);
+        item.appendChild(bank); item.appendChild(row); item.appendChild(fb); item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() { initSatzbau(); }
+
+/* ════════════════════════════════════════════════════════════
+   TAB 4 — MULTIPLE CHOICE
+   ════════════════════════════════════════════════════════════ */
+var MC4_DATA = [
+    { q: 'Das Essen schmeckt ___ gut! (Überraschung)', opts: ['denn', 'aber', 'wohl', 'eben'], ans: 1 },
+    { q: 'Hast du ___ schon gegessen? (freundliche Frage)', opts: ['ja', 'mal', 'denn', 'halt'], ans: 2 },
+    { q: 'Hilf mir ___ bitte! (freundliche Bitte)', opts: ['wohl', 'eben', 'denn', 'mal'], ans: 3 },
+    { q: 'Das war ___ klar, dass er zu spät kommt. (Erwartung)', opts: ['mal', 'ja', 'doch', 'wohl'], ans: 1 },
+    { q: 'Komm ___ endlich! (Aufforderung / Ungeduld)', opts: ['mal', 'wohl', 'doch', 'eben'], ans: 2 },
+    { q: 'Das ist ___ so — da kann man nichts machen. (Akzeptanz)', opts: ['aber', 'denn', 'eben', 'ja'], ans: 2 },
+    { q: 'Was willst du ___ studieren? (Wirklichkeit / echtes Interesse)', opts: ['halt', 'wohl', 'eigentlich', 'mal'], ans: 2 },
+    { q: 'Ob das Paket ___ heute noch kommt? (Unsicherheit)', opts: ['doch', 'mal', 'ja', 'wohl'], ans: 3 },
+    { q: 'Das ist ___ ein schönes Geschenk! (Überraschung)', opts: ['eben', 'aber', 'denn', 'eigentlich'], ans: 1 },
+    { q: 'Ihr wisst ___, dass morgen Prüfung ist. (Erinnerung)', opts: ['wohl', 'mal', 'doch', 'halt'], ans: 2 }
+];
+
+function initMC4() {
+    var container = document.getElementById('mc4Container');
+    container.innerHTML = '';
+    MC4_DATA.forEach(function(item, idx) {
+        var div = document.createElement('div');
+        div.className = 'mc4-item';
+        div.id = 'mc4-' + idx;
+        var q = document.createElement('div');
+        q.className = 'mc4-question';
+        q.textContent = (idx + 1) + '. ' + item.q;
+        div.appendChild(q);
+        var opts = document.createElement('div');
+        opts.className = 'mc4-options';
+        item.opts.forEach(function(opt, oi) {
+            var btn = document.createElement('button');
+            btn.className = 'mc4-opt';
+            btn.textContent = opt;
+            btn.addEventListener('click', function() { mc4Check(idx, oi, btn); });
+            opts.appendChild(btn);
+        });
+        div.appendChild(opts);
+        container.appendChild(div);
+    });
+}
+
+function mc4Check(idx, optIdx, btn) {
+    var item = MC4_DATA[idx];
+    var allBtns = document.querySelectorAll('#mc4-' + idx + ' .mc4-opt');
+    if (btn.classList.contains('correct')) return;
+    timerAutoStart(4);
+    if (optIdx === item.ans) {
+        allBtns.forEach(function(b) { b.classList.remove('wrong'); });
+        btn.classList.add('correct');
+        allBtns.forEach(function(b) { if (!b.classList.contains('correct')) b.style.pointerEvents = 'none'; });
+        var allItems = document.querySelectorAll('.mc4-item');
+        var allDone = Array.from(allItems).every(function(it) { return it.querySelector('.mc4-opt.correct'); });
+        if (allDone) timerStop(4);
+    } else {
+        btn.classList.add('wrong');
+        setTimeout(function() { btn.classList.remove('wrong'); }, 1000);
+    }
+}
+
+function mc4ShowAll() {
+    timerStop(4);
+    MC4_DATA.forEach(function(item, idx) {
+        var btns = document.querySelectorAll('#mc4-' + idx + ' .mc4-opt');
+        btns.forEach(function(b, oi) {
+            b.classList.remove('wrong');
+            if (oi === item.ans) b.classList.add('correct');
+            b.style.pointerEvents = 'none';
+        });
+    });
+}
+
+function mc4Reset() {
+    MC4_DATA.forEach(function(item, idx) {
+        var btns = document.querySelectorAll('#mc4-' + idx + ' .mc4-opt');
+        btns.forEach(function(b) {
+            b.classList.remove('correct', 'wrong');
+            b.style.pointerEvents = '';
+        });
+    });
+}
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════ */
+initSatzbau();
+initMC4();
+timerLoadBest(2);
+timerLoadBest(3);
+timerLoadBest(4);
+</script>
+</body>
+</html>
