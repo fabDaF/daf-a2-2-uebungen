@@ -277,36 +277,36 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
   </div>
   <div class="luecken-text">
     <p style="margin-bottom:12px;">Wir sind in Berlin! Die Stadt hat viele tolle
-    <input class="gap-inp" id="g1" data-ans="Sehenswürdigkeiten" oninput="liveCheck(this)" placeholder="">. Am ersten Tag machen wir eine
-    <input class="gap-inp" id="g2" data-ans="Stadtführung" oninput="liveCheck(this)" placeholder="">
+    <input class="gap-inp" id="g1" data-ans="Sehenswürdigkeiten" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">. Am ersten Tag machen wir eine
+    <input class="gap-inp" id="g2" data-ans="Stadtführung" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">
     durch die Altstadt.</p>
 
     <p style="margin-bottom:12px;">Unser
-    <input class="gap-inp" id="g3" data-ans="Reiseleiter" oninput="liveCheck(this)" placeholder="">
+    <input class="gap-inp" id="g3" data-ans="Reiseleiter" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">
     heißt Max und er kennt die Stadt sehr gut. Er zeigt uns, was sich
-    <input class="gap-inp" id="g4" data-ans="lohnt sich" oninput="liveCheck(this)" placeholder="">
+    <input class="gap-inp" id="g4" data-ans="lohnt sich" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">
     und was man unbedingt
-    <input class="gap-inp" id="g5" data-ans="besichtigen" oninput="liveCheck(this)" placeholder="">
+    <input class="gap-inp" id="g5" data-ans="besichtigen" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">
     sollte.</p>
 
     <p style="margin-bottom:12px;">Der
-    <input class="gap-inp" id="g6" data-ans="Eintrittspreis" oninput="liveCheck(this)" placeholder="">
+    <input class="gap-inp" id="g6" data-ans="Eintrittspreis" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">
     für das Museum beträgt 15 Euro. Kinder bekommen eine
-    <input class="gap-inp" id="g7" data-ans="Ermäßigung" oninput="liveCheck(this)" placeholder="">
+    <input class="gap-inp" id="g7" data-ans="Ermäßigung" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">
     und zahlen nur 8 Euro.</p>
 
     <p style="margin-bottom:12px;">Unser Hotel ist sehr
-    <input class="gap-inp" id="g8" data-ans="gemütlich" oninput="liveCheck(this)" placeholder="">
+    <input class="gap-inp" id="g8" data-ans="gemütlich" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">
     und wir haben eine schöne
-    <input class="gap-inp" id="g9" data-ans="Aussicht" oninput="liveCheck(this)" placeholder="">
+    <input class="gap-inp" id="g9" data-ans="Aussicht" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">
     auf die Stadt.</p>
 
     <p style="margin-bottom:12px;">Leider war der Strand sehr
-    <input class="gap-inp" id="g10" data-ans="überfüllt" oninput="liveCheck(this)" placeholder="">.
+    <input class="gap-inp" id="g10" data-ans="überfüllt" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">.
     Am letzten Tag ist unser Zug
-    <input class="gap-inp" id="g11" data-ans="ausgefallen" oninput="liveCheck(this)" placeholder="">,
+    <input class="gap-inp" id="g11" data-ans="ausgefallen" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">,
     deshalb haben wir den Anschlussflug
-    <input class="gap-inp" id="g12" data-ans="verpasst" oninput="liveCheck(this)" placeholder="">.</p>
+    <input class="gap-inp" id="g12" data-ans="verpasst" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">.</p>
   </div>
 </div>
 
@@ -438,8 +438,37 @@ function timerStop(i){
 }
 function timerLoadBest(i){var b=localStorage.getItem(timerKey(i));if(b)document.getElementById('best-'+i).textContent='Bestzeit: '+timerFmt(parseInt(b));}
 [0,1,2,3,4,5].forEach(timerLoadBest);
-function normalise(s){return s.trim().toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');}
-function liveCheck(inp){const val=normalise(inp.value);const ans=normalise(inp.dataset.ans);if(val===ans){inp.classList.add('correct');inp.classList.remove('partial','wrong');return;}if(ans.startsWith(val)&&val.length>0){inp.classList.add('partial');inp.classList.remove('correct','wrong');return;}inp.classList.remove('correct','partial');if(val.length>0)inp.classList.add('wrong');else inp.classList.remove('wrong');}
+function liveCheck(inp, timerAutoStartFn, allInputsSel, timerStopFn) {
+    var ans = inp.dataset.ans || '';
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+    var allValid = [ans].concat(alts);
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase()
+                     && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var val = inp.value.trim();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpValid = allValid.map(function(a) {
+        return caseSensitive ? a : a.toLowerCase();
+    });
+    inp.classList.remove('correct', 'partial', 'wrong');
+    if (!cmpVal) return;
+    if (cmpValid.indexOf(cmpVal) !== -1) {
+        inp.classList.add('correct');
+        if (timerAutoStartFn) timerAutoStartFn();
+        if (timerStopFn && allInputsSel) {
+            var alle = Array.from(document.querySelectorAll(allInputsSel));
+            if (alle.every(function(i) { return i.classList.contains('correct'); })) timerStopFn();
+        }
+        return;
+    }
+    for (var i = 0; i < cmpValid.length; i++) {
+        if (cmpValid[i].indexOf(cmpVal) === 0) {
+            inp.classList.add('partial');
+            if (timerAutoStartFn) timerAutoStartFn();
+            return;
+        }
+    }
+    inp.classList.add('wrong');
+}
 function rfCheck(btn,chosen,correct){const row=btn.closest('.rf-item');row.querySelectorAll('.rf-btn').forEach(b=>{b.classList.remove('sel-r','sel-f');});btn.classList.add(chosen==='R'?'sel-r':'sel-f');const res=row.querySelector('.rf-result');if(chosen===correct){res.textContent='✅';res.className='rf-result ok';}else{res.textContent='❌';res.className='rf-result err';}}
 
 /* ════════════════════════════════════════════════════════════
