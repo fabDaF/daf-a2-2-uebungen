@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2035V Das Geld</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle, .header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; padding: 22px 24px 28px; }
+.section.active { display: block; }
+
+/* CONTROL BAR */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+/* HILFE-BOX */
+.hilfe-box, .help-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* VOKABELKARTEN TAB 0 */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-top: 14px; }
+.vcard { background: #f8f9ff; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #e8ecff; }
+.vcard:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,0.15); }
+.vcard img { width: 100%; height: 110px; object-fit: cover; display: block; }
+.vcard-body { padding: 10px 12px; }
+.vcard-de { font-weight: 700; color: #333; font-size: 0.95em; }
+.vcard-art { color: #667eea; font-size: 0.82em; font-weight: 500; }
+.vcard-en { display: none; color: #999; font-size: 0.82em; font-style: italic; margin-top: 3px; }
+.vcard.flipped .vcard-en { display: block; }
+.vcard.flipped .vcard-body { background: #f0f4ff; }
+.vcard-example { font-size: 0.8em; color: #666; margin-top: 5px; line-height: 1.4; font-style: italic; display: none; }
+.vcard.flipped .vcard-example { display: block; }
+
+/* REDEMITTEL QA */
+.qa-grid { display: flex; flex-direction: column; gap: 10px; }
+.qa-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 10px; overflow: hidden; }
+.qa-q { background: #3d2066; color: white; padding: 12px 16px; font-size: 0.92em; display: flex; align-items: center; }
+.qa-a { background: #e8d5f5; color: #4a148c; padding: 12px 16px; font-size: 0.92em; cursor: pointer; display: flex; align-items: center; transition: background 0.2s; }
+.qa-a:hover { background: #d9c0eb; }
+.qa-a .ans { display: none; }
+.qa-a .placeholder { color: #999; font-style: italic; }
+.qa-a.open .ans { display: inline; }
+.qa-a.open .placeholder { display: none; }
+
+/* LÜCKENTEXT */
+.luecken-text { font-family: Georgia, 'Times New Roman', serif; font-size: 1.05em; line-height: 2.2; color: #333; }
+.luecken-inp, .gap-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; padding: 2px 6px; font-family: inherit; font-size: 0.95em; outline: none; transition: border-color 0.2s; width: 160px; }
+.luecken-inp:focus, .gap-inp:focus { border-bottom-color: #667eea; }
+.gap-inp.correct, .luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.gap-inp.partial { border-bottom-color: #f39c12; }
+.gap-inp.wrong, .luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+.wortbank { background: #f0f4ff; padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; font-size: 0.9em; }
+.wb-chip { display: inline-block; background: white; border: 1px solid #dde3ff; border-radius: 14px; padding: 3px 10px; margin: 3px; font-size: 0.88em; color: #555; }
+
+/* TEXT & FRAGEN */
+.lese-text { font-family: Georgia, 'Times New Roman', serif; background: #f8f9fa; border-radius: 10px; padding: 22px 26px; font-size: 1.0em; line-height: 1.9; color: #333; margin-bottom: 18px; }
+.lese-text p { margin-bottom: 12px; }
+.lese-text p:last-child { margin-bottom: 0; }
+.rf-list { margin-top: 18px; max-width: 650px; margin-left: auto; margin-right: auto; }
+.rf-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+.rf-item:last-child { border-bottom: none; }
+.rf-item > div:first-child { flex: 1; min-width: 200px; font-size: 0.95em; color: #333; }
+.rf-btns { display: flex; gap: 6px; }
+.rf-btn { padding: 4px 14px; border: 1.5px solid #c5cae9; border-radius: 20px; background: #fff; cursor: pointer; font-size: 11px; letter-spacing: 0.3px; transition: all .2s; }
+.rf-btn:hover { border-color: #667eea; background: #eef0ff; }
+.rf-btn.sel-r { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.rf-btn.sel-f { border-color: #e74c3c; background: #ffebee; color: #c62828; }
+.rf-result { font-size: 1.1em; min-width: 24px; text-align: center; }
+.rf-result.ok { color: #27ae60; }
+.rf-result.err { color: #e74c3c; }
+
+/* SATZBAU */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.satzbau-item { margin-bottom: 22px; }
+.sb-label { font-weight: 600; color: #667eea; font-size: 0.88em; margin-bottom: 6px; }
+
+/* WORTSCHATZ */
+.vocab-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vocab-en { font-weight: 600; color: #764ba2; min-width: 140px; font-size: 0.95em; }
+.vocab-arrow { color: #ccc; font-size: 1.2em; }
+.vocab-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vocab-inputs input { border: none; border-bottom: 2px solid #667eea; background: #fff; padding: 4px 8px; font-family: inherit; font-size: 0.95em; outline: none; transition: all 0.2s; }
+.vocab-inputs input:focus { border-bottom-color: #764ba2; background: #f0f7ff; }
+.vocab-inputs input.correct { border-bottom-color: #27ae60; background: #e8f8f0; }
+.vocab-inputs input.wrong { border-bottom-color: #e74c3c; background: #fdeaea; }
+.vocab-inputs input.art { width: 70px; }
+.vocab-inputs input.wort { width: 130px; }
+.vocab-inputs input.plural { width: 140px; }
+.vocab-hint { color: #27ae60; font-weight: 600; font-size: 0.8em; margin-left: 6px; }
+
+/* Vokabel-Hervorhebung im Lesetext */
+.vocab-hl { background: #ffe9a0; border-radius: 3px; padding: 1px 3px; font-weight: 600; cursor: help; }
+
+/* FOOTER */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .qa-pair { grid-template-columns: 1fr; }
+    .vocab-item { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Das Geld</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2035V &nbsp;|&nbsp; Vokabular &amp; Üben</p>
+        <div class="big-emoji">💰</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showTab(0)"><span class="nav-emoji">📸</span><span class="nav-label">Wörter</span></div>
+        <div class="nav-btn" onclick="showTab(1)"><span class="nav-emoji">💬</span><span class="nav-label">Redemittel</span></div>
+        <div class="nav-btn" onclick="showTab(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showTab(3)"><span class="nav-emoji">📖</span><span class="nav-label">Text &amp; Fragen</span></div>
+        <div class="nav-btn" onclick="showTab(4)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showTab(5)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+<!-- TAB 0: WÖRTER -->
+<div class="section active" id="tab0">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn" onclick="document.querySelectorAll('.vcard').forEach(function(c){c.classList.add('flipped');});">Alle aufdecken</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-0">00:00</span></span><span class="best-time">🏆 <span id="best-0">--:--</span></span></div>
+  </div>
+  <div class="hilfe-box">💡 Klicke auf eine Karte, um die englische Übersetzung und einen Beispielsatz zu sehen.</div>
+  <div class="vocab-grid">
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Girokonto">
+      <div class="vcard-body">
+        <div class="vcard-de">das Girokonto</div>
+        <div class="vcard-art">Pl. Girokonten</div>
+        <div class="vcard-en">current account</div>
+        <div class="vcard-example">„Bei der Bank kann man ein Girokonto eröffnen.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/4386431/pexels-photo-4386431.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="EC-Karte">
+      <div class="vcard-body">
+        <div class="vcard-de">die EC-Karte</div>
+        <div class="vcard-art">Pl. EC-Karten</div>
+        <div class="vcard-en">debit card</div>
+        <div class="vcard-example">„Mit der EC-Karte kann man am Automaten Geld abheben.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="einzahlen">
+      <div class="vcard-body">
+        <div class="vcard-de">einzahlen</div>
+        <div class="vcard-art">zahlt ein · zahlte ein · hat eingezahlt</div>
+        <div class="vcard-en">to deposit</div>
+        <div class="vcard-example">„Simone geht zur Bank, um Geld einzuzahlen.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3943148/pexels-photo-3943148.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="abheben">
+      <div class="vcard-body">
+        <div class="vcard-de">abheben</div>
+        <div class="vcard-art">hebt ab · hob ab · hat abgehoben</div>
+        <div class="vcard-en">to withdraw</div>
+        <div class="vcard-example">„In der Bank kann man Geld abheben.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3943716/pexels-photo-3943716.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="sparen">
+      <div class="vcard-body">
+        <div class="vcard-de">sparen</div>
+        <div class="vcard-art">spart · sparte · hat gespart</div>
+        <div class="vcard-en">to save</div>
+        <div class="vcard-example">„Wenn ich genug spare, kann ich mir ein Auto leisten.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/164527/pexels-photo-164527.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Bargeld">
+      <div class="vcard-body">
+        <div class="vcard-de">das Bargeld</div>
+        <div class="vcard-art">Pl. –</div>
+        <div class="vcard-en">cash</div>
+        <div class="vcard-example">„Man sollte in Deutschland immer etwas Bargeld bei sich haben.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Aktie">
+      <div class="vcard-body">
+        <div class="vcard-de">die Aktie</div>
+        <div class="vcard-art">Pl. Aktien</div>
+        <div class="vcard-en">share, stock</div>
+        <div class="vcard-example">„Man kann sein Geld in Aktien anlegen.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/534216/pexels-photo-534216.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Börse">
+      <div class="vcard-body">
+        <div class="vcard-de">die Börse</div>
+        <div class="vcard-art">Pl. Börsen</div>
+        <div class="vcard-en">stock exchange</div>
+        <div class="vcard-example">„An der Börse wird mit Aktien gehandelt.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3483098/pexels-photo-3483098.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Investition">
+      <div class="vcard-body">
+        <div class="vcard-de">die Investition</div>
+        <div class="vcard-art">Pl. Investitionen</div>
+        <div class="vcard-en">investment</div>
+        <div class="vcard-example">„Man kann sein Geld in Aktien anlegen. Das kann eine gute Investition sein.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Immobilie">
+      <div class="vcard-body">
+        <div class="vcard-de">die Immobilie</div>
+        <div class="vcard-art">Pl. Immobilien</div>
+        <div class="vcard-en">property, real estate</div>
+        <div class="vcard-example">„Auch in Immobilien kann man investieren.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Laufzeit">
+      <div class="vcard-body">
+        <div class="vcard-de">die Laufzeit</div>
+        <div class="vcard-art">Pl. Laufzeiten</div>
+        <div class="vcard-en">term, duration</div>
+        <div class="vcard-example">„Ein Kredit hat eine bestimmte Laufzeit.“</div>
+      </div>
+    </div>
+    <div class="vcard" onclick="this.classList.toggle('flipped')">
+      <img src="https://images.pexels.com/photos/3532540/pexels-photo-3532540.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Währung">
+      <div class="vcard-body">
+        <div class="vcard-de">die Währung</div>
+        <div class="vcard-art">Pl. Währungen</div>
+        <div class="vcard-en">currency</div>
+        <div class="vcard-example">„Die meisten Länder der EU haben eine gemeinsame Währung.“</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: REDEMITTEL -->
+<div class="section" id="tab1">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="document.querySelectorAll('.qa-a').forEach(function(a){a.classList.remove('open');});">Alle schließen</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-1">00:00</span></span><span class="best-time">🏆 <span id="best-1">--:--</span></span></div>
+  </div>
+  <p style="font-size:0.82rem;color:#888;margin-bottom:14px;">💡 Klicke auf die rechte Seite, um die Antwort zu sehen.</p>
+  <div class="qa-grid">
+    <div class="qa-pair">
+      <div class="qa-q">Bei welcher Bank hast du dein Girokonto?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">…</span><span class="ans">Ich habe mein Girokonto bei der Sparkasse.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Zahlst du lieber bar oder mit Karte?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">…</span><span class="ans">Ich zahle meistens mit der EC-Karte.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Wie viel Geld sparst du im Monat?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">…</span><span class="ans">Ich spare ungefähr 200 Euro im Monat.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Hast du schon einmal in Aktien investiert?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">…</span><span class="ans">Nein, das ist mir zu riskant.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Was ist der Vorteil von Immobilien?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">…</span><span class="ans">Immobilien sind eine sichere Investition.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Bezahlt man in deinem Heimatland mit Euro?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">…</span><span class="ans">Nein, wir haben eine andere Währung.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Hast du Schulden bei der Bank?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">…</span><span class="ans">Ja, ich habe einen Kredit für mein Auto.</span></div>
+    </div>
+    <div class="qa-pair">
+      <div class="qa-q">Was bedeutet Kapitalismus?</div>
+      <div class="qa-a" onclick="this.classList.toggle('open');timerAutoStart(1);"><span class="placeholder">…</span><span class="ans">Im Kapitalismus bestimmt der Markt die Preise.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: LÜCKENTEXT -->
+<div class="section" id="tab2">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-show" onclick="document.querySelectorAll('#tab2 .gap-inp:not(.correct)').forEach(function(i){i.value=i.dataset.ans;i.classList.add('correct');})">Lösungen</button><button class="btn btn-reset" onclick="document.querySelectorAll('#tab2 .gap-inp').forEach(function(i){i.value='';i.classList.remove('correct','partial','wrong');});resetTimer(2);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-2">00:00</span></span><span class="best-time">🏆 <span id="best-2">--:--</span></span></div>
+  </div>
+  <div class="wortbank"><strong>Wortbank:</strong> <span class="wb-chip">Girokonto</span> <span class="wb-chip">EC-Karte</span> <span class="wb-chip">abheben</span> <span class="wb-chip">Bargeld</span> <span class="wb-chip">sparen</span> <span class="wb-chip">Aktien</span> <span class="wb-chip">Börse</span> <span class="wb-chip">Investition</span> <span class="wb-chip">Immobilien</span> <span class="wb-chip">Kredit</span> <span class="wb-chip">Schulden</span> <span class="wb-chip">Währung</span></div>
+  <div class="luecken-text">
+    <p><strong>Text A: Im Alltag</strong></p>
+    <p>1. Ich habe mein <input class="gap-inp" data-ans="Girokonto" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> bei der Bank eröffnet.</p>
+    <p>2. Mit der <input class="gap-inp" data-ans="EC-Karte" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> kann ich am Automaten Geld <input class="gap-inp" data-ans="abheben" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">.</p>
+    <p>3. In Deutschland sollte man immer etwas <input class="gap-inp" data-ans="Bargeld" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> bei sich haben.</p>
+    <p>4. Wenn ich viel <input class="gap-inp" data-ans="sparen" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">, kann ich mir mehr leisten.</p>
+    <p>5. Die meisten Länder der EU haben eine gemeinsame <input class="gap-inp" data-ans="Währung" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder="">.</p>
+    <p>6. Geld einzahlen oder abheben – das ist Banking im Alltag.</p>
+    <p><strong>Text B: Investieren</strong></p>
+    <p>7. Man kann sein Geld in <input class="gap-inp" data-ans="Aktien" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> anlegen.</p>
+    <p>8. An der <input class="gap-inp" data-ans="Börse" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> wird mit Aktien gehandelt.</p>
+    <p>9. Eine gute <input class="gap-inp" data-ans="Investition" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> ist sicher und profitabel.</p>
+    <p>10. Auch in <input class="gap-inp" data-ans="Immobilien" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> kann man investieren.</p>
+    <p>11. Für einen <input class="gap-inp" data-ans="Kredit" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> muss man <input class="gap-inp" data-ans="Schulden" oninput="liveCheck(this, function(){timerAutoStart(2)}, '#tab2 .gap-inp', function(){timerStop(2)})" placeholder=""> bei der Bank haben.</p>
+    <p>12. Wer viel verdient, kann mehr sparen und investieren.</p>
+  </div>
+</div>
+
+<!-- TAB 3: TEXT & FRAGEN -->
+<div class="section" id="tab3">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-reset" onclick="document.querySelectorAll('.rf-btn').forEach(function(b){b.classList.remove('sel-r','sel-f');});document.querySelectorAll('.rf-result').forEach(function(r){r.textContent='';r.className='rf-result';});">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-3">00:00</span></span><span class="best-time">🏆 <span id="best-3">--:--</span></span></div>
+  </div>
+  <div class="lese-text">
+    <p>Gina hat Geld in Aktien investiert. Seitdem verfolgt sie jeden Tag die Entwicklungen der Börse. Manchmal hat sie einen Gewinn. Ihr Bankfachmann hat sie gut beraten, wie sie ihr Geld am besten anlegen kann.</p>
+    <p>Gestern hat sie mit Simon geredet. Er war früher sehr arm, aber er hat mittlerweile einen guten Job und hat viel Geld. Er hat keine Aktien gekauft, sondern Immobilien. Dadurch musste er zwar einen Kredit aufnehmen und hat somit Schulden bei der Bank, aber sein Eigenheim ist eine gute Investition für die Zukunft.</p>
+  </div>
+
+  <h3 style="margin-top:20px;color:#667eea;">Richtig oder Falsch?</h3>
+  <div class="rf-list">
+    <div class="rf-item">
+      <div>1. Gina hat ihr Geld in Aktien investiert.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>2. Simon hat Aktien an der Börse gekauft.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>3. Ginas Bankfachmann hat sie gut beraten.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>4. Simon war schon immer reich.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>5. Simon hat einen Kredit aufgenommen.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>6. Gina verfolgt jeden Tag die Börse.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>7. Simon hat keine Schulden bei der Bank.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','F');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','F');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+    <div class="rf-item">
+      <div>8. Simons Eigenheim ist eine gute Investition.</div>
+      <div class="rf-btns">
+        <button class="rf-btn" onclick="rfCheck(this,'R','R');timerAutoStart(3);">Richtig</button>
+        <button class="rf-btn" onclick="rfCheck(this,'F','R');timerAutoStart(3);">Falsch</button>
+      </div>
+      <div class="rf-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: SATZBAU -->
+<div class="section" id="tab4">
+  <div class="control-bar">
+    <div class="btn-row"><button class="btn btn-show" onclick="for(var i=0;i<satzbauData.length;i++){sbShowSolution(i);}">Lösungen</button><button class="btn btn-reset" onclick="initSatzbau && initSatzbau(); resetTimer(4);">Neu starten</button></div>
+    <div class="timer-display"><span class="current-time">⏱ <span id="timer-4">00:00</span></span><span class="best-time">🏆 <span id="best-4">--:--</span></span></div>
+  </div>
+  <div class="hilfe-box">🧩 Ordne die Wörter zu einem korrekten Satz. Ziehe die Chips in die richtige Reihenfolge!</div>
+  <div id="satzbauContainer"></div>
+</div>
+
+<!-- TAB 5: WORTSCHATZ -->
+<div class="section" id="tab5">
+  <h2>📚 Wortschatz</h2>
+  <div class="control-bar">
+    <div class="btn-row">
+      <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
+      <button class="btn btn-reset" onclick="resetVocab(); resetTimer(5);">Neu starten</button>
+    </div>
+    <div class="timer-display">
+      <span class="current-time">⏱ <span id="timer-5">00:00</span></span>
+      <span class="best-time">🏆 <span id="best-5">--:--</span></span>
+    </div>
+  </div>
+  <div class="help-box">
+    <strong>Aufgabe:</strong> Übersetze die Wörter ins Deutsche. Bei Nomen: Artikel + Wort + Plural!
+  </div>
+  <div id="vocabContainer"></div>
+</div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+function showTab(i){document.querySelectorAll('.section').forEach(function(s,j){s.classList.toggle('active',j===i);});document.querySelectorAll('.nav-btn').forEach(function(b,j){b.classList.toggle('active',j===i);});}
+const timers=[null,null,null,null,null,null],elapsed=[0,0,0,0,0,0],running=[false,false,false,false,false,false];
+function timerKey(t){return 'daf-2035v-best-'+t;}
+function timerFmt(sec){const m=Math.floor(sec/60),s=sec%60;return m+':'+(s<10?'0':'')+s;}
+function timerAutoStart(i){
+  if(running[i])return;
+  running[i]=true;
+  timers[i]=setInterval(function(){elapsed[i]++;document.getElementById('timer-'+i).textContent=timerFmt(elapsed[i]);},1000);
+}
+function timerStop(i){
+  if(!running[i])return;
+  clearInterval(timers[i]);running[i]=false;
+  var k=timerKey(i);var prev=localStorage.getItem(k);
+  if(!prev||elapsed[i]<parseInt(prev)){localStorage.setItem(k,elapsed[i]);document.getElementById('best-'+i).textContent='Bestzeit: '+timerFmt(elapsed[i]);}
+}
+function resetTimer(i){clearInterval(timers[i]);running[i]=false;elapsed[i]=0;document.getElementById('timer-'+i).textContent='00:00';}
+function timerLoadBest(i){var b=localStorage.getItem(timerKey(i));if(b)document.getElementById('best-'+i).textContent='Bestzeit: '+timerFmt(parseInt(b));}
+for(var _t=0;_t<6;_t++)timerLoadBest(_t);
+
+/* ════════════════════════════════════════════════════════════
+   TAB 2 — LÜCKENTEXT (liveCheck)
+   ════════════════════════════════════════════════════════════ */
+function liveCheck(inp, timerAutoStartFn, allInputsSel, timerStopFn) {
+    var ans = inp.dataset.ans || '';
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+    var allValid = [ans].concat(alts);
+    var caseSensitive = ans.charAt(0) === ans.charAt(0).toUpperCase()
+                     && ans.charAt(0) !== ans.charAt(0).toLowerCase();
+    var val = inp.value.trim();
+    var cmpVal = caseSensitive ? val : val.toLowerCase();
+    var cmpValid = allValid.map(function(a) {
+        return caseSensitive ? a : a.toLowerCase();
+    });
+    inp.classList.remove('correct', 'partial', 'wrong');
+    if (!cmpVal) return;
+    if (cmpValid.indexOf(cmpVal) !== -1) {
+        inp.classList.add('correct');
+        if (timerAutoStartFn) timerAutoStartFn();
+        if (timerStopFn && allInputsSel) {
+            var alle = Array.from(document.querySelectorAll(allInputsSel));
+            if (alle.every(function(i) { return i.classList.contains('correct'); })) timerStopFn();
+        }
+        return;
+    }
+    for (var i = 0; i < cmpValid.length; i++) {
+        if (cmpValid[i].indexOf(cmpVal) === 0) {
+            inp.classList.add('partial');
+            if (timerAutoStartFn) timerAutoStartFn();
+            return;
+        }
+    }
+    inp.classList.add('wrong');
+}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 3 — TEXT & FRAGEN (Richtig/Falsch)
+   ════════════════════════════════════════════════════════════ */
+function rfCheck(btn,chosen,correct){const row=btn.closest('.rf-item');row.querySelectorAll('.rf-btn').forEach(b=>{b.classList.remove('sel-r','sel-f');});btn.classList.add(chosen==='R'?'sel-r':'sel-f');const res=row.querySelector('.rf-result');if(chosen===correct){res.textContent='\u2705';res.className='rf-result ok';}else{res.textContent='\u274C';res.className='rf-result err';}}
+
+/* ════════════════════════════════════════════════════════════
+   TAB 4 — SATZBAU (satzbau-drag-drop Skill)
+   ════════════════════════════════════════════════════════════ */
+var satzbauData = [
+    { parts: ['Bei','der','Bank','kann','man','ein','Girokonto','eröffnen'], valid: [['Bei','der','Bank','kann','man','ein','Girokonto','eröffnen']], punct: '.' },
+    { parts: ['Mit','der','EC-Karte','kann','man','Geld','abheben'], valid: [['Mit','der','EC-Karte','kann','man','Geld','abheben']], punct: '.' },
+    { parts: ['Man','sollte','in','Deutschland','immer','Bargeld','dabei','haben'], valid: [['Man','sollte','in','Deutschland','immer','Bargeld','dabei','haben']], punct: '.' },
+    { parts: ['An','der','Börse','wird','mit','Aktien','gehandelt'], valid: [['An','der','Börse','wird','mit','Aktien','gehandelt']], punct: '.' },
+    { parts: ['Immobilien','sind','eine','sichere','Investition'], valid: [['Immobilien','sind','eine','sichere','Investition']], punct: '.' },
+    { parts: ['Die','Laufzeit','des','Kredits','beträgt','drei','Jahre'], valid: [['Die','Laufzeit','des','Kredits','beträgt','drei','Jahre']], punct: '.' },
+    { parts: ['Er','hat','viele','Schulden','gemacht'], valid: [['Er','hat','viele','Schulden','gemacht']], punct: '.' },
+    { parts: ['Die','Währung','in','Deutschland','ist','der','Euro'], valid: [['Die','Währung','in','Deutschland','ist','der','Euro']], punct: '.' }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase()
+                    && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) {
+            c.textContent = orig;
+        } else {
+            c.textContent = (i === 0) ? sbCapitalize(orig) : orig;
+        }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    if (word === ',' || word === ';') chip.classList.add('punct-chip');
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else {
+            zone.appendChild(sbDragged);
+        }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) {
+            c.classList.remove('correct', 'incorrect');
+        });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(4);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '\u2713 Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '\u2717 Falsche Reihenfolge \u2013 verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(4);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx); var row = document.getElementById('sb-row-' + idx); var fb = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = Array.from(bank.querySelectorAll('.chip')).concat(Array.from(row.querySelectorAll('.chip')));
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        for (var j = 0; j < allChips.length; j++) {
+            if (allChips[j] && allChips[j].dataset.orig === word) {
+                var chip = allChips[j]; allChips[j] = null;
+                if (word !== ',' && word !== ';') {
+                    chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+                }
+                chip.classList.remove('correct', 'incorrect');
+                row.appendChild(chip); break;
+            }
+        }
+    });
+    fb.textContent = ''; setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = '\uD83D\uDCA1 L\u00f6sen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() {
+            sbShowSolution(parseInt(this.getAttribute('data-idx')));
+        });
+
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '\u21BA Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() {
+            sbResetOne(parseInt(this.getAttribute('data-idx')));
+        });
+
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() { initSatzbau(); }
+initSatzbau();
+
+/* ════════════════════════════════════════════════════════════
+   TAB 5 — WORTSCHATZ
+   ════════════════════════════════════════════════════════════ */
+var WORTSCHATZ = [
+    { id:1,  type:"n", en:"💳 current account",         artikel:"das", de:"Girokonto",    plural:"Girokonten" },
+    { id:2,  type:"n", en:"💳 debit card",              artikel:"die", de:"EC-Karte",     plural:"EC-Karten" },
+    { id:3,  type:"n", en:"💵 cash",                    artikel:"das", de:"Bargeld",      plural:"–" },
+    { id:4,  type:"n", en:"📈 share, stock",            artikel:"die", de:"Aktie",        plural:"Aktien" },
+    { id:5,  type:"n", en:"🏦 stock exchange",          artikel:"die", de:"Börse",        plural:"Börsen" },
+    { id:6,  type:"n", en:"💼 investment",              artikel:"die", de:"Investition",  plural:"Investitionen" },
+    { id:7,  type:"n", en:"🏠 property, real estate",   artikel:"die", de:"Immobilie",    plural:"Immobilien" },
+    { id:8,  type:"n", en:"⏳ term, duration",           artikel:"die", de:"Laufzeit",     plural:"Laufzeiten" },
+    { id:9,  type:"n", en:"💱 currency",                artikel:"die", de:"Währung",      plural:"Währungen" },
+    { id:10, type:"n", en:"📊 exchange rate",           artikel:"der", de:"Wechselkurs",  plural:"Wechselkurse" },
+    { id:11, type:"n", en:"💸 debts",                   artikel:"die", de:"Schulden",     plural:"–" },
+    { id:12, type:"p", en:"🏧 to withdraw",             de:"abheben" },
+    { id:13, type:"p", en:"🏦 to deposit",              de:"einzahlen" },
+    { id:14, type:"p", en:"💰 to invest",               de:"anlegen" }
+];
+
+function initVocab() {
+    var container = document.getElementById('vocabContainer');
+    container.innerHTML = '';
+    var shuffled = WORTSCHATZ.slice().sort(function() { return Math.random() - 0.5; });
+    shuffled.forEach(function(item) {
+        var div = document.createElement('div');
+        div.className = 'vocab-item';
+        div.dataset.id = item.id;
+        var en = document.createElement('span');
+        en.className = 'vocab-en';
+        en.textContent = item.en;
+        div.appendChild(en);
+        var arrow = document.createElement('span');
+        arrow.className = 'vocab-arrow';
+        arrow.textContent = '\u2192';
+        div.appendChild(arrow);
+        var inputs = document.createElement('div');
+        inputs.className = 'vocab-inputs';
+        if (item.type === 'n') {
+            var artInp = document.createElement('input');
+            artInp.className = 'art';
+            artInp.placeholder = 'Artikel';
+            artInp.dataset.answer = item.artikel;
+            artInp.dataset.field = 'art';
+            artInp.onfocus = function() { timerAutoStart(5); };
+            artInp.oninput = function() { wortschatzCheck(this); checkVocabAllDone(); };
+            inputs.appendChild(artInp);
+            var wordInp = document.createElement('input');
+            wordInp.className = 'wort';
+            wordInp.placeholder = 'Deutsch';
+            wordInp.dataset.answer = item.de;
+            wordInp.dataset.field = 'wort';
+            wordInp.onfocus = function() { timerAutoStart(5); };
+            wordInp.oninput = function() { wortschatzCheck(this); checkVocabAllDone(); };
+            inputs.appendChild(wordInp);
+            var pluralInp = document.createElement('input');
+            pluralInp.className = 'plural';
+            pluralInp.placeholder = 'Plural';
+            pluralInp.dataset.answer = item.plural;
+            pluralInp.dataset.field = 'plural';
+            pluralInp.onfocus = function() { timerAutoStart(5); };
+            pluralInp.oninput = function() { wortschatzCheck(this); checkVocabAllDone(); };
+            inputs.appendChild(pluralInp);
+        } else {
+            var deInp = document.createElement('input');
+            deInp.className = 'wort';
+            deInp.style.width = '180px';
+            deInp.placeholder = 'Deutsch';
+            deInp.dataset.answer = item.de;
+            deInp.dataset.field = 'wort';
+            deInp.onfocus = function() { timerAutoStart(5); };
+            deInp.oninput = function() { wortschatzCheck(this); checkVocabAllDone(); };
+            inputs.appendChild(deInp);
+        }
+        div.appendChild(inputs);
+        container.appendChild(div);
+    });
+}
+
+function wortschatzCheck(inp) {
+    var user = inp.value;
+    var answer = inp.dataset.answer;
+    var field = inp.dataset.field;
+    inp.classList.remove('correct', 'wrong');
+    if (user.length === 0) return;
+    var cmpUser = (field === 'art') ? user.toLowerCase() : user;
+    var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+    if (cmpUser === cmpAnswer) { inp.classList.add('correct'); }
+    else if (cmpAnswer.indexOf(cmpUser) === 0) { /* prefix */ }
+    else { inp.classList.add('wrong'); }
+}
+
+function checkVocabAllDone() {
+    var inputs = document.querySelectorAll('#tab5 .vocab-inputs input');
+    if (inputs.length === 0) return;
+    var allCorrect = true;
+    inputs.forEach(function(inp) { if (!inp.classList.contains('correct')) allCorrect = false; });
+    if (allCorrect) timerStop(5);
+}
+
+function showVocabLoesung() {
+    document.querySelectorAll('#tab5 .vocab-inputs input').forEach(function(inp) {
+        var field = inp.dataset.field;
+        var user = inp.value.trim();
+        var answer = inp.dataset.answer;
+        var cmpUser = (field === 'art') ? user.toLowerCase() : user;
+        var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+        var existing = inp.nextElementSibling;
+        if (existing && existing.classList.contains('vocab-hint')) existing.remove();
+        if (cmpUser === cmpAnswer) {
+            inp.classList.remove('wrong'); inp.classList.add('correct');
+        } else {
+            inp.classList.add('wrong');
+            var hint = document.createElement('span');
+            hint.className = 'vocab-hint';
+            hint.textContent = inp.dataset.answer;
+            inp.insertAdjacentElement('afterend', hint);
+        }
+    });
+}
+
+function resetVocab() {
+    document.querySelectorAll('#tab5 .vocab-inputs input').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('correct', 'wrong');
+        var next = inp.nextElementSibling;
+        if (next && next.classList.contains('vocab-hint')) next.remove();
+    });
+}
+
+/* ════════════════════════════════════════════════════════════
+   VOKABEL-HIGHLIGHTING IM LESETEXT
+   ════════════════════════════════════════════════════════════ */
+function highlightVocabInText() {
+    var storyText = document.querySelector('.story-text') || document.querySelector('.lese-text');
+    if (!storyText) return;
+    var words = [];
+    if (typeof WORTSCHATZ !== 'undefined' && WORTSCHATZ.length) {
+        words = WORTSCHATZ.map(function(item) { return item.de; });
+    }
+    words = words.filter(function(w) { return w && w.length > 3; });
+    if (words.length === 0) return;
+    function walkAndHighlight(node) {
+        if (node.nodeType === 3) {
+            var text = node.nodeValue;
+            var replaced = text;
+            words.forEach(function(word) {
+                var escaped = word.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var regex = new RegExp('(?<![a-zA-Z\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df])(' + escaped + ')(?![a-zA-Z\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df])', 'g');
+                replaced = replaced.replace(regex, '\x01$1\x02');
+            });
+            if (replaced !== text) {
+                var span = document.createElement('span');
+                var parts = replaced.split(/\x01|\x02/);
+                var isHighlight = false;
+                parts.forEach(function(part) {
+                    if (!part) { isHighlight = !isHighlight; return; }
+                    if (isHighlight) {
+                        var hl = document.createElement('span');
+                        hl.className = 'vocab-hl';
+                        hl.title = '\uD83D\uDCD6 Vokabel aus der Vorentlastung';
+                        hl.textContent = part;
+                        span.appendChild(hl);
+                    } else {
+                        span.appendChild(document.createTextNode(part));
+                    }
+                    isHighlight = !isHighlight;
+                });
+                node.parentNode.replaceChild(span, node);
+            }
+        } else if (node.nodeType === 1 && node.nodeName !== 'SCRIPT') {
+            Array.from(node.childNodes).forEach(walkAndHighlight);
+        }
+    }
+    walkAndHighlight(storyText);
+}
+
+initVocab();
+highlightVocabInText();
+</script>
+</body>
+</html>
