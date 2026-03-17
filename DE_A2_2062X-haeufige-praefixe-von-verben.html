@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2062X Häufige Präfixe von Verben</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+
+.tab-banner { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+@media (max-width: 600px) { .tab-banner { max-height: 120px; } }
+
+.sec-inner { padding: 22px 24px 28px; }
+
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* ===== Tab 0: Lernen ===== */
+.rule-card { background: #f8f9ff; border: 1.5px solid #dde3ff; border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; }
+.rule-card h3 { color: #667eea; margin-bottom: 10px; font-size: 1.1em; }
+.rule-card p { font-size: 0.95em; line-height: 1.7; color: #444; margin-bottom: 8px; }
+.prefix-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.prefix-tag { background: #667eea; color: white; padding: 4px 12px; border-radius: 14px; font-size: 0.85em; font-weight: 500; }
+.prefix-tag.untrennbar { background: #764ba2; }
+.prefix-tag.both { background: #e67e22; }
+.example-box { background: #f0f4ff; border-radius: 8px; padding: 12px 16px; margin-top: 10px; font-size: 0.93em; line-height: 1.7; }
+.example-box .hl { color: #667eea; font-weight: 700; }
+.example-box .hl-sep { color: #e74c3c; font-weight: 700; }
+.tip-box { background: #fff8e1; border-left: 4px solid #f9a825; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-top: 16px; font-size: 0.92em; line-height: 1.6; color: #555; }
+
+/* ===== Tab 1: Zuordnung (Drag-Drop) ===== */
+.zuordnung-container { margin-top: 10px; }
+.chip-bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f0f0f8; border-radius: 10px; min-height: 56px; margin-bottom: 16px; align-items: flex-start; border: 1px dashed #bbb; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.selected { outline: 3px solid #667eea; outline-offset: 2px; }
+.zuordnung-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.zone-box { background: #f8f9ff; border-radius: 10px; padding: 16px; border: 1.5px solid #dde3ff; }
+.zone-title { font-weight: 700; color: #667eea; margin-bottom: 10px; font-size: 1.0em; text-align: center; padding: 8px; background: #667eea; color: white; border-radius: 8px; }
+.zone-title.untrennbar { background: #764ba2; }
+.drop-zone { min-height: 80px; border-radius: 10px; border: 2px dashed #c5cae9; padding: 10px; background: #fafbff; transition: background .2s; display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; align-content: flex-start; }
+.drop-zone.dragover { background: #e8eaff; border-color: #667eea; }
+
+/* ===== Tab 2: Lückentext ===== */
+.luecke-group { margin-bottom: 28px; }
+.luecke-title { font-weight: 700; color: #667eea; margin-bottom: 10px; font-size: 1.05em; }
+.luecke-bank { background: #f0f2ff; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.bank-word { background: #667eea; color: white; padding: 4px 12px; border-radius: 14px; font-size: 0.85em; font-weight: 500; }
+.luecke-item { background: #f8f9ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 8px; font-size: 0.95em; line-height: 1.7; }
+.luecke-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; width: 140px; text-align: center; font-size: 0.95em; font-family: inherit; outline: none; padding: 2px 4px; transition: border-color 0.2s; }
+.luecke-inp:focus { border-color: #667eea; }
+.luecke-inp.ok { border-color: #27ae60; color: #27ae60; font-weight: 600; }
+.luecke-inp.no { border-color: #e74c3c; color: #e74c3c; }
+
+/* ===== Tab 3: Satzbau ===== */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.satzbau-item { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+.satzbau-item:last-child { border-bottom: none; }
+.sb-label { font-weight: 600; color: #667eea; margin-bottom: 8px; }
+.sb-chip.punct-chip { background: #f8f8f8; border: 2px solid #667eea; padding: 8px 16px; color: #333; font-weight: 700; font-size: 1.3em; min-width: 18px; text-align: center; cursor: move; }
+.sb-chip.punct-chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.sb-chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+
+/* ===== Tab 4: Wortschatz ===== */
+.ws-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ws-item { background: #f8f9ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; }
+.ws-prompt { font-weight: 600; color: #667eea; margin-bottom: 6px; font-size: 1.05em; }
+.ws-fields { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ws-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; transition: border-color 0.2s; padding: 2px 4px; }
+.ws-inp:focus { border-bottom-color: #667eea; }
+.ws-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.ws-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+
+/* ===== Footer ===== */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .zuordnung-zones { grid-template-columns: 1fr; }
+    .ws-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Häufige Präfixe von Verben</h1>
+        <p style="font-family: Georgia, serif;">A2.2 – Lektion 2062X &nbsp;|&nbsp; Kommunikation &amp; Üben</p>
+        <div class="big-emoji">🔤</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showSection(0)"><span class="nav-emoji">📖</span><span class="nav-label">Lernen</span></div>
+        <div class="nav-btn" onclick="showSection(1)"><span class="nav-emoji">🔀</span><span class="nav-label">Zuordnung</span></div>
+        <div class="nav-btn" onclick="showSection(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showSection(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showSection(4)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+    <!-- ==================== Tab 0: Lernen ==================== -->
+    <div class="section active" id="sec-0">
+        <img class="tab-banner" src="https://images.pexels.com/photos/256417/pexels-photo-256417.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Wörter und Buchstaben">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">📖 Was sind Präfixe?</h2>
+
+            <div class="hilfe-box">
+                <strong>Präfixe</strong> sind Vorsilben. Ein Präfix gibt häufig einen Hinweis auf die Bedeutung eines Verbs. Ein Präfix verändert die <strong>Bedeutung</strong> eines Verbs.
+            </div>
+
+            <div class="rule-card">
+                <h3>🟢 Trennbare Verben</h3>
+                <p>Trennbare Verben haben Präfixe, die in der finiten Form <strong>getrennt</strong> vom Verb stehen — meistens am <strong>Satzende</strong>.</p>
+                <div class="prefix-list">
+                    <span class="prefix-tag">ab-</span>
+                    <span class="prefix-tag">an-</span>
+                    <span class="prefix-tag">auf-</span>
+                    <span class="prefix-tag">aus-</span>
+                    <span class="prefix-tag">bei-</span>
+                    <span class="prefix-tag">ein-</span>
+                    <span class="prefix-tag">los-</span>
+                    <span class="prefix-tag">mit-</span>
+                    <span class="prefix-tag">nach-</span>
+                    <span class="prefix-tag">her-</span>
+                    <span class="prefix-tag">hin-</span>
+                    <span class="prefix-tag">vor-</span>
+                    <span class="prefix-tag">weg-</span>
+                    <span class="prefix-tag">zu-</span>
+                    <span class="prefix-tag">zurück-</span>
+                </div>
+                <div class="example-box">
+                    Ich <span class="hl">schicke</span> die Wanderschuhe <span class="hl-sep">zurück</span>.<br>
+                    Du <span class="hl">rufst</span> mich später <span class="hl-sep">an</span>.<br>
+                    Ich <span class="hl">nehme</span> den Rucksack <span class="hl-sep">mit</span>.
+                </div>
+            </div>
+
+            <div class="rule-card">
+                <h3>🔴 Untrennbare Verben</h3>
+                <p>Untrennbare Verben haben Präfixe, die ein <strong>fester Bestandteil</strong> des Verbs sind. Sie werden <strong>nie getrennt</strong>, auch nicht im Infinitiv.</p>
+                <div class="prefix-list">
+                    <span class="prefix-tag untrennbar">be-</span>
+                    <span class="prefix-tag untrennbar">emp-</span>
+                    <span class="prefix-tag untrennbar">ent-</span>
+                    <span class="prefix-tag untrennbar">er-</span>
+                    <span class="prefix-tag untrennbar">ge-</span>
+                    <span class="prefix-tag untrennbar">miss-</span>
+                    <span class="prefix-tag untrennbar">ver-</span>
+                    <span class="prefix-tag untrennbar">zer-</span>
+                </div>
+                <div class="example-box">
+                    Ich <span class="hl">bestelle</span> eine Pizza.<br>
+                    Wie <span class="hl">entscheidest</span> du dich?<br>
+                    Ich <span class="hl">empfehle</span> dir die Pasta.
+                </div>
+            </div>
+
+            <div class="rule-card">
+                <h3>🟠 Trennbar ODER untrennbar</h3>
+                <p>Manche Präfixe können sowohl trennbar als auch untrennbar sein. Durch die Trennung verändert sich die <strong>Bedeutung</strong> des Verbs.</p>
+                <div class="prefix-list">
+                    <span class="prefix-tag both">durch-</span>
+                    <span class="prefix-tag both">hinter-</span>
+                    <span class="prefix-tag both">über-</span>
+                    <span class="prefix-tag both">um-</span>
+                    <span class="prefix-tag both">unter-</span>
+                </div>
+                <div class="example-box">
+                    Der Traktor <span class="hl">umfährt</span> das Schild. (= fährt um das Schild <em>herum</em>)<br>
+                    Der Traktor <span class="hl">fährt</span> das Schild <span class="hl-sep">um</span>. (= fährt <em>gegen</em> das Schild)
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Tipp:</strong> Wenn das Präfix <strong>betont</strong> wird, dann ist es <strong>trennbar</strong>. Wenn das Präfix <strong>nicht betont</strong> wird, dann ist es <strong>nicht trennbar</strong>. Die Betonung liegt dann auf dem Verbstamm.
+            </div>
+
+            <div class="rule-card" style="margin-top:16px;">
+                <h3>🔵 Modalverben + Präfixverben</h3>
+                <p>Wird ein Präfixverb mit einem Modalverb verwendet, wird es <strong>nicht getrennt</strong>, da es stets im <strong>Infinitiv</strong> steht.</p>
+                <div class="example-box">
+                    Du <span class="hl">kannst</span> mich <span class="hl">anrufen</span>.<br>
+                    Ich <span class="hl">möchte</span> sie <span class="hl">zurückschicken</span>.<br>
+                    <span class="hl">Darf</span> ich dich <span class="hl">umarmen</span>?
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Tab 1: Zuordnung ==================== -->
+    <div class="section" id="sec-1">
+        <img class="tab-banner" src="https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Sortieren und Zuordnen">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">🔀 Zuordnung: Trennbar oder untrennbar?</h2>
+
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="showZuordnungLoesung()">Lösungen</button>
+                    <button class="btn" onclick="initZuordnung(); resetTimer(1);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-1">00:00</span></span>
+                    <span>🏆 <span id="best-1">--:--</span></span>
+                </div>
+            </div>
+
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ordne die Verben der richtigen Kategorie zu. Ziehe die Chips in die passende Zone oder klicke zuerst auf einen Chip und dann auf eine Zone.
+            </div>
+
+            <div class="zuordnung-container" id="zuordnungContainer">
+                <!-- wird von JS gefüllt -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Tab 2: Lückentext ==================== -->
+    <div class="section" id="sec-2">
+        <img class="tab-banner" src="https://images.pexels.com/photos/4144923/pexels-photo-4144923.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Schreiben und Lernen">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">✏️ Lückentext</h2>
+
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="showLueckenLoesung()">Lösungen</button>
+                    <button class="btn" onclick="resetLuecken(); resetTimer(2);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-2">00:00</span></span>
+                    <span>🏆 <span id="best-2">--:--</span></span>
+                </div>
+            </div>
+
+            <div class="luecke-group">
+                <div class="luecke-title">Teil A: Trennbare Verben — Setze das Verb in der richtigen Form ein.</div>
+                <div class="luecke-bank" id="bankA">
+                    <span class="bank-word">anrufen</span>
+                    <span class="bank-word">zurückschicken</span>
+                    <span class="bank-word">aufhören</span>
+                    <span class="bank-word">mitnehmen</span>
+                    <span class="bank-word">ablegen</span>
+                    <span class="bank-word">zuhören</span>
+                </div>
+                <div class="luecke-item">1. Jack <input class="luecke-inp" data-ans="ruft" data-alts="" placeholder="" oninput="liveCheck(this)" style="width:80px"> Lisa morgen <input class="luecke-inp" data-ans="an" placeholder="" oninput="liveCheck(this)" style="width:50px">.</div>
+                <div class="luecke-item">2. Lisa <input class="luecke-inp" data-ans="schickt" placeholder="" oninput="liveCheck(this)" style="width:90px"> die Wanderschuhe <input class="luecke-inp" data-ans="zurück" placeholder="" oninput="liveCheck(this)" style="width:80px">.</div>
+                <div class="luecke-item">3. Lisa <input class="luecke-inp" data-ans="hört" placeholder="" oninput="liveCheck(this)" style="width:70px"> <input class="luecke-inp" data-ans="auf" placeholder="" oninput="liveCheck(this)" style="width:50px">, sich Sorgen zu machen.</div>
+                <div class="luecke-item">4. Ich <input class="luecke-inp" data-ans="nehme" placeholder="" oninput="liveCheck(this)" style="width:90px"> den Rucksack <input class="luecke-inp" data-ans="mit" placeholder="" oninput="liveCheck(this)" style="width:50px">.</div>
+                <div class="luecke-item">5. <input class="luecke-inp" data-ans="Lege" placeholder="" oninput="liveCheck(this)" style="width:70px"> deine Jacke bitte hier <input class="luecke-inp" data-ans="ab" placeholder="" oninput="liveCheck(this)" style="width:50px">!</div>
+                <div class="luecke-item">6. Naomi <input class="luecke-inp" data-ans="hört" placeholder="" oninput="liveCheck(this)" style="width:70px"> ihrer Freundin <input class="luecke-inp" data-ans="zu" placeholder="" oninput="liveCheck(this)" style="width:50px">.</div>
+            </div>
+
+            <div class="luecke-group">
+                <div class="luecke-title">Teil B: Untrennbare Verben — Setze das Verb in der richtigen Form ein.</div>
+                <div class="luecke-bank" id="bankB">
+                    <span class="bank-word">bestellen</span>
+                    <span class="bank-word">empfehlen</span>
+                    <span class="bank-word">entscheiden</span>
+                    <span class="bank-word">überlegen</span>
+                    <span class="bank-word">versprechen</span>
+                    <span class="bank-word">vergehen</span>
+                </div>
+                <div class="luecke-item">7. Ich <input class="luecke-inp" data-ans="bestelle" placeholder="" oninput="liveCheck(this)" style="width:110px"> eine Pizza Margherita.</div>
+                <div class="luecke-item">8. Ich <input class="luecke-inp" data-ans="empfehle" placeholder="" oninput="liveCheck(this)" style="width:110px"> dir die Pasta.</div>
+                <div class="luecke-item">9. Wie <input class="luecke-inp" data-ans="entscheidest" placeholder="" oninput="liveCheck(this)" style="width:130px"> du dich?</div>
+                <div class="luecke-item">10. Lisa <input class="luecke-inp" data-ans="überlegt" placeholder="" oninput="liveCheck(this)" style="width:110px">, welche Freunde sie fragen kann.</div>
+                <div class="luecke-item">11. Er <input class="luecke-inp" data-ans="verspricht" placeholder="" oninput="liveCheck(this)" style="width:110px"> ihr, auf jeden Fall dabei zu sein.</div>
+                <div class="luecke-item">12. Ein Jahr ist schnell <input class="luecke-inp" data-ans="vergangen" placeholder="" oninput="liveCheck(this)" style="width:120px">.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Tab 3: Satzbau ==================== -->
+    <div class="section" id="sec-3">
+        <img class="tab-banner" src="https://images.pexels.com/photos/7256897/pexels-photo-7256897.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Puzzle und Bausteine">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">🧩 Satzbau</h2>
+
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="sbShowAll()">Lösungen</button>
+                    <button class="btn" onclick="initSatzbau(); resetTimer(3);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-3">00:00</span></span>
+                    <span>🏆 <span id="best-3">--:--</span></span>
+                </div>
+            </div>
+
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ordne die Wörter zu einem korrekten Satz. Ziehe die Chips in die Satzzeile oder klicke, um sie zu verschieben.
+            </div>
+
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- ==================== Tab 4: Wortschatz ==================== -->
+    <div class="section" id="sec-4">
+        <img class="tab-banner" src="https://images.pexels.com/photos/267669/pexels-photo-267669.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Wörterbuch und Vokabeln">
+        <div class="sec-inner">
+            <h2 style="color:#667eea; margin-bottom:16px;">🔠 Wortschatz</h2>
+
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="showWsLoesung()">Lösungen</button>
+                    <button class="btn" onclick="initWortschatz(); resetTimer(4);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-4">00:00</span></span>
+                    <span>🏆 <span id="best-4">--:--</span></span>
+                </div>
+            </div>
+
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Übersetze die Verben ins Deutsche. Tippe die korrekte Form ein.
+            </div>
+
+            <div id="wortschatzContainer" class="ws-grid"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+/* ===== Navigation ===== */
+function showSection(idx) {
+    document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===idx); });
+    document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===idx); });
+}
+
+/* ===== Timer System ===== */
+var TIMER_PREFIX = '2062X';
+var timers = [null, null, null, null, null];
+var timerSecs = [0, 0, 0, 0, 0];
+var timerRunning = [false, false, false, false, false];
+
+function fmtTime(s) {
+    var m = Math.floor(s / 60);
+    var sec = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+function timerAutoStart(n) {
+    if (timerRunning[n]) return;
+    timerRunning[n] = true;
+    timers[n] = setInterval(function() {
+        timerSecs[n]++;
+        var el = document.getElementById('timer-' + n);
+        if (el) el.textContent = fmtTime(timerSecs[n]);
+    }, 1000);
+}
+
+function timerStop(n) {
+    if (!timerRunning[n]) return;
+    clearInterval(timers[n]);
+    timerRunning[n] = false;
+    var key = TIMER_PREFIX + '-best-' + n;
+    var prev = localStorage.getItem(key);
+    if (!prev || timerSecs[n] < parseInt(prev)) {
+        localStorage.setItem(key, timerSecs[n]);
+        var el = document.getElementById('best-' + n);
+        if (el) el.textContent = fmtTime(timerSecs[n]);
+    }
+}
+
+function resetTimer(n) {
+    clearInterval(timers[n]);
+    timerRunning[n] = false;
+    timerSecs[n] = 0;
+    var el = document.getElementById('timer-' + n);
+    if (el) el.textContent = '00:00';
+}
+
+function loadBestTimes() {
+    for (var i = 0; i < 5; i++) {
+        var key = TIMER_PREFIX + '-best-' + i;
+        var val = localStorage.getItem(key);
+        if (val) {
+            var el = document.getElementById('best-' + i);
+            if (el) el.textContent = fmtTime(parseInt(val));
+        }
+    }
+}
+
+/* ===== Tab 1: Zuordnung ===== */
+var ZUORDNUNG_DATA = [
+    { verb: 'abreisen', cat: 'trennbar' },
+    { verb: 'anrufen', cat: 'trennbar' },
+    { verb: 'mitfahren', cat: 'trennbar' },
+    { verb: 'hinlegen', cat: 'trennbar' },
+    { verb: 'aufhören', cat: 'trennbar' },
+    { verb: 'zuhören', cat: 'trennbar' },
+    { verb: 'ablegen', cat: 'trennbar' },
+    { verb: 'zurückschicken', cat: 'trennbar' },
+    { verb: 'anstecken', cat: 'trennbar' },
+    { verb: 'beilegen', cat: 'trennbar' },
+    { verb: 'besprechen', cat: 'untrennbar' },
+    { verb: 'empfehlen', cat: 'untrennbar' },
+    { verb: 'versprechen', cat: 'untrennbar' },
+    { verb: 'erlegen', cat: 'untrennbar' },
+    { verb: 'belegen', cat: 'untrennbar' },
+    { verb: 'entscheiden', cat: 'untrennbar' }
+];
+
+var draggedZChip = null;
+
+function shuffleArr(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+}
+
+function initZuordnung() {
+    var container = document.getElementById('zuordnungContainer');
+    container.innerHTML = '';
+
+    var bank = document.createElement('div');
+    bank.className = 'chip-bank';
+    bank.id = 'zuordnungBank';
+
+    var shuffled = shuffleArr(ZUORDNUNG_DATA);
+    shuffled.forEach(function(item) {
+        var chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = item.verb;
+        chip.dataset.cat = item.cat;
+        chip.draggable = true;
+        chip.addEventListener('dragstart', function(e) {
+            draggedZChip = chip;
+            e.dataTransfer.setData('text/plain', '');
+            setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+        });
+        chip.addEventListener('dragend', function() {
+            chip.style.opacity = '';
+            draggedZChip = null;
+        });
+        chip.addEventListener('click', function() {
+            if (chip.classList.contains('correct')) return;
+            var wasSel = chip.classList.contains('selected');
+            document.querySelectorAll('#zuordnungContainer .chip.selected').forEach(function(c) { c.classList.remove('selected'); });
+            if (!wasSel) chip.classList.add('selected');
+        });
+        bank.appendChild(chip);
+    });
+
+    bank.addEventListener('dragover', function(e) { e.preventDefault(); });
+    bank.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!draggedZChip) return;
+        if (!draggedZChip.classList.contains('correct')) {
+            bank.appendChild(draggedZChip);
+            draggedZChip.classList.remove('correct', 'incorrect');
+        }
+        draggedZChip = null;
+        colorAllZuordnung();
+    });
+
+    container.appendChild(bank);
+
+    var zones = document.createElement('div');
+    zones.className = 'zuordnung-zones';
+
+    ['trennbar', 'untrennbar'].forEach(function(cat) {
+        var box = document.createElement('div');
+        box.className = 'zone-box';
+
+        var title = document.createElement('div');
+        title.className = 'zone-title' + (cat === 'untrennbar' ? ' untrennbar' : '');
+        title.textContent = cat === 'trennbar' ? '🟢 Trennbar' : '🔴 Untrennbar';
+        box.appendChild(title);
+
+        var zone = document.createElement('div');
+        zone.className = 'drop-zone';
+        zone.dataset.cat = cat;
+
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            zone.classList.add('dragover');
+        });
+        zone.addEventListener('dragleave', function(e) {
+            if (!zone.contains(e.relatedTarget)) zone.classList.remove('dragover');
+        });
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+            if (!draggedZChip) return;
+            if (draggedZChip.classList.contains('correct')) return;
+            zone.appendChild(draggedZChip);
+            draggedZChip = null;
+            timerAutoStart(1);
+            colorAllZuordnung();
+        });
+        zone.addEventListener('click', function() {
+            var sel = document.querySelector('#zuordnungContainer .chip.selected');
+            if (!sel) return;
+            if (sel.classList.contains('correct')) return;
+            zone.appendChild(sel);
+            sel.classList.remove('selected');
+            timerAutoStart(1);
+            colorAllZuordnung();
+        });
+
+        box.appendChild(zone);
+        zones.appendChild(box);
+    });
+
+    container.appendChild(zones);
+}
+
+function colorAllZuordnung() {
+    var allCorrect = true;
+    document.querySelectorAll('#zuordnungContainer .drop-zone').forEach(function(zone) {
+        var zoneCat = zone.dataset.cat;
+        zone.querySelectorAll('.chip').forEach(function(chip) {
+            chip.classList.remove('correct', 'incorrect');
+            if (chip.dataset.cat === zoneCat) {
+                chip.classList.add('correct');
+            } else {
+                chip.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+    });
+    var bankChips = document.querySelectorAll('#zuordnungBank .chip');
+    bankChips.forEach(function(c) { c.classList.remove('correct', 'incorrect'); });
+    if (bankChips.length > 0) allCorrect = false;
+    if (allCorrect && document.querySelectorAll('#zuordnungContainer .drop-zone .chip').length === ZUORDNUNG_DATA.length) {
+        timerStop(1);
+    }
+}
+
+function showZuordnungLoesung() {
+    timerStop(1);
+    var zones = document.querySelectorAll('#zuordnungContainer .drop-zone');
+    var trennbarZone = null, untrennbarZone = null;
+    zones.forEach(function(z) {
+        if (z.dataset.cat === 'trennbar') trennbarZone = z;
+        if (z.dataset.cat === 'untrennbar') untrennbarZone = z;
+    });
+    document.querySelectorAll('#zuordnungContainer .chip').forEach(function(chip) {
+        chip.classList.remove('incorrect', 'selected');
+        chip.classList.add('correct');
+        if (chip.dataset.cat === 'trennbar') trennbarZone.appendChild(chip);
+        else untrennbarZone.appendChild(chip);
+    });
+}
+
+/* ===== Tab 2: Lückentext ===== */
+function liveCheck(inp) {
+    var val = inp.value.trim();
+    var ans = inp.dataset.ans;
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+    var allValid = [ans].concat(alts);
+
+    inp.classList.remove('ok', 'no');
+    if (!val) return;
+
+    timerAutoStart(2);
+
+    for (var i = 0; i < allValid.length; i++) {
+        if (val === allValid[i]) {
+            inp.classList.add('ok');
+            checkAllLuecken();
+            return;
+        }
+    }
+
+    var ch0 = ans.charAt(0);
+    var caseSensitive = (ch0 >= 'A' && ch0 <= 'Z') || ch0 === '\u00c4' || ch0 === '\u00d6' || ch0 === '\u00dc';
+
+    for (var j = 0; j < allValid.length; j++) {
+        var a = allValid[j];
+        if (caseSensitive) {
+            if (a.indexOf(val) === 0) return;
+        } else {
+            var cmpVal = val.replace(/./g, function(c) {
+                return (c >= 'A' && c <= 'Z') ? String.fromCharCode(c.charCodeAt(0) + 32) : c === '\u00c4' ? '\u00e4' : c === '\u00d6' ? '\u00f6' : c === '\u00dc' ? '\u00fc' : c;
+            });
+            var cmpA = a.replace(/./g, function(c) {
+                return (c >= 'A' && c <= 'Z') ? String.fromCharCode(c.charCodeAt(0) + 32) : c === '\u00c4' ? '\u00e4' : c === '\u00d6' ? '\u00f6' : c === '\u00dc' ? '\u00fc' : c;
+            });
+            if (cmpA.indexOf(cmpVal) === 0) return;
+        }
+    }
+
+    inp.classList.add('no');
+}
+
+function checkAllLuecken() {
+    var all = document.querySelectorAll('#sec-2 .luecke-inp');
+    var allOk = all.length > 0 && Array.from(all).every(function(i) { return i.classList.contains('ok'); });
+    if (allOk) timerStop(2);
+}
+
+function showLueckenLoesung() {
+    timerStop(2);
+    document.querySelectorAll('#sec-2 .luecke-inp').forEach(function(inp) {
+        inp.value = inp.dataset.ans;
+        inp.classList.remove('no');
+        inp.classList.add('ok');
+    });
+}
+
+function resetLuecken() {
+    document.querySelectorAll('#sec-2 .luecke-inp').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('ok', 'no');
+    });
+}
+
+/* ===== Tab 3: Satzbau ===== */
+var satzbauData = [
+    {
+        parts: ['ich', 'rufe', 'Lisa', 'morgen', 'an'],
+        valid: [
+            ['ich', 'rufe', 'Lisa', 'morgen', 'an'],
+            ['morgen', 'rufe', 'ich', 'Lisa', 'an']
+        ]
+    },
+    {
+        parts: ['Lisa', 'schickt', 'die', 'Wanderschuhe', 'zurück'],
+        valid: [['Lisa', 'schickt', 'die', 'Wanderschuhe', 'zurück']]
+    },
+    {
+        parts: ['du', 'kannst', 'mich', 'jederzeit', 'anrufen'],
+        valid: [['du', 'kannst', 'mich', 'jederzeit', 'anrufen']]
+    },
+    {
+        parts: ['ich', 'bestelle', 'eine', 'Pizza'],
+        valid: [['ich', 'bestelle', 'eine', 'Pizza']]
+    },
+    {
+        parts: ['Naomi', 'hört', 'ihrer', 'Freundin', 'zu'],
+        valid: [['Naomi', 'hört', 'ihrer', 'Freundin', 'zu']]
+    },
+    {
+        parts: ['er', 'verspricht', 'ihr', ',', 'dabei', 'zu', 'sein'],
+        valid: [['er', 'verspricht', 'ihr', ',', 'dabei', 'zu', 'sein']]
+    },
+    {
+        parts: ['der', 'Traktor', 'fährt', 'das', 'Schild', 'um'],
+        valid: [['der', 'Traktor', 'fährt', 'das', 'Schild', 'um']]
+    },
+    {
+        parts: ['ich', 'möchte', 'die', 'Schuhe', 'zurückschicken'],
+        valid: [['ich', 'möchte', 'die', 'Schuhe', 'zurückschicken']]
+    }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase() && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) {
+            c.textContent = orig;
+        } else {
+            c.textContent = (i === 0) ? sbCapitalize(orig) : orig;
+        }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    if (word === ',' || word === ';') chip.classList.add('punct-chip');
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    chip.addEventListener('click', function() {
+        if (chip.classList.contains('selected')) {
+            chip.classList.remove('selected');
+            return;
+        }
+        document.querySelectorAll('#satzbauContainer .chip.selected').forEach(function(c) { c.classList.remove('selected'); });
+        chip.classList.add('selected');
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else {
+            zone.appendChild(sbDragged);
+        }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+    zone.addEventListener('click', function(e) {
+        if (e.target !== zone && !e.target.classList.contains('chip')) return;
+        var sel = document.querySelector('#satzbauContainer .chip.selected');
+        if (!sel) return;
+        sel.classList.remove('selected');
+        zone.appendChild(sel);
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('correct', 'incorrect'); });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '\u2713 Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '\u2717 Falsche Reihenfolge \u2013 verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = {};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        var chip = allChips[word];
+        if (chip) {
+            if (word !== ',' && word !== ';') {
+                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+            }
+            chip.classList.remove('correct', 'incorrect');
+            row.appendChild(chip);
+        }
+    });
+    fb.textContent = '';
+    setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = '';
+    fb.className = 'satzbau-feedback';
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function sbShowAll() {
+    for (var i = 0; i < satzbauData.length; i++) sbShowSolution(i);
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = 'L\u00f6sen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() { sbShowSolution(parseInt(this.getAttribute('data-idx'))); });
+
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '\u21ba Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() { sbResetOne(parseInt(this.getAttribute('data-idx'))); });
+
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+/* ===== Tab 4: Wortschatz ===== */
+var WS_DATA = [
+    { en: '📞 to call (someone)', de: 'anrufen' },
+    { en: '📦 to send back', de: 'zur\u00fcckschicken' },
+    { en: '🛑 to stop (doing sth)', de: 'aufh\u00f6ren' },
+    { en: '🎒 to take along', de: 'mitnehmen' },
+    { en: '🧥 to take off (clothing)', de: 'ablegen' },
+    { en: '👂 to listen', de: 'zuh\u00f6ren' },
+    { en: '🍕 to order (food)', de: 'bestellen' },
+    { en: '👍 to recommend', de: 'empfehlen' },
+    { en: '🤔 to decide', de: 'entscheiden' },
+    { en: '💭 to think about / consider', de: '\u00fcberlegen' },
+    { en: '🤝 to promise', de: 'versprechen' },
+    { en: '⏰ to pass (time)', de: 'vergehen' },
+    { en: '🚗 to drive around (sth)', de: 'umfahren' },
+    { en: '🏨 to deposit (keys)', de: 'hinterlegen' }
+];
+
+function initWortschatz() {
+    var container = document.getElementById('wortschatzContainer');
+    container.innerHTML = '';
+    var shuffled = shuffleArr(WS_DATA);
+    shuffled.forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'ws-item';
+
+        var prompt = document.createElement('div');
+        prompt.className = 'ws-prompt';
+        prompt.textContent = item.en;
+        card.appendChild(prompt);
+
+        var fields = document.createElement('div');
+        fields.className = 'ws-fields';
+
+        var inp = document.createElement('input');
+        inp.className = 'ws-inp';
+        inp.type = 'text';
+        inp.placeholder = 'Deutsch';
+        inp.style.width = '200px';
+        inp.dataset.ans = item.de;
+        inp.setAttribute('autocomplete', 'off');
+        inp.addEventListener('input', function() {
+            timerAutoStart(4);
+            wortschatzCheck(inp);
+            checkAllWs();
+        });
+        fields.appendChild(inp);
+
+        card.appendChild(fields);
+        container.appendChild(card);
+    });
+}
+
+function wortschatzCheck(inp) {
+    var val = inp.value.trim();
+    var a = inp.dataset.ans;
+    inp.classList.remove('ok', 'no');
+    if (!val) return;
+    if (val === a) { inp.classList.add('ok'); return; }
+    if (a.indexOf(val) === 0) return;
+    var cmpVal = val.replace(/./g, function(c) {
+        return (c >= 'A' && c <= 'Z') ? String.fromCharCode(c.charCodeAt(0) + 32) : c === '\u00c4' ? '\u00e4' : c === '\u00d6' ? '\u00f6' : c === '\u00dc' ? '\u00fc' : c;
+    });
+    var cmpA = a.replace(/./g, function(c) {
+        return (c >= 'A' && c <= 'Z') ? String.fromCharCode(c.charCodeAt(0) + 32) : c === '\u00c4' ? '\u00e4' : c === '\u00d6' ? '\u00f6' : c === '\u00dc' ? '\u00fc' : c;
+    });
+    if (cmpVal === cmpA) { inp.classList.add('ok'); return; }
+    if (cmpA.indexOf(cmpVal) === 0) return;
+    inp.classList.add('no');
+}
+
+function checkAllWs() {
+    var all = document.querySelectorAll('#sec-4 .ws-inp');
+    var allOk = all.length > 0 && Array.from(all).every(function(i) { return i.classList.contains('ok'); });
+    if (allOk) timerStop(4);
+}
+
+function showWsLoesung() {
+    timerStop(4);
+    document.querySelectorAll('#sec-4 .ws-inp').forEach(function(inp) {
+        inp.value = inp.dataset.ans;
+        inp.classList.remove('no');
+        inp.classList.add('ok');
+    });
+}
+
+/* ===== Init ===== */
+loadBestTimes();
+initZuordnung();
+initSatzbau();
+initWortschatz();
+</script>
+</body>
+</html>
