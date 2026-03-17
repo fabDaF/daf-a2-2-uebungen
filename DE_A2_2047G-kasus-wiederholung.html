@@ -642,7 +642,8 @@ function sbMakeChip(word) {
     chip.dataset.orig = word;
     chip.draggable = true;
     if (word === ',' || word === ';') chip.classList.add('punct-chip');
-    chip.addEventListener('dragstart', function(e) { sbDragged = chip; e.dataTransfer.setData('text/plain', ''); setTimeout(function() { chip.style.opacity = '0.4'; }, 0); });
+    chip.addEventListener('dragstart', function(e) { sbDragged = chip;
+        timerAutoStart(3); e.dataTransfer.setData('text/plain', ''); setTimeout(function() { chip.style.opacity = '0.4'; }, 0); });
     chip.addEventListener('dragend', function() { chip.style.opacity = ''; sbDragged = null; var c = document.getElementById('sb-insert-cursor'); if (c && c.parentNode) c.parentNode.removeChild(c); });
     return chip;
 }

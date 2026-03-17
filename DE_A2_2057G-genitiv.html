@@ -870,18 +870,16 @@
             var val = inp.value.trim();
             inp.classList.remove('ok', 'no');
             if (!val) return;
+            if (timerAutoStart) timerAutoStart(1);
             if (val === ans) {
                 inp.classList.add('ok');
-                timerAutoStart(1);
                 checkLueckenDone();
                 return;
             }
             if (ans.startsWith(val)) {
-                timerAutoStart(1);
                 return;
             }
             inp.classList.add('no');
-            timerAutoStart(1);
         }
 
         function checkLueckenDone() {
@@ -1060,6 +1058,7 @@
             chip.dataset.word = text;
             chip.ondragstart = function(e) {
                 sbDragged = this;
+                timerAutoStart(3);
                 e.dataTransfer.effectAllowed = 'move';
             };
             chip.ondragend = function() {
@@ -1096,6 +1095,7 @@
                 chip.draggable = true;
                 chip.ondragstart = function(e) {
                     sbDragged = this;
+                timerAutoStart(3);
                     e.dataTransfer.effectAllowed = 'move';
                 };
                 chip.ondragend = function() {

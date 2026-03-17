@@ -609,9 +609,9 @@ function liveCheck(inp, timerAutoStartFn, allInputsSel, timerStopFn) {
   });
   inp.classList.remove('ok', 'no');
   if (!cmpVal) return;
+  if (timerAutoStartFn) timerAutoStartFn();
   if (cmpValid.indexOf(cmpVal) !== -1) {
     inp.classList.add('ok');
-    if (timerAutoStartFn) timerAutoStartFn();
     if (timerStopFn && allInputsSel) {
       var alle = Array.from(document.querySelectorAll(allInputsSel));
       if (alle.every(function(i) { return i.classList.contains('ok'); })) timerStopFn();
@@ -619,10 +619,7 @@ function liveCheck(inp, timerAutoStartFn, allInputsSel, timerStopFn) {
     return;
   }
   for (var i = 0; i < cmpValid.length; i++) {
-    if (cmpValid[i].indexOf(cmpVal) === 0) {
-      if (timerAutoStartFn) timerAutoStartFn();
-      return;
-    }
+    if (cmpValid[i].indexOf(cmpVal) === 0) return;
   }
   inp.classList.add('no');
 }
@@ -736,6 +733,7 @@ function sbMakeChip(word) {
   if (word === ',' || word === ';') chip.classList.add('punct-chip');
   chip.addEventListener('dragstart', function(e) {
     sbDragged = chip;
+    timerAutoStart(3);
     e.dataTransfer.setData('text/plain', '');
     setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
   });

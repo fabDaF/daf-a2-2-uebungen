@@ -589,7 +589,8 @@ function sbMakeChip(text, part, isPunct) {
     chip.dataset.text = text;
     if (isPunct) chip.dataset.punct = isPunct;
     chip.draggable = true;
-    chip.addEventListener('dragstart', function(e) { sbDragged = chip; e.dataTransfer.effectAllowed = 'move'; });
+    chip.addEventListener('dragstart', function(e) { sbDragged = chip;
+        timerAutoStart(3); e.dataTransfer.effectAllowed = 'move'; });
     chip.addEventListener('dragend', function(e) { sbDragged = null; });
     return chip;
 }
