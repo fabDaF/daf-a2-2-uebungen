@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2.2 – 2063G Verben mit fester Präposition</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header .subtitle { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+
+.tab-banner { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+@media (max-width: 600px) { .tab-banner { max-height: 120px; } }
+
+.sec-inner { padding: 22px 24px 28px; }
+
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+
+/* ===== Tab 0: Entdecken ===== */
+.entdeck-intro { background: #f3e5f5; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; border-left: 5px solid #9c27b0; font-size: 0.97rem; line-height: 1.75; }
+.entdeck-intro h3 { color: #6a1b9a; margin-bottom: 10px; font-size: 1.05rem; }
+.hl { background: #e1bee7; border-radius: 4px; padding: 0 4px; color: #4a148c; font-weight: 700; }
+.mc-step { display: none; background: #fafbff; border-radius: 12px; padding: 18px 22px; margin-bottom: 16px; border: 1px solid #c5cae9; }
+.mc-step.active { display: block; }
+.mc-step h4 { color: #3949ab; margin-bottom: 12px; font-size: 0.97rem; }
+.mc-options { display: flex; flex-direction: column; gap: 8px; }
+.mc-btn { padding: 9px 16px; border: 2px solid #c5cae9; border-radius: 8px; background: #fff; cursor: pointer; text-align: left; font-size: 0.92rem; transition: all .2s; }
+.mc-btn:hover { border-color: #667eea; background: #f3f4ff; }
+.mc-btn.correct { border-color: #43a047; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.mc-btn.wrong { border-color: #e53935; background: #ffebee; color: #c62828; }
+.mc-feedback { margin-top: 10px; font-size: 0.88rem; min-height: 1.3em; }
+.mc-feedback.ok { color: #2e7d32; font-weight: 700; }
+.mc-feedback.err { color: #c62828; }
+.progress-dots { display: flex; gap: 8px; margin-bottom: 20px; }
+.pdot { width: 14px; height: 14px; border-radius: 50%; background: #c5cae9; transition: background .3s; }
+.pdot.done { background: #667eea; }
+.regel-karte { display: none; background: linear-gradient(135deg, #e8eaf6, #ede7f6); border-radius: 14px; padding: 22px 26px; border-left: 5px solid #3949ab; margin-top: 10px; }
+.regel-karte h3 { color: #1a237e; margin-bottom: 12px; font-size: 1.05rem; }
+.regel-karte ul { margin-left: 18px; }
+.regel-karte li { color: #333; line-height: 1.8; font-size: 0.95rem; }
+.regel-karte .rk-example { background: #fff; border-radius: 8px; padding: 10px 14px; margin-top: 12px; border-left: 3px solid #7c4dff; font-size: 0.9rem; color: #333; }
+.regel-karte .rk-example b { color: #3949ab; }
+
+/* ===== Tab 1: Zuordnung (Drag-Drop) ===== */
+.zuordnung-container { margin-top: 10px; }
+.chip-bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f0f0f8; border-radius: 10px; min-height: 56px; margin-bottom: 16px; align-items: flex-start; border: 1px dashed #bbb; }
+.chip { background: white; border: 2px solid #667eea; color: #667eea; padding: 8px 14px; border-radius: 20px; cursor: move; font-weight: 500; font-size: 0.9em; transition: all 0.2s; user-select: none; white-space: nowrap; }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; }
+.chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.selected { outline: 3px solid #667eea; outline-offset: 2px; }
+.zuordnung-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.zone-box { background: #f8f9ff; border-radius: 10px; padding: 16px; border: 1.5px solid #dde3ff; }
+.zone-title { font-weight: 700; color: white; margin-bottom: 10px; font-size: 1.0em; text-align: center; padding: 8px; border-radius: 8px; }
+.zone-title.akkusativ { background: #667eea; }
+.zone-title.dativ { background: #764ba2; }
+.drop-zone { min-height: 80px; border-radius: 10px; border: 2px dashed #c5cae9; padding: 10px; background: #fafbff; transition: background .2s; display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; align-content: flex-start; }
+.drop-zone.dragover { background: #e8eaff; border-color: #667eea; }
+
+/* ===== Tab 2: Lückentext ===== */
+.luecke-group { margin-bottom: 28px; }
+.luecke-title { font-weight: 700; color: #667eea; margin-bottom: 10px; font-size: 1.05em; }
+.luecke-bank { background: #f0f2ff; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.bank-word { background: #667eea; color: white; padding: 4px 12px; border-radius: 14px; font-size: 0.85em; font-weight: 500; }
+.luecke-item { background: #f8f9ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 8px; font-size: 0.95em; line-height: 1.7; }
+.luecke-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; width: 80px; text-align: center; font-size: 0.95em; font-family: inherit; outline: none; padding: 2px 4px; transition: border-color 0.2s; }
+.luecke-inp:focus { border-color: #667eea; }
+.luecke-inp.ok { border-color: #27ae60; color: #27ae60; font-weight: 600; }
+.luecke-inp.no { border-color: #e74c3c; color: #e74c3c; }
+
+/* ===== Tab 3: Satzbau ===== */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.satzbau-item { margin-bottom: 22px; }
+.sb-label { font-weight: 700; color: #667eea; margin-bottom: 6px; font-size: 0.95em; }
+
+/* ===== Tab 4: Multiple Choice ===== */
+.mc-exercise { margin-bottom: 16px; padding: 14px 18px; background: #f8f9ff; border-radius: 10px; border-left: 4px solid #667eea; }
+.mc-exercise .mc-question { font-size: 1.05em; line-height: 1.6; margin-bottom: 10px; color: #333; }
+.mc-exercise .mc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc-exercise .mc-opt { padding: 4px 14px; border: 1.5px solid #c5cae9; border-radius: 20px; background: #fff; cursor: pointer; font-size: 11px; letter-spacing: 0.3px; transition: all .2s; }
+.mc-exercise .mc-opt:hover { border-color: #667eea; background: #eef0ff; }
+.mc-exercise .mc-opt.correct { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
+.mc-exercise .mc-opt.wrong { border-color: #e74c3c; background: #ffebee; color: #c62828; }
+.mc-exercise .mc-opt.disabled { pointer-events: none; opacity: 0.6; }
+
+/* ===== Wortschatz ===== */
+.ws-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ws-item { background: #f8f9ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 12px 16px; }
+.ws-prompt { font-weight: 600; color: #667eea; margin-bottom: 6px; font-size: 1.05em; }
+.ws-fields { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ws-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.95em; transition: border-color 0.2s; padding: 2px 4px; }
+.ws-inp:focus { border-bottom-color: #667eea; }
+.ws-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.ws-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+
+/* ===== Footer ===== */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .zuordnung-zones { grid-template-columns: 1fr; }
+    .ws-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Verben mit fester Präposition</h1>
+        <p class="subtitle" style="font-family: Georgia, serif;">A2.2 – Lektion 2063G &nbsp;|&nbsp; Grammatik &amp; Üben</p>
+        <div class="big-emoji">🔗</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showSection(0)"><span class="nav-emoji">🔍</span><span class="nav-label">Entdecken</span></div>
+        <div class="nav-btn" onclick="showSection(1)"><span class="nav-emoji">🔀</span><span class="nav-label">Zuordnung</span></div>
+        <div class="nav-btn" onclick="showSection(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showSection(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showSection(4)"><span class="nav-emoji">🎯</span><span class="nav-label">Fragewörter</span></div>
+    </div>
+
+    <!-- ===== Tab 0: Entdecken ===== -->
+    <div class="section active" id="sec0">
+        <img class="tab-banner" src="https://images.pexels.com/photos/267669/pexels-photo-267669.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Magnifying glass discovery">
+        <div class="sec-inner">
+            <h2>🔍 Entdecken</h2>
+
+            <div class="entdeck-intro">
+                <h3>Lies die Sätze und achte auf die markierten Wörter:</h3>
+                <p>1. Ich <span class="hl">warte auf</span> den Bus.</p>
+                <p>2. Lisa <span class="hl">denkt an</span> ihren Urlaub.</p>
+                <p>3. Wir <span class="hl">lachen über</span> den Witz.</p>
+                <p>4. Er <span class="hl">träumt von</span> einem leckeren Abendessen.</p>
+                <p>5. Ich <span class="hl">erinnere mich an</span> meine Schulzeit.</p>
+                <p>6. Sie <span class="hl">freut sich auf</span> den Ausflug.</p>
+            </div>
+
+            <div class="progress-dots">
+                <div class="pdot" id="pdot0"></div>
+                <div class="pdot" id="pdot1"></div>
+                <div class="pdot" id="pdot2"></div>
+                <div class="pdot" id="pdot3"></div>
+            </div>
+
+            <div class="mc-step active" id="mc-step0">
+                <h4>Schritt 1: Was fällt dir bei den markierten Wörtern auf?</h4>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">Die Verben stehen immer am Satzende.</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,true)">Nach jedem Verb kommt eine feste Präposition (auf, an, über, von).</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">Die Präpositionen sind alle austauschbar.</button>
+                </div>
+                <div class="mc-feedback" id="mcfb0"></div>
+            </div>
+
+            <div class="mc-step" id="mc-step1">
+                <h4>Schritt 2: Vergleiche Satz 1 und 4. Welcher Kasus folgt nach der Präposition?</h4>
+                <p style="font-size:0.9em; color:#555; margin-bottom:10px;">Satz 1: Ich warte auf <em>den Bus</em>. (Akk.) &nbsp;|&nbsp; Satz 4: Er träumt von <em>einem Abendessen</em>. (Dat.)</p>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">Es ist immer Akkusativ.</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">Es ist immer Dativ.</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,true)">Der Kasus hängt vom Verb ab — manche brauchen Akkusativ, manche Dativ.</button>
+                </div>
+                <div class="mc-feedback" id="mcfb1"></div>
+            </div>
+
+            <div class="mc-step" id="mc-step2">
+                <h4>Schritt 3: Was passiert bei reflexiven Verben (Satz 5 und 6)?</h4>
+                <p style="font-size:0.9em; color:#555; margin-bottom:10px;">Satz 5: Ich <em>erinnere mich</em> an … &nbsp;|&nbsp; Satz 6: Sie <em>freut sich</em> auf …</p>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">Das Reflexivpronomen ersetzt die Präposition.</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,true)">Das Reflexivpronomen steht zwischen dem Verb und der Präposition.</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">Reflexive Verben haben keine Präposition.</button>
+                </div>
+                <div class="mc-feedback" id="mcfb2"></div>
+            </div>
+
+            <div class="mc-step" id="mc-step3">
+                <h4>Schritt 4: Kann man die Präposition frei wählen?</h4>
+                <p style="font-size:0.9em; color:#555; margin-bottom:10px;">Heißt es „Ich warte <em>auf</em> den Bus“ oder „Ich warte <em>für</em> den Bus“?</p>
+                <div class="mc-options">
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Ja, man kann jede Präposition verwenden.</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,true)">Nein, jedes Verb hat eine feste Präposition — man muss sie auswendig lernen.</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Nur bei reflexiven Verben ist die Präposition fest.</button>
+                </div>
+                <div class="mc-feedback" id="mcfb3"></div>
+            </div>
+
+            <div class="regel-karte" id="regelkarte">
+                <h3>📋 Regel: Präpositionalverben</h3>
+                <ul>
+                    <li><strong>Präpositionalverben</strong> haben eine Präposition, die fest dazugehört.</li>
+                    <li>Der <strong>Kasus</strong> (Akkusativ oder Dativ) hängt vom Verb ab und muss mitgelernt werden.</li>
+                    <li>Bei <strong>reflexiven Verben</strong> steht das Reflexivpronomen zwischen Verb und Präposition.</li>
+                    <li>Bei <strong>trennbaren Verben</strong> mit Präposition steht das Präfix am Satzende.</li>
+                </ul>
+                <div class="rk-example">
+                    <b>Akkusativ:</b> warten <b>auf</b>, denken <b>an</b>, lachen <b>über</b>, danken <b>für</b><br>
+                    <b>Dativ:</b> träumen <b>von</b>, beginnen <b>mit</b>, sich treffen <b>mit</b><br>
+                    <b>Reflexiv + Akk:</b> sich erinnern <b>an</b>, sich freuen <b>auf</b>, sich vorbereiten <b>auf</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Tab 1: Zuordnung ===== -->
+    <div class="section" id="sec1">
+        <img class="tab-banner" src="https://images.pexels.com/photos/6238120/pexels-photo-6238120.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Sorting categories">
+        <div class="sec-inner">
+            <h2>🔀 Zuordnung</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="showZuoLoesung()">Lösungen</button>
+                    <button class="btn" onclick="resetZuordnung(); resetTimer(1);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-1">00:00</span></span>
+                    <span>🏆 <span id="best-1">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ordne die Verben der richtigen Kategorie zu: <strong>Akkusativ</strong> oder <strong>Dativ</strong>. Ziehe die Chips oder klicke darauf.
+            </div>
+            <div class="zuordnung-container">
+                <div class="chip-bank" id="zuoBank"></div>
+                <div class="zuordnung-zones">
+                    <div class="zone-box">
+                        <div class="zone-title akkusativ">Akkusativ</div>
+                        <div class="drop-zone" id="zoneAkk" data-cat="akkusativ"></div>
+                    </div>
+                    <div class="zone-box">
+                        <div class="zone-title dativ">Dativ</div>
+                        <div class="drop-zone" id="zoneDat" data-cat="dativ"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Tab 2: Lückentext ===== -->
+    <div class="section" id="sec2">
+        <img class="tab-banner" src="https://images.pexels.com/photos/3184639/pexels-photo-3184639.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Writing and studying">
+        <div class="sec-inner">
+            <h2>✏️ Lückentext</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="showLueckenLoesung()">Lösungen</button>
+                    <button class="btn" onclick="resetLuecken(); resetTimer(2);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-2">00:00</span></span>
+                    <span>🏆 <span id="best-2">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Setze die fehlende Präposition ein. Jedes Verb hat eine feste Präposition!
+            </div>
+            <div class="luecke-bank">
+                <span class="bank-word">auf</span>
+                <span class="bank-word">an</span>
+                <span class="bank-word">über</span>
+                <span class="bank-word">für</span>
+                <span class="bank-word">von</span>
+                <span class="bank-word">mit</span>
+            </div>
+            <div id="lueckenContainer"></div>
+        </div>
+    </div>
+
+    <!-- ===== Tab 3: Satzbau ===== -->
+    <div class="section" id="sec3">
+        <img class="tab-banner" src="https://images.pexels.com/photos/6153354/pexels-photo-6153354.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Puzzle pieces building">
+        <div class="sec-inner">
+            <h2>🧩 Satzbau</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="sbShowAll()">Lösungen</button>
+                    <button class="btn" onclick="resetSatzbau(); resetTimer(3);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-3">00:00</span></span>
+                    <span>🏆 <span id="best-3">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ordne die Wörter zu einem korrekten Satz. Ziehe die Chips in die Satzzeile oder klicke, um sie zu verschieben.
+            </div>
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- ===== Tab 4: Fragewörter (MC) ===== -->
+    <div class="section" id="sec4">
+        <img class="tab-banner" src="https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Question marks and thinking">
+        <div class="sec-inner">
+            <h2>🎯 Fragewörter</h2>
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="showMcLoesung()">Lösungen</button>
+                    <button class="btn" onclick="resetMcTab(); resetTimer(4);">Neu starten</button>
+                </div>
+                <div class="timer-display">
+                    <span>⏱ <span id="timer-4">00:00</span></span>
+                    <span>🏆 <span id="best-4">--:--</span></span>
+                </div>
+            </div>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Wähle das richtige Fragewort für jeden Satz. Bei Personen: Präposition + wen/wem. Bei Sachen: wo + Präposition.
+            </div>
+            <div id="mcContainer"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+/* ===== Navigation ===== */
+function showSection(idx) {
+    document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===idx); });
+    document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===idx); });
+}
+
+/* ===== Timer System ===== */
+var TIMER_PREFIX = '2063G-best-';
+var timerStarted = [false,false,false,false,false];
+var timerRunning = [false,false,false,false,false];
+var timerSeconds = [0,0,0,0,0];
+var timerIntervals = [null,null,null,null,null];
+
+function timerAutoStart(n) {
+    if (timerStarted[n]) return;
+    timerStarted[n] = true;
+    timerRunning[n] = true;
+    timerIntervals[n] = setInterval(function() {
+        timerSeconds[n]++;
+        var el = document.getElementById('timer-' + n);
+        if (el) el.textContent = fmtTime(timerSeconds[n]);
+    }, 1000);
+}
+function timerStop(n) {
+    if (!timerRunning[n]) return;
+    clearInterval(timerIntervals[n]);
+    timerRunning[n] = false;
+    var best = parseInt(localStorage.getItem(TIMER_PREFIX + n) || '999999');
+    if (timerSeconds[n] > 0 && timerSeconds[n] < best) {
+        localStorage.setItem(TIMER_PREFIX + n, timerSeconds[n]);
+        var el = document.getElementById('best-' + n);
+        if (el) el.textContent = fmtTime(timerSeconds[n]);
+    }
+}
+function resetTimer(n) {
+    clearInterval(timerIntervals[n]);
+    timerRunning[n] = false;
+    timerStarted[n] = false;
+    timerSeconds[n] = 0;
+    var el = document.getElementById('timer-' + n);
+    if (el) el.textContent = '00:00';
+}
+function fmtTime(s) {
+    return Math.floor(s/60) + ':' + (s%60<10?'0':'') + (s%60);
+}
+function loadBestTimes() {
+    for (var i = 1; i <= 4; i++) {
+        var v = localStorage.getItem(TIMER_PREFIX + i);
+        if (v) {
+            var el = document.getElementById('best-' + i);
+            if (el) el.textContent = fmtTime(parseInt(v));
+        }
+    }
+}
+
+/* ===== Tab 0: MC Entdecken ===== */
+var mcDone = [false, false, false, false];
+function mcCheck(step, btn, correct) {
+    var btns = btn.parentElement.querySelectorAll('.mc-btn');
+    btns.forEach(function(b) { b.disabled = true; b.classList.remove('correct','wrong'); });
+    var fb = document.getElementById('mcfb' + step);
+    if (correct) {
+        btn.classList.add('correct');
+        fb.textContent = '\u2713 Richtig! Weiter zum nächsten Schritt.';
+        fb.className = 'mc-feedback ok';
+        mcDone[step] = true;
+        document.getElementById('pdot' + step).classList.add('done');
+        setTimeout(function() {
+            var next = document.getElementById('mc-step' + (step + 1));
+            if (next) { next.classList.add('active'); }
+            else { document.getElementById('regelkarte').style.display = 'block'; }
+        }, 700);
+    } else {
+        btn.classList.add('wrong');
+        fb.textContent = '\u2717 Nicht ganz — schau nochmal genau hin.';
+        fb.className = 'mc-feedback err';
+        setTimeout(function() {
+            btns.forEach(function(b) { b.disabled = false; b.classList.remove('wrong','correct'); });
+            fb.textContent = ''; fb.className = 'mc-feedback';
+        }, 1400);
+    }
+}
+
+/* ===== Tab 1: Zuordnung ===== */
+var ZUORDNUNG_DATA = [
+    { verb: 'warten auf', cat: 'akkusativ' },
+    { verb: 'denken an', cat: 'akkusativ' },
+    { verb: 'lachen über', cat: 'akkusativ' },
+    { verb: 'danken für', cat: 'akkusativ' },
+    { verb: 'sich erinnern an', cat: 'akkusativ' },
+    { verb: 'sich freuen auf', cat: 'akkusativ' },
+    { verb: 'sich vorbereiten auf', cat: 'akkusativ' },
+    { verb: 'achten auf', cat: 'akkusativ' },
+    { verb: 'träumen von', cat: 'dativ' },
+    { verb: 'beginnen mit', cat: 'dativ' },
+    { verb: 'sich treffen mit', cat: 'dativ' },
+    { verb: 'sprechen mit', cat: 'dativ' },
+    { verb: 'sprechen über', cat: 'akkusativ' },
+    { verb: 'sich beschäftigen mit', cat: 'dativ' }
+];
+
+var draggedChip = null;
+var selectedChip = null;
+
+function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+}
+
+function initZuordnung() {
+    var bank = document.getElementById('zuoBank');
+    bank.innerHTML = '';
+    document.getElementById('zoneAkk').innerHTML = '';
+    document.getElementById('zoneDat').innerHTML = '';
+    selectedChip = null;
+    var shuffled = shuffle(ZUORDNUNG_DATA);
+    shuffled.forEach(function(item) {
+        var chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = item.verb;
+        chip.dataset.cat = item.cat;
+        chip.draggable = true;
+        chip.addEventListener('dragstart', function(e) {
+            draggedChip = chip;
+            e.dataTransfer.setData('text/plain', '');
+            setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+        });
+        chip.addEventListener('dragend', function() {
+            chip.style.opacity = '';
+            draggedChip = null;
+            colorAllZuoChips();
+        });
+        chip.addEventListener('click', function() {
+            if (chip.classList.contains('selected')) {
+                chip.classList.remove('selected');
+                selectedChip = null;
+                return;
+            }
+            document.querySelectorAll('#sec1 .chip.selected').forEach(function(c) { c.classList.remove('selected'); });
+            chip.classList.add('selected');
+            selectedChip = chip;
+        });
+        bank.appendChild(chip);
+    });
+
+    var zones = document.querySelectorAll('#sec1 .drop-zone');
+    zones.forEach(function(zone) {
+        zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+            if (!draggedChip) return;
+            zone.appendChild(draggedChip);
+            draggedChip = null;
+            timerAutoStart(1);
+            colorAllZuoChips();
+        });
+        zone.addEventListener('click', function() {
+            if (selectedChip) {
+                zone.appendChild(selectedChip);
+                selectedChip.classList.remove('selected');
+                selectedChip = null;
+                timerAutoStart(1);
+                colorAllZuoChips();
+            }
+        });
+    });
+
+    bank.addEventListener('dragover', function(e) { e.preventDefault(); });
+    bank.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!draggedChip) return;
+        bank.appendChild(draggedChip);
+        draggedChip = null;
+        colorAllZuoChips();
+    });
+    bank.addEventListener('click', function(e) {
+        if (e.target === bank && selectedChip) {
+            bank.appendChild(selectedChip);
+            selectedChip.classList.remove('selected');
+            selectedChip = null;
+            colorAllZuoChips();
+        }
+    });
+}
+
+function colorAllZuoChips() {
+    document.querySelectorAll('#sec1 .chip').forEach(function(chip) {
+        var zone = chip.closest('.drop-zone');
+        chip.classList.remove('correct', 'incorrect');
+        if (zone) {
+            chip.classList.add(chip.dataset.cat === zone.dataset.cat ? 'correct' : 'incorrect');
+        }
+    });
+    checkZuoAllDone();
+}
+
+function checkZuoAllDone() {
+    var bank = document.getElementById('zuoBank');
+    if (bank.querySelectorAll('.chip').length > 0) return;
+    var allOk = true;
+    document.querySelectorAll('#sec1 .drop-zone .chip').forEach(function(c) {
+        if (!c.classList.contains('correct')) allOk = false;
+    });
+    if (allOk) timerStop(1);
+}
+
+function showZuoLoesung() {
+    ZUORDNUNG_DATA.forEach(function(item) {
+        var chips = document.querySelectorAll('#sec1 .chip');
+        chips.forEach(function(c) {
+            if (c.textContent === item.verb) {
+                var zone = document.getElementById(item.cat === 'akkusativ' ? 'zoneAkk' : 'zoneDat');
+                zone.appendChild(c);
+            }
+        });
+    });
+    colorAllZuoChips();
+}
+
+function resetZuordnung() { initZuordnung(); }
+
+/* ===== Tab 2: Lückentext ===== */
+var LUECKEN_DATA = [
+    { text: '1. Ich warte schon die ganze Zeit ___ dich!', ans: 'auf' },
+    { text: '2. Ich bereite mich ___ meinen Geburtstag vor.', ans: 'auf' },
+    { text: '3. Du denkst ganz schön oft ___ ihn.', ans: 'an' },
+    { text: '4. Ständig träume ich ___ gruseligen Gestalten.', ans: 'von' },
+    { text: '5. Morgen trifft er sich ___ seinem besten Freund.', ans: 'mit' },
+    { text: '6. Ich erinnere mich gern ___ meinen letzten Urlaub.', ans: 'an' },
+    { text: '7. Ständig lachen fremde Menschen ___ mich.', ans: 'über' },
+    { text: '8. Ich wollte dir ___ die Einladung danken.', ans: 'für' },
+    { text: '9. Lisa freut sich ___ die Sommerferien.', ans: 'auf' },
+    { text: '10. Wir beginnen ___ der Lektion.', ans: 'mit' },
+    { text: '11. Er achtet immer ___ seine Gesundheit.', ans: 'auf' },
+    { text: '12. Max spricht ___ der Lehrerin.', ans: 'mit' }
+];
+
+function initLuecken() {
+    var container = document.getElementById('lueckenContainer');
+    container.innerHTML = '';
+    LUECKEN_DATA.forEach(function(item) {
+        var div = document.createElement('div');
+        div.className = 'luecke-item';
+        var parts = item.text.split('___');
+        var span1 = document.createTextNode(parts[0]);
+        var inp = document.createElement('input');
+        inp.type = 'text';
+        inp.className = 'luecke-inp';
+        inp.dataset.ans = item.ans;
+        inp.setAttribute('autocomplete', 'off');
+        inp.addEventListener('input', function() {
+            liveCheck(inp);
+            timerAutoStart(2);
+            checkLueckenAllDone();
+        });
+        var span2 = document.createTextNode(parts[1] || '');
+        div.appendChild(span1);
+        div.appendChild(inp);
+        div.appendChild(span2);
+        container.appendChild(div);
+    });
+}
+
+function liveCheck(inp) {
+    var val = inp.value.trim();
+    var ans = inp.dataset.ans;
+    var alts = inp.dataset.alts ? inp.dataset.alts.split('|') : [];
+    var allValid = [ans].concat(alts);
+    inp.classList.remove('ok', 'no');
+    if (!val) return;
+    /* Case-insensitive for prepositions (all lowercase answers) */
+    var ch0 = ans.charAt(0);
+    var caseSensitive = (ch0 >= 'A' && ch0 <= 'Z') || ch0 === '\u00c4' || ch0 === '\u00d6' || ch0 === '\u00dc';
+    for (var i = 0; i < allValid.length; i++) {
+        if (caseSensitive) {
+            if (val === allValid[i]) { inp.classList.add('ok'); return; }
+        } else {
+            var cmpVal = val.replace(/./g, function(c) {
+                return (c >= 'A' && c <= 'Z') ? String.fromCharCode(c.charCodeAt(0) + 32) : c === '\u00c4' ? '\u00e4' : c === '\u00d6' ? '\u00f6' : c === '\u00dc' ? '\u00fc' : c;
+            });
+            var cmpA = allValid[i].replace(/./g, function(c) {
+                return (c >= 'A' && c <= 'Z') ? String.fromCharCode(c.charCodeAt(0) + 32) : c === '\u00c4' ? '\u00e4' : c === '\u00d6' ? '\u00f6' : c === '\u00dc' ? '\u00fc' : c;
+            });
+            if (cmpVal === cmpA) { inp.classList.add('ok'); return; }
+        }
+    }
+    /* Check prefix */
+    for (var j = 0; j < allValid.length; j++) {
+        var a = allValid[j];
+        if (caseSensitive) {
+            if (a.indexOf(val) === 0) return;
+        } else {
+            var cv = val.replace(/./g, function(c) {
+                return (c >= 'A' && c <= 'Z') ? String.fromCharCode(c.charCodeAt(0) + 32) : c === '\u00c4' ? '\u00e4' : c === '\u00d6' ? '\u00f6' : c === '\u00dc' ? '\u00fc' : c;
+            });
+            var ca = a.replace(/./g, function(c) {
+                return (c >= 'A' && c <= 'Z') ? String.fromCharCode(c.charCodeAt(0) + 32) : c === '\u00c4' ? '\u00e4' : c === '\u00d6' ? '\u00f6' : c === '\u00dc' ? '\u00fc' : c;
+            });
+            if (ca.indexOf(cv) === 0) return;
+        }
+    }
+    inp.classList.add('no');
+}
+
+function checkLueckenAllDone() {
+    var inputs = document.querySelectorAll('#sec2 .luecke-inp');
+    var allOk = inputs.length > 0 && Array.from(inputs).every(function(i) { return i.classList.contains('ok'); });
+    if (allOk) timerStop(2);
+}
+
+function showLueckenLoesung() {
+    document.querySelectorAll('#sec2 .luecke-inp').forEach(function(inp) {
+        inp.value = inp.dataset.ans;
+        inp.classList.remove('no');
+        inp.classList.add('ok');
+    });
+    timerStop(2);
+}
+
+function resetLuecken() {
+    document.querySelectorAll('#sec2 .luecke-inp').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('ok', 'no');
+    });
+}
+
+/* ===== Tab 3: Satzbau ===== */
+var sbDragged = null;
+
+var satzbauData = [
+    { parts: ['ich', 'warte', 'auf', 'den', 'Bus'], valid: [['ich', 'warte', 'auf', 'den', 'Bus']], punct: '.' },
+    { parts: ['Lisa', 'denkt', 'an', 'ihren', 'Urlaub'], valid: [['Lisa', 'denkt', 'an', 'ihren', 'Urlaub']], punct: '.' },
+    { parts: ['ich', 'erinnere', 'mich', 'an', 'die', 'Aufgabe'], valid: [['ich', 'erinnere', 'mich', 'an', 'die', 'Aufgabe']], punct: '.' },
+    { parts: ['Jack', 'träumt', 'von', 'einem', 'Urlaub', 'am', 'Strand'], valid: [['Jack', 'träumt', 'von', 'einem', 'Urlaub', 'am', 'Strand']], punct: '.' },
+    { parts: ['ich', 'spreche', 'mit', 'dir'], valid: [['ich', 'spreche', 'mit', 'dir']], punct: '.' },
+    { parts: ['ich', 'bereite', 'mich', 'auf', 'das', 'Unwetter', 'vor'], valid: [['ich', 'bereite', 'mich', 'auf', 'das', 'Unwetter', 'vor']], punct: '.' },
+    { parts: ['wir', 'lachen', 'über', 'den', 'Witz'], valid: [['wir', 'lachen', 'über', 'den', 'Witz']], punct: '.' },
+    { parts: ['ich', 'treffe', 'mich', 'heute', 'Abend', 'mit', 'Lisa'], valid: [['ich', 'treffe', 'mich', 'heute', 'Abend', 'mit', 'Lisa']], punct: '.' }
+];
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width / 2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        if (orig === ',' || orig === ';') return;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase() && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        if (isProper) { c.textContent = orig; }
+        else { c.textContent = (i === 0) ? sbCapitalize(orig) : orig; }
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', function(e) {
+        sbDragged = chip;
+        e.dataTransfer.setData('text/plain', '');
+        setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function() {
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    if (word === ',' || word === ';') chip.classList.add('punct-chip');
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e) {
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) {
+            zone.insertBefore(sbDragged, cursor);
+            zone.removeChild(cursor);
+        } else {
+            zone.appendChild(sbDragged);
+        }
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c) { return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v) {
+        return JSON.stringify(v) === JSON.stringify(order);
+    });
+    chips.forEach(function(c) {
+        c.classList.remove('correct', 'incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('correct', 'incorrect'); });
+        row.classList.remove('correct', 'incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function() {
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '✓ Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '✗ Falsche Reihenfolge – verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i) {
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = {};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c) { allChips[c.dataset.orig] = c; });
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    solution.forEach(function(word, i) {
+        var chip = allChips[word];
+        if (chip) {
+            if (word !== ',' && word !== ';') {
+                chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+            }
+            chip.classList.remove('correct', 'incorrect');
+            row.appendChild(chip);
+        }
+    });
+    setTimeout(function() { sbCheckAuto(idx); }, 100);
+}
+
+function sbShowAll() {
+    for (var i = 0; i < satzbauData.length; i++) sbShowSolution(i);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row = document.getElementById('sb-row-' + idx);
+    var fb = document.getElementById('sb-fb-' + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    row.classList.remove('correct', 'incorrect');
+    fb.textContent = ''; fb.className = 'satzbau-feedback';
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+    }
+    parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx) {
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx + 1);
+        item.appendChild(lbl);
+        var bank = document.createElement('div');
+        bank.className = 'chips-container';
+        bank.id = 'sb-bank-' + idx;
+        var row = document.createElement('div');
+        row.className = 'sentence-builder';
+        row.id = 'sb-row-' + idx;
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback';
+        fb.id = 'sb-fb-' + idx;
+        var parts = ex.parts.slice();
+        for (var i = parts.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = parts[i]; parts[i] = parts[j]; parts[j] = tmp;
+        }
+        parts.forEach(function(word) { bank.appendChild(sbMakeChip(word)); });
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn';
+        solveBtn.textContent = 'Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function() { sbShowSolution(parseInt(this.getAttribute('data-idx'))); });
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn';
+        resetBtn.textContent = '↺ Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function() { sbResetOne(parseInt(this.getAttribute('data-idx'))); });
+        btnRow.appendChild(solveBtn);
+        btnRow.appendChild(resetBtn);
+        item.appendChild(bank);
+        item.appendChild(row);
+        item.appendChild(fb);
+        item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function resetSatzbau() { initSatzbau(); }
+
+/* ===== Tab 4: Fragewörter (MC) ===== */
+var MC_DATA = [
+    { q: 'Lisa wartet auf ihren Freund.', opts: ['Auf wen', 'Worauf', 'Wofür', 'Mit wem'], ans: 'Auf wen' },
+    { q: 'Ich denke an meine Prüfung.', opts: ['An wen', 'Woran', 'Worüber', 'Wovon'], ans: 'Woran' },
+    { q: 'Er lacht über seinen Lehrer.', opts: ['Worüber', 'Über wen', 'Für wen', 'Wovon'], ans: 'Über wen' },
+    { q: 'Wir träumen von einem neuen Auto.', opts: ['Von wem', 'Wovon', 'Worauf', 'Womit'], ans: 'Wovon' },
+    { q: 'Sie erinnert sich an ihre Großmutter.', opts: ['Woran', 'An wen', 'Auf wen', 'Für wen'], ans: 'An wen' },
+    { q: 'Ich danke dir für das Geschenk.', opts: ['Für wen', 'Wofür', 'Womit', 'Worauf'], ans: 'Wofür' },
+    { q: 'Max trifft sich mit seinem Bruder.', opts: ['Womit', 'Mit wem', 'Von wem', 'Worüber'], ans: 'Mit wem' },
+    { q: 'Sie bereitet sich auf die Reise vor.', opts: ['Auf wen', 'Worauf', 'Wofür', 'Womit'], ans: 'Worauf' },
+    { q: 'Er beginnt mit der Arbeit.', opts: ['Womit', 'Mit wem', 'Wovon', 'Worauf'], ans: 'Womit' },
+    { q: 'Ich achte auf das Wetter.', opts: ['Auf wen', 'Worauf', 'Woran', 'Wofür'], ans: 'Worauf' },
+    { q: 'Lisa denkt an Jack.', opts: ['Woran', 'An wen', 'Für wen', 'Von wem'], ans: 'An wen' },
+    { q: 'Wir sprechen über den Film.', opts: ['Über wen', 'Worüber', 'Wovon', 'Womit'], ans: 'Worüber' }
+];
+
+function initMcTab() {
+    var container = document.getElementById('mcContainer');
+    container.innerHTML = '';
+    MC_DATA.forEach(function(item, idx) {
+        var ex = document.createElement('div');
+        ex.className = 'mc-exercise';
+        var q = document.createElement('div');
+        q.className = 'mc-question';
+        q.textContent = (idx + 1) + '. ' + item.q + ' → ___?';
+        ex.appendChild(q);
+        var opts = document.createElement('div');
+        opts.className = 'mc-opts';
+        var shuffledOpts = shuffle(item.opts);
+        shuffledOpts.forEach(function(opt) {
+            var btn = document.createElement('button');
+            btn.className = 'mc-opt';
+            btn.textContent = opt;
+            btn.addEventListener('click', function() {
+                if (btn.classList.contains('disabled')) return;
+                timerAutoStart(4);
+                var allBtns = opts.querySelectorAll('.mc-opt');
+                if (opt === item.ans) {
+                    btn.classList.add('correct');
+                    allBtns.forEach(function(b) { b.classList.add('disabled'); });
+                    checkMcAllDone();
+                } else {
+                    btn.classList.add('wrong');
+                    setTimeout(function() { btn.classList.remove('wrong'); }, 800);
+                }
+            });
+            opts.appendChild(btn);
+        });
+        ex.appendChild(opts);
+        container.appendChild(ex);
+    });
+}
+
+function checkMcAllDone() {
+    var exercises = document.querySelectorAll('#sec4 .mc-exercise');
+    var allDone = Array.from(exercises).every(function(ex) {
+        return ex.querySelector('.mc-opt.correct');
+    });
+    if (allDone) timerStop(4);
+}
+
+function showMcLoesung() {
+    var exercises = document.querySelectorAll('#sec4 .mc-exercise');
+    exercises.forEach(function(ex, idx) {
+        var btns = ex.querySelectorAll('.mc-opt');
+        btns.forEach(function(b) {
+            b.classList.remove('wrong');
+            b.classList.add('disabled');
+            if (b.textContent === MC_DATA[idx].ans) {
+                b.classList.add('correct');
+            }
+        });
+    });
+    timerStop(4);
+}
+
+function resetMcTab() {
+    initMcTab();
+}
+
+/* ===== Init ===== */
+initZuordnung();
+initLuecken();
+initSatzbau();
+initMcTab();
+loadBestTimes();
+</script>
+</body>
+</html>
