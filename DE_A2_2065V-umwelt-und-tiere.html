@@ -38,9 +38,8 @@ body {
 .nav-label { font-size: 0.72rem; margin-top: 2px; }
 
 /* ===== SECTIONS ===== */
-.section { display: none; padding: 0 24px 32px; }
+.section { display: none; }
 .section.active { display: block; }
-.sec-inner { padding-top: 0; }
 
 /* ===== TAB BANNER ===== */
 .tab-banner {
@@ -59,37 +58,11 @@ body {
 }
 
 /* ===== CONTROL BAR / TIMER ===== */
-.timer-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-}
-.timer-display {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #555;
-  background: #f0f0f8;
-  padding: 5px 14px;
-  border-radius: 20px;
-  border: 1px solid #ddd;
-  min-width: 120px;
-  text-align: center;
-}
-.btn {
-  padding: 6px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: background .2s;
-}
-.btn-reset { background: #e8e8f0; color: #444; }
-.btn-reset:hover { background: #d0d0e0; }
-.btn-show  { background: #764ba2; color: #fff; }
-.btn-show:hover  { background: #5a3880; }
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
 
 /* ===== SECTION TITLE ===== */
 .section-title {
@@ -271,29 +244,19 @@ body {
 .chip.punct-chip.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
 
 /* ===== WORTSCHATZ ===== */
-.ws-card {
-  background: #fafafa;
-  border: 2px solid #e0d8f8;
-  border-radius: 10px;
-  padding: 16px 18px;
-  margin-bottom: 14px;
-}
-.ws-english { font-size: 1.1rem; font-weight: 700; color: #444; margin-bottom: 10px; }
-.ws-inputs { display: flex; gap: 8px; flex-wrap: wrap; }
-.ws-inp {
-  padding: 8px 12px;
-  border: 2px solid #ccc;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  transition: border-color .2s;
-}
-.ws-inp:focus { outline: none; border-color: #764ba2; }
-.ws-inp.correct { border-color: #2d8a4e; background: #eaf7f0; }
-.ws-inp.wrong   { border-color: #c0392b; background: #fdecea; }
-.ws-inp-artikel { width: 70px; } /* artikel width: 70px */
-.ws-inp-wort    { width: 180px; }
-.ws-inp-plural  { width: 150px; }
-.ws-fb { font-size: 0.82rem; margin-top: 6px; min-height: 18px; }
+.vocab-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vocab-en { font-weight: 600; color: #764ba2; min-width: 140px; font-size: 0.95em; }
+.vocab-arrow { color: #ccc; font-size: 1.2em; }
+.vocab-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vocab-inputs input { border: none; border-bottom: 2px solid #667eea; background: #fff; padding: 4px 8px; font-family: inherit; font-size: 0.95em; outline: none; transition: all 0.2s; }
+.vocab-inputs input:focus { border-bottom-color: #764ba2; background: #f0f7ff; }
+.vocab-inputs input.correct { border-bottom-color: #27ae60; background: #e8f8f0; }
+.vocab-inputs input.wrong { border-bottom-color: #e74c3c; background: #fdeaea; }
+.vocab-inputs input.art { width: 70px; }
+.vocab-inputs input.wort { width: 130px; }
+.vocab-inputs input.plural { width: 140px; }
+.vocab-hint { color: #27ae60; font-weight: 600; font-size: 0.8em; margin-left: 6px; }
+@media (max-width: 600px) { .vocab-item { flex-direction: column; align-items: flex-start; } }
 
 /* ===== SCORE ===== */
 .score-box {
@@ -331,26 +294,26 @@ body {
   </div>
 
   <!-- NAV -->
-  <nav class="nav" role="tablist">
-    <button class="nav-btn active" onclick="showTab(0)" role="tab">
+  <div class="nav">
+    <div class="nav-btn active" onclick="showSection(0)">
       <span class="nav-emoji">📸</span><span class="nav-label">Wörter</span>
-    </button>
-    <button class="nav-btn" onclick="showTab(1)" role="tab">
+    </div>
+    <div class="nav-btn" onclick="showSection(1)">
       <span class="nav-emoji">💬</span><span class="nav-label">Redemittel</span>
-    </button>
-    <button class="nav-btn" onclick="showTab(2)" role="tab">
+    </div>
+    <div class="nav-btn" onclick="showSection(2)">
       <span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span>
-    </button>
-    <button class="nav-btn" onclick="showTab(3)" role="tab">
+    </div>
+    <div class="nav-btn" onclick="showSection(3)">
       <span class="nav-emoji">📖</span><span class="nav-label">Text &amp; Fragen</span>
-    </button>
-    <button class="nav-btn" onclick="showTab(4)" role="tab">
+    </div>
+    <div class="nav-btn" onclick="showSection(4)">
       <span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span>
-    </button>
-    <button class="nav-btn" onclick="showTab(5)" role="tab">
+    </div>
+    <div class="nav-btn" onclick="showSection(5)">
       <span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span>
-    </button>
-  </nav>
+    </div>
+  </div><!-- /nav -->
 
   <!-- ============================================================ -->
   <!-- TAB 0 · WÖRTER (Vokabelkarten) -->
@@ -359,10 +322,15 @@ body {
     <img class="tab-banner"
       src="https://images.pexels.com/photos/247431/pexels-photo-247431.jpeg?auto=compress&cs=tinysrgb&w=800"
       alt="Natur und Tiere in der Wildnis">
-    <div class="sec-inner">
-      <div class="timer-bar">
-        <div class="timer-display" id="timer-0">⏱ 00:00 | 🏆 <span id="best-0">--:--</span></div>
-        <button class="btn btn-reset" onclick="resetTimer(0)">↺ Reset</button>
+    <div style="padding: 28px 30px;">
+      <div class="control-bar">
+        <div class="btn-row">
+          <button class="btn btn-reset" onclick="resetTimer(0);">Neu starten</button>
+        </div>
+        <div class="timer-display">
+          <span class="current-time">⏱ <span id="timer-0">00:00</span></span>
+          <span class="best-time">🏆 <span id="best-0">--:--</span></span>
+        </div>
       </div>
       <h2 class="section-title">📸 Wörter — Die Umwelt und die Tiere</h2>
       <div class="vocab-grid">
@@ -508,10 +476,15 @@ body {
     <img class="tab-banner"
       src="https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&cs=tinysrgb&w=800"
       alt="Zwei Personen diskutieren über Umwelt">
-    <div class="sec-inner">
-      <div class="timer-bar">
-        <div class="timer-display" id="timer-1">⏱ 00:00 | 🏆 <span id="best-1">--:--</span></div>
-        <button class="btn btn-reset" onclick="resetTimer(1)">↺ Reset</button>
+    <div style="padding: 28px 30px;">
+      <div class="control-bar">
+        <div class="btn-row">
+          <button class="btn btn-reset" onclick="resetTimer(1);">Neu starten</button>
+        </div>
+        <div class="timer-display">
+          <span class="current-time">⏱ <span id="timer-1">00:00</span></span>
+          <span class="best-time">🏆 <span id="best-1">--:--</span></span>
+        </div>
       </div>
       <h2 class="section-title">💬 Redemittel — Über Umwelt und Tiere sprechen</h2>
 
@@ -553,10 +526,16 @@ body {
     <img class="tab-banner"
       src="https://images.pexels.com/photos/159751/book-address-book-learning-read-159751.jpeg?auto=compress&cs=tinysrgb&w=800"
       alt="Schreibtisch mit Stift und Notizbuch">
-    <div class="sec-inner">
-      <div class="timer-bar">
-        <div class="timer-display" id="timer-2">⏱ 00:00 | 🏆 <span id="best-2">--:--</span></div>
-        <button class="btn btn-reset" onclick="resetTimer(2)">↺ Reset</button>
+    <div style="padding: 28px 30px;">
+      <div class="control-bar">
+        <div class="btn-row">
+          <button class="btn btn-show" onclick="showLtLoesung()">Lösungen</button>
+          <button class="btn btn-reset" onclick="resetLT(); resetTimer(2);">Neu starten</button>
+        </div>
+        <div class="timer-display">
+          <span class="current-time">⏱ <span id="timer-2">00:00</span></span>
+          <span class="best-time">🏆 <span id="best-2">--:--</span></span>
+        </div>
       </div>
       <h2 class="section-title">✏️ Lückentext — Umwelt und Tiere</h2>
       <p style="font-size:0.88rem;color:#777;margin-bottom:16px;">Fülle die Lücken aus. Die Antwort wird sofort geprüft.</p>
@@ -583,10 +562,15 @@ body {
     <img class="tab-banner"
       src="https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg?auto=compress&cs=tinysrgb&w=800"
       alt="Lesebrille auf einem Buch, Diskussion">
-    <div class="sec-inner">
-      <div class="timer-bar">
-        <div class="timer-display" id="timer-3">⏱ 00:00 | 🏆 <span id="best-3">--:--</span></div>
-        <button class="btn btn-reset" onclick="resetTimer(3)">↺ Reset</button>
+    <div style="padding: 28px 30px;">
+      <div class="control-bar">
+        <div class="btn-row">
+          <button class="btn btn-reset" onclick="resetRF(); resetTimer(3);">Neu starten</button>
+        </div>
+        <div class="timer-display">
+          <span class="current-time">⏱ <span id="timer-3">00:00</span></span>
+          <span class="best-time">🏆 <span id="best-3">--:--</span></span>
+        </div>
       </div>
       <h2 class="section-title">📖 Text &amp; Fragen — Unser ökologischer Fußabdruck</h2>
 
@@ -650,10 +634,16 @@ body {
     <img class="tab-banner"
       src="https://images.pexels.com/photos/3758105/pexels-photo-3758105.jpeg?auto=compress&cs=tinysrgb&w=800"
       alt="Puzzle Bausteine Hände sortieren">
-    <div class="sec-inner">
-      <div class="timer-bar">
-        <div class="timer-display" id="timer-4">⏱ 00:00 | 🏆 <span id="best-4">--:--</span></div>
-        <button class="btn btn-reset" onclick="resetTimer(4)">↺ Reset</button>
+    <div style="padding: 28px 30px;">
+      <div class="control-bar">
+        <div class="btn-row">
+          <button class="btn btn-show" onclick="sbShowAllSolutions()">Lösungen</button>
+          <button class="btn btn-reset" onclick="resetSatzbau(); resetTimer(4);">Neu starten</button>
+        </div>
+        <div class="timer-display">
+          <span class="current-time">⏱ <span id="timer-4">00:00</span></span>
+          <span class="best-time">🏆 <span id="best-4">--:--</span></span>
+        </div>
       </div>
       <h2 class="section-title">🧩 Satzbau — Sätze neu ordnen</h2>
       <p style="font-size:0.88rem;color:#777;margin-bottom:18px;">Ziehe die Wörter in die richtige Reihenfolge.</p>
@@ -669,16 +659,22 @@ body {
     <img class="tab-banner"
       src="https://images.pexels.com/photos/267669/pexels-photo-267669.jpeg?auto=compress&cs=tinysrgb&w=800"
       alt="Wörterbuch Bücher Alphabet Lernen">
-    <div class="sec-inner">
-      <div class="timer-bar">
-        <div class="timer-display" id="timer-5">⏱ 00:00 | 🏆 <span id="best-5">--:--</span></div>
-        <button class="btn btn-reset" onclick="resetTimer(5)">↺ Reset</button>
+    <div style="padding: 28px 30px;">
+      <div class="control-bar">
+        <div class="btn-row">
+          <button class="btn btn-show" onclick="showVocabLoesung()">Lösungen</button>
+          <button class="btn btn-reset" onclick="resetVocab(); resetTimer(5);">Neu starten</button>
+        </div>
+        <div class="timer-display">
+          <span class="current-time">⏱ <span id="timer-5">00:00</span></span>
+          <span class="best-time">🏆 <span id="best-5">--:--</span></span>
+        </div>
       </div>
-      <h2 class="section-title">🔠 Wortschatz — Englisch → Deutsch</h2>
-      <p style="font-size:0.88rem;color:#777;margin-bottom:16px;">Schreibe den deutschen Artikel, das Wort und den Plural. Wörter ohne Plural: lass das Pluralfeld leer.</p>
-
-      <div id="ws-container"></div>
-      <div class="score-box" id="ws-score">Beantworte die Fragen — dein Ergebnis erscheint hier.</div>
+      <h2>🔠 Wortschatz</h2>
+      <div class="hilfe-box">
+        <strong>Aufgabe:</strong> Übersetze die englischen Wörter ins Deutsche. Bei Nomen: Artikel + Wort + Plural eingeben!
+      </div>
+      <div id="vocabContainer"></div>
     </div>
   </div>
 
@@ -689,13 +685,9 @@ body {
 
 <script>
 // ===== TAB NAVIGATION =====
-function showTab(n) {
-  document.querySelectorAll('.section').forEach((s,i) => {
-    s.classList.toggle('active', i === n);
-  });
-  document.querySelectorAll('.nav-btn').forEach((b,i) => {
-    b.classList.toggle('active', i === n);
-  });
+function showSection(n) {
+  document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
+  document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===n); });
   timerAutoStart(n);
 }
 
@@ -718,11 +710,13 @@ function timerAutoStart(n) {
 }
 
 function updateTimerDisplay(n) {
-  const st = timerState[n];
+  var st = timerState[n];
   if (!st) return;
-  const bestStr = st.best !== null ? fmtTime(st.best) : '--:--';
-  const el = document.getElementById('timer-'+n);
-  if (el) el.innerHTML = '⏱ ' + fmtTime(st.seconds) + ' | 🏆 <span id="best-'+n+'">'+bestStr+'</span>';
+  var bestStr = st.best !== null ? fmtTime(st.best) : '--:--';
+  var el = document.getElementById('timer-'+n);
+  if (el) el.textContent = fmtTime(st.seconds);
+  var elBest = document.getElementById('best-'+n);
+  if (elBest) elBest.textContent = bestStr;
 }
 
 function resetTimer(n) {
@@ -736,6 +730,17 @@ function resetTimer(n) {
   st.running = false;
   updateTimerDisplay(n);
   timerAutoStart(n);
+}
+
+function timerStop(n) {
+  if (!timerState[n]) return;
+  const st = timerState[n];
+  clearInterval(st.interval);
+  st.running = false;
+  if (st.best === null || st.seconds < st.best) {
+    if (st.seconds > 0) st.best = st.seconds;
+  }
+  updateTimerDisplay(n);
 }
 
 // Start timer for tab 0 on load
@@ -806,6 +811,28 @@ function updateRFScore() {
   const answered = rfScore.filter(x=>x!==null).length;
   const correct  = rfScore.filter((x,i)=>x===RF_ANSWERS[i]).length;
   document.getElementById('rf-score').textContent = '✓ ' + correct + ' / ' + answered + ' richtig';
+}
+
+function resetRF() {
+  rfScore = [null,null,null,null,null,null];
+  document.querySelectorAll('.rf-btn').forEach(function(b){ b.className = 'rf-btn'; });
+  document.getElementById('rf-score').textContent = 'Beantworte alle Fragen — dein Ergebnis erscheint hier.';
+}
+
+function showLtLoesung() {
+  for (var i=0; i<10; i++) {
+    var el = document.getElementById('lt'+i);
+    if (el) { el.value = el.dataset.ans; el.className = 'lt-input correct'; }
+  }
+  updateLTScore();
+}
+
+function resetLT() {
+  for (var i=0; i<10; i++) {
+    var el = document.getElementById('lt'+i);
+    if (el) { el.value = ''; el.className = 'lt-input'; }
+  }
+  document.getElementById('lt-score').textContent = 'Beantworte die Fragen — dein Ergebnis erscheint hier.';
 }
 
 // ===== SATZBAU (satzbau-drag-drop skill) =====
@@ -1091,102 +1118,145 @@ function initSatzbau() {
   });
 }
 
+function resetSatzbau() { initSatzbau(); }
+
+function sbShowAllSolutions() {
+  satzbauData.forEach(function(_, idx) { sbShowSolution(idx); });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   initSatzbau();
 });
 
-// ===== WORTSCHATZ TAB =====
-const WS_DATA = [
-  { en: 'the animal species',      art: 'die', wort: 'Tierart',              plural: 'Tierarten' },
-  { en: 'the environment',         art: 'die', wort: 'Umwelt',               plural: '' },
-  { en: 'global warming',          art: 'die', wort: 'globale Erwärmung',    plural: '' },
-  { en: 'the rainy season',        art: 'die', wort: 'Regenzeit',            plural: 'Regenzeiten' },
-  { en: 'the dry season',          art: 'die', wort: 'Trockenzeit',          plural: 'Trockenzeiten' },
-  { en: 'the drought',             art: 'die', wort: 'Dürre',                plural: 'Dürren' },
-  { en: 'environmental pollution', art: 'die', wort: 'Umweltverschmutzung',  plural: '' },
-  { en: 'the ecological footprint',art: 'der', wort: 'ökologische Fußabdruck', plural: 'ökologischen Fußabdrücke' },
-  { en: 'the jungle / rainforest', art: 'der', wort: 'Dschungel',            plural: 'Dschungel' },
-  { en: 'biodiversity',            art: 'die', wort: 'Artenvielfalt',        plural: '' },
-  { en: 'species extinction',      art: 'das', wort: 'Artensterben',         plural: '' },
-  { en: 'an endangered species',   art: '',    wort: 'bedrohte Tierart',     plural: 'bedrohte Tierarten' },
+// ===== WORTSCHATZ TAB (skill-compliant: vocab-item/vocab-inputs/WORTSCHATZ/initVocab) =====
+var WORTSCHATZ = [
+    { id:1,  type:"n", en:"the animal species",       artikel:"die", de:"Tierart",              plural:"Tierarten" },
+    { id:2,  type:"n", en:"the environment",           artikel:"die", de:"Umwelt",               plural:"—" },
+    { id:3,  type:"v", en:"global warming",            de:"die globale Erwärmung" },
+    { id:4,  type:"n", en:"the rainy season",          artikel:"die", de:"Regenzeit",            plural:"Regenzeiten" },
+    { id:5,  type:"n", en:"the dry season",            artikel:"die", de:"Trockenzeit",          plural:"Trockenzeiten" },
+    { id:6,  type:"n", en:"the drought",               artikel:"die", de:"Dürre",                plural:"Dürren" },
+    { id:7,  type:"v", en:"environmental pollution",   de:"die Umweltverschmutzung" },
+    { id:8,  type:"n", en:"the ecological footprint",  artikel:"der", de:"ökologische Fußabdruck", plural:"ökologischen Fußabdrücke" },
+    { id:9,  type:"n", en:"the jungle / rainforest",   artikel:"der", de:"Dschungel",            plural:"Dschungel" },
+    { id:10, type:"v", en:"biodiversity",              de:"die Artenvielfalt" },
+    { id:11, type:"v", en:"species extinction",        de:"das Artensterben" },
+    { id:12, type:"v", en:"an endangered species",     de:"eine bedrohte Tierart" },
 ];
 
-function makeWsInp(data, idx) {
-  const div = document.createElement('div');
-  div.className = 'ws-card';
-  div.innerHTML = `
-    <div class="ws-english">${data.en}</div>
-    <div class="ws-inputs">
-      <input class="ws-inp ws-inp-artikel" id="ws-art-${idx}" placeholder="Artikel" autocomplete="off">
-      <input class="ws-inp ws-inp-wort"    id="ws-wort-${idx}" placeholder="Wort" autocomplete="off">
-      <input class="ws-inp ws-inp-plural"  id="ws-pl-${idx}"   placeholder="Plural" autocomplete="off">
-    </div>
-    <div class="ws-fb" id="ws-fb-${idx}"></div>
-  `;
-  div.querySelector('#ws-art-'+idx).addEventListener('input', () => checkWS(idx));
-  div.querySelector('#ws-wort-'+idx).addEventListener('input', () => checkWS(idx));
-  div.querySelector('#ws-pl-'+idx).addEventListener('input', () => checkWS(idx));
-  return div;
+function initVocab() {
+    var c = document.getElementById('vocabContainer');
+    c.innerHTML = '';
+    // Shuffle
+    var arr = WORTSCHATZ.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    arr.forEach(function(w) {
+        var item = document.createElement('div');
+        item.className = 'vocab-item';
+        var en = document.createElement('span');
+        en.className = 'vocab-en';
+        en.textContent = w.en;
+        var arrow = document.createElement('span');
+        arrow.className = 'vocab-arrow';
+        arrow.textContent = '→';
+        var inputs = document.createElement('div');
+        inputs.className = 'vocab-inputs';
+        if (w.type === 'n') {
+            var ia = document.createElement('input');
+            ia.className = 'art'; ia.placeholder = 'Artikel'; ia.autocomplete = 'off';
+            ia.dataset.id = w.id; ia.dataset.field = 'art';
+            ia.addEventListener('input', function() { vocabLiveCheck(this); });
+            var iw = document.createElement('input');
+            iw.className = 'wort'; iw.placeholder = 'Deutsch'; iw.autocomplete = 'off';
+            iw.dataset.id = w.id; iw.dataset.field = 'wort';
+            iw.addEventListener('input', function() { vocabLiveCheck(this); });
+            var ip = document.createElement('input');
+            ip.className = 'plural'; ip.autocomplete = 'off';
+            ip.dataset.id = w.id; ip.dataset.field = 'plural';
+            if (w.plural === '—') {
+                ip.placeholder = '—'; ip.disabled = true;
+                ip.style.color = '#aaa';
+            } else {
+                ip.placeholder = 'Plural';
+                ip.addEventListener('input', function() { vocabLiveCheck(this); });
+            }
+            inputs.appendChild(ia); inputs.appendChild(iw); inputs.appendChild(ip);
+        } else {
+            var iw = document.createElement('input');
+            iw.className = 'wort'; iw.placeholder = 'Deutsch'; iw.autocomplete = 'off';
+            iw.style.width = '220px';
+            iw.dataset.id = w.id; iw.dataset.field = 'wort';
+            iw.addEventListener('input', function() { vocabLiveCheck(this); });
+            inputs.appendChild(iw);
+        }
+        item.appendChild(en); item.appendChild(arrow); item.appendChild(inputs);
+        c.appendChild(item);
+    });
 }
 
-function checkWS(i) {
-  const d   = WS_DATA[i];
-  const art = document.getElementById('ws-art-'+i).value.trim().toLowerCase();
-  const wort= document.getElementById('ws-wort-'+i).value.trim();
-  const pl  = document.getElementById('ws-pl-'+i).value.trim();
-  const fb  = document.getElementById('ws-fb-'+i);
-
-  const artOk  = d.art === '' || art === d.art.toLowerCase();
-  const wortOk = normalize(wort) === normalize(d.wort);
-  const plOk   = d.plural === '' ? (pl === '' || pl.toLowerCase().replace(/[äöü]/g,x=>({ä:'ae',ö:'oe',ü:'ue'}[x]||x)) === '') : normalize(pl) === normalize(d.plural);
-
-  const artEl  = document.getElementById('ws-art-'+i);
-  const wortEl = document.getElementById('ws-wort-'+i);
-  const plEl   = document.getElementById('ws-pl-'+i);
-
-  if (wort.length === 0 && art.length === 0) {
-    artEl.className  = 'ws-inp ws-inp-artikel';
-    wortEl.className = 'ws-inp ws-inp-wort';
-    plEl.className   = 'ws-inp ws-inp-plural';
-    fb.textContent = '';
-    return;
-  }
-
-  artEl.className  = 'ws-inp ws-inp-artikel ' + (d.art === '' || art.length === 0 ? '' : artOk ? 'correct' : 'wrong');
-  wortEl.className = 'ws-inp ws-inp-wort ' + (wort.length === 0 ? '' : wortOk ? 'correct' : 'wrong');
-  plEl.className   = 'ws-inp ws-inp-plural ' + (pl.length === 0 ? '' : plOk ? 'correct' : 'wrong');
-
-  if (artOk && wortOk && plOk && wort.length > 0) {
-    fb.innerHTML = '<span style="color:#2d8a4e;font-weight:600">✓ Richtig!</span>';
-  } else if (wort.length > 0) {
-    const hints = [];
-    if (!artOk && art.length > 0)  hints.push('Artikel: ' + d.art);
-    if (!wortOk && wort.length > 0) hints.push('Wort: ' + d.wort);
-    if (!plOk && pl.length > 0)    hints.push('Plural: ' + (d.plural || '—'));
-    fb.innerHTML = hints.length ? '<span style="color:#c0392b">→ ' + hints.join(' | ') + '</span>' : '';
-  } else {
-    fb.textContent = '';
-  }
-  updateWSScore();
+function vocabLiveCheck(inp) {
+    var id = parseInt(inp.dataset.id);
+    var field = inp.dataset.field;
+    var w = WORTSCHATZ.filter(function(x){ return x.id === id; })[0];
+    if (!w) return;
+    var val = inp.value.trim();
+    if (val.length === 0) { inp.classList.remove('correct','wrong'); return; }
+    var ok = false;
+    if (field === 'art') ok = val.toLowerCase() === w.artikel.toLowerCase();
+    else if (field === 'wort') ok = normalize(val) === normalize(w.de);
+    else if (field === 'plural') ok = w.plural === '—' ? true : normalize(val) === normalize(w.plural);
+    inp.classList.toggle('correct', ok);
+    inp.classList.toggle('wrong', !ok);
+    checkVocabAllDone();
 }
 
-function updateWSScore() {
-  let correct = 0;
-  WS_DATA.forEach((d,i) => {
-    const art  = document.getElementById('ws-art-'+i)?.value.trim().toLowerCase() || '';
-    const wort = document.getElementById('ws-wort-'+i)?.value.trim() || '';
-    const pl   = document.getElementById('ws-pl-'+i)?.value.trim() || '';
-    const artOk  = d.art === '' || art === d.art.toLowerCase();
-    const wortOk = normalize(wort) === normalize(d.wort);
-    const plOk   = d.plural === '' ? true : normalize(pl) === normalize(d.plural);
-    if (artOk && wortOk && plOk && wort.length > 0) correct++;
-  });
-  document.getElementById('ws-score').textContent = '✓ ' + correct + ' / ' + WS_DATA.length + ' richtig';
+function checkVocabAllDone() {
+    var allInputs = document.querySelectorAll('#vocabContainer .vocab-inputs input:not([disabled])');
+    var allOk = Array.from(allInputs).every(function(inp) {
+        return inp.value.trim().length > 0 && inp.classList.contains('correct');
+    });
+    if (allOk && allInputs.length > 0) timerStop(5);
 }
 
-// Init Wortschatz
-const wsContainer = document.getElementById('ws-container');
-WS_DATA.forEach((d,i) => wsContainer.appendChild(makeWsInp(d,i)));
+function showVocabLoesung() {
+    WORTSCHATZ.forEach(function(w) {
+        var inputs = document.querySelectorAll('#vocabContainer input[data-id="'+w.id+'"]');
+        inputs.forEach(function(inp) {
+            if (inp.disabled) return;
+            var field = inp.dataset.field;
+            var answer = '';
+            if (field === 'art') answer = w.artikel || '';
+            else if (field === 'wort') answer = w.de;
+            else if (field === 'plural') answer = w.plural === '—' ? '' : w.plural;
+            inp.value = answer;
+            if (answer) { inp.classList.add('correct'); inp.classList.remove('wrong'); }
+            // Show hint
+            var hint = document.createElement('span');
+            hint.className = 'vocab-hint';
+            hint.textContent = '✓ ' + answer;
+            if (!inp.parentNode.querySelector('.vocab-hint')) {
+                inp.parentNode.appendChild(hint);
+            }
+        });
+    });
+}
+
+function resetVocab() {
+    var inputs = document.querySelectorAll('#vocabContainer input');
+    inputs.forEach(function(inp) {
+        if (!inp.disabled) {
+            inp.value = '';
+            inp.classList.remove('correct','wrong');
+        }
+        var hints = inp.parentNode.querySelectorAll('.vocab-hint');
+        hints.forEach(function(h){ h.parentNode.removeChild(h); });
+    });
+}
+
+initVocab();
 
 // ===== VOCAB HIGHLIGHT IN LESETEXT =====
 function highlightVocabInText() {
