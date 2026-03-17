@@ -411,6 +411,58 @@ def check_file(filepath):
         errors.append(fail("showSection()/showTab()-Funktion FEHLT"))
 
     # ═══════════════════════════════════════════════════════
+    # 14. TIMER-START-VERHALTEN
+    # ═══════════════════════════════════════════════════════
+    if has_timer:
+        print(f"\n{BOLD}[14] Timer-Start-Verhalten{RESET}")
+
+        # Satzbau: timerAutoStart muss in dragstart innerhalb sbMakeChip aufgerufen werden
+        if has_satzbau:
+            sb_func = re.search(r'function\s+sbMakeChip\b.*?^}', content, re.DOTALL | re.MULTILINE)
+            if sb_func:
+                sb_body = sb_func.group(0)
+                ds_in_sb = re.search(r"addEventListener\('dragstart'.*?}\)", sb_body, re.DOTALL)
+                if ds_in_sb and 'timerAutoStart' in ds_in_sb.group(0):
+                    passes.append(ok("Satzbau-Timer startet beim ersten Drag"))
+                elif ds_in_sb:
+                    errors.append(fail("Satzbau-Timer startet NICHT beim Drag — timerAutoStart fehlt in sbMakeChip dragstart"))
+                else:
+                    errors.append(fail("Satzbau: kein dragstart in sbMakeChip gefunden"))
+
+        # Lückentext: timerAutoStart muss VOR der Korrektheitscheck kommen
+        # Pattern 1: timerAutoStart direkt am Anfang von liveCheck (gut)
+        # Pattern 2: timerAutoStart nach if(!cmpVal) return (gut)
+        # Pattern 3: timerAutoStart nur in correctness block (schlecht)
+        luecken_match = re.search(r'function\s+liveCheck\b[^{]*\{(.*?)^}', content, re.DOTALL | re.MULTILINE)
+        if luecken_match:
+            lc_body = luecken_match.group(1)
+            if 'timerAutoStart' in lc_body:
+                # Check if timerAutoStart is called BEFORE correctness check
+                timer_pos = lc_body.find('timerAutoStart')
+                ok_pos = lc_body.find("classList.add('ok')")
+                if ok_pos < 0:
+                    ok_pos = lc_body.find('.add("ok")')
+                if timer_pos >= 0 and ok_pos >= 0 and timer_pos < ok_pos:
+                    passes.append(ok("Lückentext-Timer startet vor Korrektheitscheck"))
+                elif timer_pos >= 0 and ok_pos >= 0 and timer_pos > ok_pos:
+                    errors.append(fail("Lückentext-Timer startet NACH Korrektheitscheck — muss vorher kommen"))
+                else:
+                    passes.append(ok("Lückentext-Timer vorhanden"))
+            elif re.search(r'timerAutoStart.*liveCheck|liveCheck.*timerAutoStart', content[:content.find('function liveCheck')]):
+                passes.append(ok("Lückentext-Timer extern vor liveCheck aufgerufen"))
+        elif re.search(r'oninput="liveCheck\(this,\s*function', content):
+            # Callback-pattern: check if timerAutoStartFn is called early
+            cb_lc = re.search(r'function\s+liveCheck\(inp,\s*timerAutoStartFn.*?\{(.*?)^}', content, re.DOTALL | re.MULTILINE)
+            if cb_lc:
+                lc_cb_body = cb_lc.group(1)
+                timer_pos = lc_cb_body.find('timerAutoStartFn')
+                ok_pos = lc_cb_body.find("classList.add('ok')")
+                if timer_pos >= 0 and ok_pos >= 0 and timer_pos < ok_pos:
+                    passes.append(ok("Lückentext-Timer (Callback) startet vor Korrektheitscheck"))
+                elif timer_pos >= 0 and ok_pos >= 0:
+                    errors.append(fail("Lückentext-Timer (Callback) startet NACH Korrektheitscheck"))
+
+    # ═══════════════════════════════════════════════════════
     # ZUSAMMENFASSUNG
     # ═══════════════════════════════════════════════════════
     print(f"\n{'─'*60}")
