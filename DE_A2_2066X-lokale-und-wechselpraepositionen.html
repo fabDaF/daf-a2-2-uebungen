@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokale und Wechselpräpositionen – A2 Lektion 2066X</title>
+    <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+.container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
+.nav { display: flex; flex-wrap: nowrap; background: #f8f9fa; border-top: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.nav-btn { flex: 1; padding: 14px 10px; text-align: center; cursor: pointer; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.nav-btn:last-child { border-right: none; }
+.nav-btn:hover { background: #e8ecff; color: #667eea; }
+.nav-btn.active { background: white; color: #667eea; font-weight: 700; border-bottom: 3px solid #667eea; }
+.nav-emoji { font-size: 1.3em; line-height: 1.2; }
+.nav-label { font-size: 0.78em; margin-top: 2px; line-height: 1.2; }
+.section { display: none; }
+.section.active { display: block; }
+.tab-banner { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+@media (max-width: 600px) {
+    body { padding: 8px; }
+    .nav { flex-wrap: wrap; }
+    .nav-btn { flex: 1 1 33%; min-width: 0; font-size: 0.8em; padding: 10px 6px; border-right: 1px solid #ddd; }
+    .nav-btn:last-child { border-right: 1px solid #ddd; }
+    .tab-banner { max-height: 120px; }
+    .zuo-layout { grid-template-columns: 1fr !important; }
+    .qa-grid { grid-template-columns: 1fr; }
+    .qa-frage-cell { border-left: none; border-bottom: 2px solid #764ba2; border-radius: 8px 8px 0 0; }
+    .qa-drop-cell { border-radius: 0 0 8px 8px; margin-bottom: 10px; }
+    .praep-table { font-size: 0.82em; }
+    .praep-table td, .praep-table th { padding: 6px 8px; }
+}
+.sec-inner { padding: 28px 30px; }
+/* ── Control-Bar ── */
+.control-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 6px 12px; background: #f8f9fa; border-radius: 8px; }
+.btn-row { display: flex; gap: 6px; }
+.btn { background: none; border: 1px solid #ddd; border-radius: 6px; padding: 4px 12px; font-size: 0.82em; color: #888; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+.btn:hover { border-color: #667eea; color: #667eea; }
+.timer-display-wrap { display: flex; gap: 14px; font-size: 0.82em; color: #bbb; font-variant-numeric: tabular-nums; }
+/* ── Hilfe-Box ── */
+.hilfe-box { background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 22px; font-size: 0.9em; color: #444; line-height: 1.6; }
+/* ── Präpositionen-Tabellen (Tab 0) ── */
+.praep-section { margin-bottom: 32px; }
+.praep-section h3 { font-size: 1.1em; color: #4a148c; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #e1bee7; }
+.praep-table { width: 100%; border-collapse: collapse; font-size: 0.92em; margin-bottom: 14px; }
+.praep-table th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 10px 14px; text-align: left; font-weight: 600; }
+.praep-table th:first-child { border-radius: 8px 0 0 0; }
+.praep-table th:last-child { border-radius: 0 8px 0 0; }
+.praep-table td { padding: 9px 14px; border-bottom: 1px solid #e8e8f0; vertical-align: top; }
+.praep-table tr:nth-child(even) td { background: #f8f9ff; }
+.praep-table tr:hover td { background: #eef0ff; }
+.praep-table .kasus-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.82em; font-weight: 700; }
+.badge-akk { background: #e3f2fd; color: #1565c0; }
+.badge-dat { background: #e8f5e9; color: #2e7d32; }
+.badge-gen { background: #fff3e0; color: #e65100; }
+.badge-wech { background: #f3e5f5; color: #6a1b9a; }
+.praep-chips-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.praep-chip { background: white; border: 2px solid #667eea; color: #333; padding: 6px 16px; border-radius: 20px; font-size: 0.9em; font-weight: 600; }
+.praep-chip.akk { border-color: #1565c0; color: #1565c0; background: #e3f2fd; }
+.praep-chip.dat { border-color: #2e7d32; color: #2e7d32; background: #e8f5e9; }
+.praep-chip.gen { border-color: #e65100; color: #e65100; background: #fff3e0; }
+.praep-chip.wech { border-color: #6a1b9a; color: #6a1b9a; background: #f3e5f5; }
+.achtung-box { background: #fff8e1; border-left: 4px solid #f9a825; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0; font-size: 0.9em; color: #444; line-height: 1.7; }
+.achtung-box strong { color: #e65100; }
+.beispiel-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 16px 0; }
+@media (max-width: 700px) { .beispiel-grid { grid-template-columns: 1fr; } }
+.beispiel-card { background: #f8f9ff; border-radius: 10px; padding: 14px 16px; border-top: 3px solid #667eea; }
+.beispiel-card .frage { font-size: 0.82em; color: #888; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.beispiel-card .satz { font-size: 0.95em; color: #333; line-height: 1.5; }
+.beispiel-card .satz .hl { background: #e1bee7; border-radius: 3px; padding: 1px 4px; color: #4a148c; font-weight: 700; }
+.wechsel-table-wrapper { overflow-x: auto; margin-bottom: 14px; }
+.wechsel-table { width: 100%; border-collapse: collapse; font-size: 0.88em; }
+.wechsel-table th { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 10px 12px; text-align: left; }
+.wechsel-table td { padding: 8px 12px; border-bottom: 1px solid #e8e8f0; vertical-align: middle; }
+.wechsel-table tr:nth-child(even) td { background: #f8f9ff; }
+.wechsel-table .praep-col { font-weight: 700; color: #4a148c; width: 90px; }
+.wechsel-table .akk-col { color: #1565c0; }
+.wechsel-table .dat-col { color: #2e7d32; }
+/* ── Zuordnung (Tab 1) ── */
+.zuo-pool { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f0f0f8; border-radius: 10px; min-height: 56px; margin-bottom: 20px; align-items: flex-start; border: 1px dashed #bbb; }
+.zuo-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.zuo-kategorie { border-radius: 10px; padding: 14px; border: 2px solid #c5cae9; background: #fafbff; }
+.zuo-kategorie h4 { margin: 0 0 10px 0; font-size: 0.88em; color: #3949ab; font-weight: 700; text-align: center; padding: 6px; border-radius: 6px; }
+.zuo-kategorie.akk h4 { background: #e3f2fd; color: #1565c0; }
+.zuo-kategorie.dat h4 { background: #e8f5e9; color: #2e7d32; }
+.zuo-kategorie.gen h4 { background: #fff3e0; color: #e65100; }
+.zuo-kategorie.wech h4 { background: #f3e5f5; color: #6a1b9a; }
+.zuo-drop { min-height: 80px; border-radius: 8px; border: 2px dashed #c5cae9; padding: 8px; background: rgba(255,255,255,0.7); display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+.zuo-drop.dragover { background: #e8eaff; border-color: #667eea; }
+.chip { white-space: normal; display: inline-block; background: white; border: 2px solid #667eea; color: #667eea; padding: 6px 14px; border-radius: 20px; cursor: move; font-weight: 600; font-size: 0.88em; transition: all 0.2s; user-select: none; }
+.chip:hover { background: #eef0ff; transform: translateY(-1px); }
+.chip.correct { background: #27ae60; border-color: #27ae60; color: white; cursor: default; }
+.chip.wrong { background: #e74c3c; border-color: #e74c3c; color: white; }
+.chip.selected { outline: 3px solid #f39c12; }
+.zuo-score { text-align: center; font-size: 1em; font-weight: 600; color: #555; margin-top: 14px; padding: 10px; background: #f0f4ff; border-radius: 8px; display: none; }
+.zuo-score.complete { background: #d4edda; color: #155724; }
+/* ── Lückentext (Tab 2) ── */
+.luecken-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; line-height: 1.9; font-size: 0.97em; }
+.luecken-item .satz-nr { font-size: 0.75em; font-weight: 700; color: #764ba2; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.luecken-inp { border: none; border-bottom: 2px solid #c5cae9; background: transparent; outline: none; font-family: inherit; font-size: 0.97em; padding: 1px 4px; transition: border-color 0.2s; }
+.luecken-inp:focus { border-bottom-color: #667eea; }
+.luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
+.luecken-hint { font-size: 0.8em; color: #27ae60; font-weight: 700; margin-left: 4px; }
+.luecken-section-title { font-size: 1em; font-weight: 700; color: #4a148c; margin: 20px 0 10px 0; padding: 8px 14px; background: #f3e5f5; border-radius: 8px; }
+/* ── Satzbau (Tab 3) ── */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f8f8f8; border-radius: 10px; min-height: 56px; margin-bottom: 10px; }
+.sentence-builder { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px; background: white; border: 2px dashed #ccc; border-radius: 10px; min-height: 56px; align-items: center; margin-bottom: 6px; }
+.sentence-builder.correct { border-color: #27ae60; background: #f0fff4; }
+.sentence-builder.incorrect { border-color: #e74c3c; background: #fff5f5; }
+.sb-punkt { font-size: 1.1em; font-weight: 700; color: #27ae60; margin-left: 2px; align-self: center; user-select: none; }
+.satzbau-feedback { font-size: 0.9em; font-weight: 600; margin-top: 6px; min-height: 1.2em; }
+.satzbau-feedback.correct { color: #27ae60; }
+.satzbau-feedback.incorrect { color: #e74c3c; }
+.sb-label { font-size: 0.8em; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; margin-top: 16px; }
+.satzbau-item:first-child .sb-label { margin-top: 0; }
+/* ── Wortschatz (Tab 4) ── */
+.vocab-item { background: #f8f9ff; padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #667eea; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vocab-en { font-weight: 600; color: #764ba2; min-width: 200px; font-size: 0.95em; }
+.vocab-arrow { color: #ccc; font-size: 1.2em; }
+.vocab-inputs { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vocab-inputs input { border: none; border-bottom: 2px solid #667eea; background: #fff; padding: 4px 8px; font-family: inherit; font-size: 0.95em; outline: none; transition: all 0.2s; }
+.vocab-inputs input:focus { border-bottom-color: #764ba2; background: #f0f7ff; }
+.vocab-inputs input.correct { border-bottom-color: #27ae60; background: #e8f8f0; }
+.vocab-inputs input.wrong { border-bottom-color: #e74c3c; background: #fdeaea; }
+.vocab-inputs input.art { width: 70px; }
+.vocab-inputs input.wort { width: 200px; }
+.vocab-hint { color: #27ae60; font-weight: 600; font-size: 0.8em; margin-left: 6px; }
+@media (max-width: 600px) { .vocab-item { flex-direction: column; align-items: flex-start; } }
+/* ── Footer ── */
+.author-footer { text-align: center; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 16px; font-size: 0.8rem; color: #aaa; }
+.author-footer a { color: #aaa; }
+.author-name { font-weight: 700; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1>Lokale und Wechselpräpositionen</h1>
+        <p style="font-family: Georgia, serif;">A2 – Lektion 2066X &nbsp;|&nbsp; Wo? Wohin? Woher?</p>
+        <div class="big-emoji">📍</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-btn active" onclick="showSection(0)"><span class="nav-emoji">📖</span><span class="nav-label">Lernen</span></div>
+        <div class="nav-btn" onclick="showSection(1)"><span class="nav-emoji">🔀</span><span class="nav-label">Zuordnung</span></div>
+        <div class="nav-btn" onclick="showSection(2)"><span class="nav-emoji">✏️</span><span class="nav-label">Lückentext</span></div>
+        <div class="nav-btn" onclick="showSection(3)"><span class="nav-emoji">🧩</span><span class="nav-label">Satzbau</span></div>
+        <div class="nav-btn" onclick="showSection(4)"><span class="nav-emoji">🔠</span><span class="nav-label">Wortschatz</span></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TAB 0 — LERNEN
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="section active" id="sec-0">
+        <img class="tab-banner" src="https://images.pexels.com/photos/17184744/pexels-photo-17184744.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Kompass auf einer Landkarte – Orientierung und Richtung">
+        <div class="sec-inner">
+
+            <h2 style="color:#4a148c; margin-bottom:6px;">📖 Überblick: Lokale Präpositionen &amp; Wechselpräpositionen</h2>
+            <p style="color:#666; font-size:0.92em; margin-bottom:24px;">Präpositionen geben an, <strong>wo</strong> sich etwas befindet (Ort), <strong>wohin</strong> sich jemand bewegt (Richtung) oder <strong>woher</strong> jemand kommt (Herkunft).</p>
+
+            <!-- ── LOKALE PRÄPOSITIONEN MIT AKKUSATIV ── -->
+            <div class="praep-section">
+                <h3>1. Lokale Präpositionen mit Akkusativ <span class="kasus-badge badge-akk">Akkusativ</span></h3>
+                <p style="font-size:0.9em; color:#555; margin-bottom:12px;">Diese Präpositionen antworten auf <strong>Wohin?</strong> — sie beschreiben eine Richtung oder ein Ziel.</p>
+                <div class="praep-chips-row">
+                    <span class="praep-chip akk">um</span>
+                    <span class="praep-chip akk">durch</span>
+                    <span class="praep-chip akk">entlang (nachgestellt)</span>
+                    <span class="praep-chip akk">gegen</span>
+                    <span class="praep-chip akk">bis</span>
+                </div>
+                <table class="praep-table">
+                    <tr><th>Präposition</th><th>Bedeutung</th><th>Beispiel</th></tr>
+                    <tr><td><strong>um</strong></td><td>in einem Kreis, rund herum</td><td>Der Bär läuft <em>um den See</em> herum.</td></tr>
+                    <tr><td><strong>durch</strong></td><td>von einer Seite zur anderen, hindurch</td><td>Wir gehen <em>durch den Wald</em>.</td></tr>
+                    <tr><td><strong>entlang</strong></td><td>parallel zu etwas (steht <em>nach</em> dem Nomen!)</td><td>Er läuft <em>die Straße entlang</em>.</td></tr>
+                    <tr><td><strong>gegen</strong></td><td>in Richtung von, in Kollision</td><td>Tom ist <em>gegen das Haus</em> gefahren.</td></tr>
+                    <tr><td><strong>bis</strong></td><td>bis zu einem Punkt, Grenze</td><td>Fahr <em>bis zur nächsten Kreuzung</em>.</td></tr>
+                </table>
+            </div>
+
+            <!-- ── LOKALE PRÄPOSITIONEN MIT DATIV ── -->
+            <div class="praep-section">
+                <h3>2. Lokale Präpositionen mit Dativ <span class="kasus-badge badge-dat">Dativ</span></h3>
+                <p style="font-size:0.9em; color:#555; margin-bottom:12px;">Diese Präpositionen antworten auf <strong>Wo?</strong> oder <strong>Wohin?</strong> — je nach Präposition.</p>
+                <div class="praep-chips-row">
+                    <span class="praep-chip dat">ab</span>
+                    <span class="praep-chip dat">aus</span>
+                    <span class="praep-chip dat">bei</span>
+                    <span class="praep-chip dat">gegenüber</span>
+                    <span class="praep-chip dat">nach</span>
+                    <span class="praep-chip dat">zu</span>
+                    <span class="praep-chip dat">von</span>
+                    <span class="praep-chip dat">von … aus</span>
+                </div>
+                <table class="praep-table">
+                    <tr><th>Präposition</th><th>Wo/Wohin/Woher?</th><th>Beispiel</th></tr>
+                    <tr><td><strong>ab</strong></td><td>Wohin? (Startpunkt)</td><td>Der Zug fährt <em>ab dem Hauptbahnhof</em>.</td></tr>
+                    <tr><td><strong>aus</strong></td><td>Woher?</td><td>Ich komme <em>aus der Stadt</em>.</td></tr>
+                    <tr><td><strong>bei</strong></td><td>Wo?</td><td>Ich bin <em>bei Jack zu Hause</em>.</td></tr>
+                    <tr><td><strong>gegenüber</strong></td><td>Wo?</td><td>Das Café ist <em>der Schule gegenüber</em>.</td></tr>
+                    <tr><td><strong>nach</strong></td><td>Wohin? (Städte, Länder, Himmelsrichtungen)</td><td>Ich fahre <em>nach Dresden</em>.</td></tr>
+                    <tr><td><strong>zu</strong></td><td>Wohin? (Personen, Orte)</td><td>Ich fahre <em>zu dir</em>.</td></tr>
+                    <tr><td><strong>von</strong></td><td>Woher?</td><td>Ich komme <em>von der Deutschstunde</em>.</td></tr>
+                    <tr><td><strong>von … aus</strong></td><td>Wo? (Standpunkt)</td><td>Lisa arbeitet <em>von zu Hause aus</em>.</td></tr>
+                </table>
+            </div>
+
+            <!-- ── LOKALE PRÄPOSITIONEN MIT GENITIV ── -->
+            <div class="praep-section">
+                <h3>3. Lokale Präpositionen mit Genitiv <span class="kasus-badge badge-gen">Genitiv</span></h3>
+                <div class="praep-chips-row">
+                    <span class="praep-chip gen">außerhalb</span>
+                    <span class="praep-chip gen">innerhalb</span>
+                    <span class="praep-chip gen">entlang (vorangestellt)</span>
+                </div>
+                <table class="praep-table">
+                    <tr><th>Präposition</th><th>Bedeutung</th><th>Beispiel</th></tr>
+                    <tr><td><strong>außerhalb</strong></td><td>Wo? (außen, nicht innerhalb)</td><td>Ich bin <em>außerhalb des Gebäudes</em>.</td></tr>
+                    <tr><td><strong>innerhalb</strong></td><td>Wo? (innen, im Bereich von)</td><td>Das Café liegt <em>innerhalb der Altstadt</em>.</td></tr>
+                    <tr><td><strong>entlang</strong> (vor Nomen)</td><td>Wo/Wohin? (parallel zu)</td><td>Ich laufe <em>entlang der Mauer</em>.</td></tr>
+                </table>
+            </div>
+
+            <!-- ── W-FRAGEN ÜBERSICHT ── -->
+            <div class="praep-section">
+                <h3>4. Welcher Kasus — welche W-Frage?</h3>
+                <div class="wechsel-table-wrapper">
+                    <table class="praep-table">
+                        <tr><th>Kasus</th><th>Wo? (Ort)</th><th>Woher? (Herkunft)</th><th>Wohin? (Richtung)</th></tr>
+                        <tr>
+                            <td><span class="kasus-badge badge-akk">Akkusativ</span></td>
+                            <td>um, um … herum</td>
+                            <td>—</td>
+                            <td>durch, entlang (nachgest.), gegen, um, bis</td>
+                        </tr>
+                        <tr>
+                            <td><span class="kasus-badge badge-dat">Dativ</span></td>
+                            <td>ab, bei, gegenüber, von … aus, zu Hause</td>
+                            <td>aus, von</td>
+                            <td>nach, zu</td>
+                        </tr>
+                        <tr>
+                            <td><span class="kasus-badge badge-gen">Genitiv</span></td>
+                            <td>außerhalb, innerhalb</td>
+                            <td>—</td>
+                            <td>entlang (vorangest.)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── ACHTUNG-SONDERFÄLLE ── -->
+            <div class="achtung-box">
+                <strong>⚠️ Achtung — Sonderfälle!</strong><br><br>
+                <strong>entlang:</strong> Steht im Akkusativ <em>nach</em> dem Nomen — „Ich laufe <em>die Mauer entlang</em>."<br>
+                Steht im Genitiv <em>vor</em> dem Nomen — „Ich laufe <em>entlang der Mauer</em>."<br><br>
+                <strong>gegenüber + Nomen:</strong> kann vor oder nach dem Nomen stehen — „<em>Gegenüber der Schule</em> ist ein Spielplatz." / „<em>Der Schule gegenüber</em> ist ein Spielplatz."<br><br>
+                <strong>gegenüber + Pronomen:</strong> steht <em>immer nach</em> dem Pronomen — „Ich sitze <em>dir gegenüber</em>."
+            </div>
+
+            <!-- ── WECHSELPRÄPOSITIONEN ── -->
+            <div class="praep-section" style="margin-top:28px;">
+                <h3>5. Die 9 Wechselpräpositionen <span class="kasus-badge badge-wech">Wechsel</span></h3>
+                <p style="font-size:0.9em; color:#555; margin-bottom:12px;">Diese Präpositionen können je nach Bedeutung <strong>Akkusativ</strong> (Wohin? = Richtung) oder <strong>Dativ</strong> (Wo? = Ort) verlangen.</p>
+                <div class="praep-chips-row">
+                    <span class="praep-chip wech">in</span>
+                    <span class="praep-chip wech">auf</span>
+                    <span class="praep-chip wech">an</span>
+                    <span class="praep-chip wech">unter</span>
+                    <span class="praep-chip wech">über</span>
+                    <span class="praep-chip wech">vor</span>
+                    <span class="praep-chip wech">hinter</span>
+                    <span class="praep-chip wech">zwischen</span>
+                    <span class="praep-chip wech">neben</span>
+                </div>
+                <div class="wechsel-table-wrapper">
+                    <table class="wechsel-table">
+                        <tr><th>Präp.</th><th>Wohin? + Akkusativ</th><th>Wo? + Dativ</th></tr>
+                        <tr><td class="praep-col">an</td><td class="akk-col">Lisa hängt das Poster <em>an die Tür</em>.</td><td class="dat-col">Das Poster hängt <em>an der Tür</em>.</td></tr>
+                        <tr><td class="praep-col">auf</td><td class="akk-col">Ich klettere <em>auf den Berg</em>.</td><td class="dat-col">Ich bin <em>auf dem Berg</em>.</td></tr>
+                        <tr><td class="praep-col">hinter</td><td class="akk-col">Wir laufen <em>hinter den Busch</em>.</td><td class="dat-col">Wir verstecken uns <em>hinter dem Busch</em>.</td></tr>
+                        <tr><td class="praep-col">in</td><td class="akk-col">Ich gehe <em>in das Zelt</em>.</td><td class="dat-col">Ich bin <em>im Zelt</em>.</td></tr>
+                        <tr><td class="praep-col">neben</td><td class="akk-col">Alex stellt den Stuhl <em>neben den Tisch</em>.</td><td class="dat-col">Der Stuhl steht <em>neben dem Tisch</em>.</td></tr>
+                        <tr><td class="praep-col">über</td><td class="akk-col">Sie hängt das Bild <em>über die Couch</em>.</td><td class="dat-col">Das Bild hängt <em>über der Couch</em>.</td></tr>
+                        <tr><td class="praep-col">unter</td><td class="akk-col">Sie rennen <em>unter das Dach</em>.</td><td class="dat-col">Sie sind <em>unter dem Dach</em>.</td></tr>
+                        <tr><td class="praep-col">vor</td><td class="akk-col">Jack stellt sich <em>vor den Bären</em>.</td><td class="dat-col">Jack steht <em>vor dem Bären</em>.</td></tr>
+                        <tr><td class="praep-col">zwischen</td><td class="akk-col">Jack stellt sich <em>zwischen den Bären und Lisa</em>.</td><td class="dat-col">Jack steht <em>zwischen dem Bären und Lisa</em>.</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── TEMPORALE WECHSELPRÄPOSITIONEN ── -->
+            <div class="praep-section">
+                <h3>6. Wechselpräpositionen mit temporalen Angaben <span class="kasus-badge badge-dat">immer Dativ</span></h3>
+                <p style="font-size:0.9em; color:#555; margin-bottom:12px;">Bei <strong>Zeitangaben</strong> (Frage: <em>Wann?</em>) stehen Wechselpräpositionen <em>immer</em> mit dem Dativ.</p>
+                <table class="praep-table">
+                    <tr><th>Präposition</th><th>Beispiel (Dativ)</th></tr>
+                    <tr><td><strong>an</strong></td><td>Am (= An dem) Dienstag fahren wir in den Urlaub.</td></tr>
+                    <tr><td><strong>in</strong></td><td>Im (= In dem) Juli fahren wir in den Urlaub.</td></tr>
+                    <tr><td><strong>unter</strong></td><td>Unter der Woche arbeite ich sehr viel.</td></tr>
+                    <tr><td><strong>vor</strong></td><td>Vor den Ferien muss ich noch viel erledigen.</td></tr>
+                    <tr><td><strong>zwischen</strong></td><td>Zwischen Schulschluss und Ferienbeginn packe ich meine Koffer.</td></tr>
+                </table>
+            </div>
+
+            <!-- ── BEISPIELSÄTZE ÜBERSICHT ── -->
+            <div class="praep-section">
+                <h3>7. Beispielsätze: Wo? / Wohin? / Woher?</h3>
+                <div class="beispiel-grid">
+                    <div class="beispiel-card">
+                        <div class="frage">Wo? (Ort)</div>
+                        <div class="satz">Du musst <span class="hl">um das Gebäude herum</span> gehen. (Akk.)</div>
+                        <div class="satz" style="margin-top:8px;">Lisa arbeitet <span class="hl">von zu Hause aus</span>. (Dativ)</div>
+                        <div class="satz" style="margin-top:8px;">Ich bin <span class="hl">außerhalb des Gebäudes</span>. (Genitiv)</div>
+                    </div>
+                    <div class="beispiel-card">
+                        <div class="frage">Wohin? (Richtung)</div>
+                        <div class="satz">Du bist <span class="hl">in den Tunnel</span> gegangen. (Akk.)</div>
+                        <div class="satz" style="margin-top:8px;">Ich fahre <span class="hl">zu dir</span>. (Dativ)</div>
+                        <div class="satz" style="margin-top:8px;">Er läuft <span class="hl">die Straße entlang</span>. (Akk.)</div>
+                    </div>
+                    <div class="beispiel-card">
+                        <div class="frage">Woher? (Herkunft)</div>
+                        <div class="satz">Ich komme <span class="hl">von der Deutschstunde</span>. (Dativ)</div>
+                        <div class="satz" style="margin-top:8px;">Er kommt <span class="hl">aus der Schweiz</span>. (Dativ)</div>
+                        <div class="satz" style="margin-top:8px;">Sie reist <span class="hl">von Berlin</span> nach München. (Dativ)</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TAB 1 — ZUORDNUNG
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="section" id="sec-1">
+        <img class="tab-banner" src="https://images.pexels.com/photos/4792285/pexels-photo-4792285.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Person sortiert Dokumente in Kategorien">
+        <div class="sec-inner">
+            <h2 style="color:#4a148c; margin-bottom:6px;">🔀 Zuordnung: Präpositionen nach Kasus sortieren</h2>
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ziehe jede Präposition in die richtige Kategorie. Blau = Akkusativ, Grün = Dativ, Orange = Genitiv, Lila = Wechselpräposition. Die Chips färben sich sofort grün (richtig) oder rot (falsch).
+            </div>
+
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="zuoLoesung()">💡 Lösungen</button>
+                    <button class="btn" onclick="initZuo(); resetTimer(1);">↺ Neustart</button>
+                </div>
+                <div class="timer-display-wrap">
+                    <span>⏱ <span id="timer-1">0:00</span></span>
+                    <span>🏆 <span id="best-1">--:--</span></span>
+                </div>
+            </div>
+
+            <div id="zuoContainer"></div>
+            <div id="zuoScore" class="zuo-score"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TAB 2 — LÜCKENTEXT
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="section" id="sec-2">
+        <img class="tab-banner" src="https://images.pexels.com/photos/1174122/pexels-photo-1174122.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Notizbuch und Stifte auf dem Schreibtisch">
+        <div class="sec-inner">
+            <h2 style="color:#4a148c; margin-bottom:6px;">✏️ Lückentext: Präpositionen einsetzen</h2>
+
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="lueckenLoesung()">💡 Lösungen</button>
+                    <button class="btn" onclick="lueckenReset(); resetTimer(2);">↺ Neustart</button>
+                </div>
+                <div class="timer-display-wrap">
+                    <span>⏱ <span id="timer-2">0:00</span></span>
+                    <span>🏆 <span id="best-2">--:--</span></span>
+                </div>
+            </div>
+
+            <div class="luecken-section-title">Teil A — Lokale Präpositionen (Akkusativ &amp; Dativ)</div>
+            <div class="hilfe-box">Setze die richtige Präposition ein. Achte auf den Kasus! Tippe direkt ins Feld — grün = richtig, rot = falsch.</div>
+
+            <div id="lueckenContainerA"></div>
+
+            <div class="luecken-section-title" style="margin-top:28px;">Teil B — Wechselpräpositionen: Akkusativ oder Dativ?</div>
+            <div class="hilfe-box">Wähle die richtige Form des Artikels. Die Wechselpräposition steht schon im Satz — du musst nur den richtigen Artikel ergänzen.</div>
+
+            <div id="lueckenContainerB"></div>
+
+            <div class="luecken-section-title" style="margin-top:28px;">Teil C — Gemischte Übung: Lisas neue Möbel</div>
+            <div class="hilfe-box">Lies den Text über Lisas Wohnung und ergänze die fehlenden Präpositionen.</div>
+
+            <div id="lueckenContainerC"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TAB 3 — SATZBAU
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="section" id="sec-3">
+        <img class="tab-banner" src="https://images.pexels.com/photos/9227243/pexels-photo-9227243.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Scrabble-Buchstabensteine auf hellem Untergrund">
+        <div class="sec-inner">
+            <h2 style="color:#4a148c; margin-bottom:6px;">🧩 Satzbau: Sätze mit Präpositionen ordnen</h2>
+
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="sbShowAll()">💡 Lösungen</button>
+                    <button class="btn" onclick="resetSatzbau(); resetTimer(3);">↺ Neustart</button>
+                </div>
+                <div class="timer-display-wrap">
+                    <span>⏱ <span id="timer-3">0:00</span></span>
+                    <span>🏆 <span id="best-3">--:--</span></span>
+                </div>
+            </div>
+
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Ziehe die Chips in die richtige Reihenfolge. Wenn die Bank leer ist, wird der Satz automatisch geprüft.
+            </div>
+
+            <div id="satzbauContainer"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TAB 4 — WORTSCHATZ
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="section" id="sec-4">
+        <img class="tab-banner" src="https://images.pexels.com/photos/7450476/pexels-photo-7450476.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Wörterbuchseite in Nahaufnahme">
+        <div class="sec-inner">
+            <h2 style="color:#4a148c; margin-bottom:6px;">🔠 Wortschatz-Training</h2>
+
+            <div class="control-bar">
+                <div class="btn-row">
+                    <button class="btn" onclick="showVocabLoesung()">💡 Lösungen</button>
+                    <button class="btn" onclick="resetVocab(); resetTimer(4);">↺ Neustart</button>
+                </div>
+                <div class="timer-display-wrap">
+                    <span>⏱ <span id="timer-4">0:00</span></span>
+                    <span>🏆 <span id="best-4">--:--</span></span>
+                </div>
+            </div>
+
+            <div class="hilfe-box">
+                <strong>Aufgabe:</strong> Übersetze die englischen Begriffe ins Deutsche. Bei Nomen: Artikel + Wort eingeben. Tippe direkt ins Feld — Live-Feedback erscheint sofort.
+            </div>
+
+            <div id="vocabContainer"></div>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <span class="author-name">&copy; Frank Burkert</span> &middot; DaF-Materialien &middot;
+        <a href="mailto:FrankBurkert@fabdaf.onmicrosoft.com">FrankBurkert@fabdaf.onmicrosoft.com</a>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function showSection(idx) {
+    document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===idx); });
+    document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===idx); });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TIMER-SYSTEM
+// ══════════════════════════════════════════════════════════════════
+var TIMER_PREFIX = 'A22_2066X_';
+var timerStarted  = [false, false, false, false, false];
+var timerRunning  = [false, false, false, false, false];
+var timerSeconds  = [0, 0, 0, 0, 0];
+var timerIntervals = [null, null, null, null, null];
+
+function timerAutoStart(n) {
+    if (timerStarted[n]) return;
+    timerStarted[n] = true;
+    timerRunning[n] = true;
+    timerIntervals[n] = setInterval(function() {
+        timerSeconds[n]++;
+        var el = document.getElementById('timer-' + n);
+        if (el) el.textContent = fmtTime(timerSeconds[n]);
+    }, 1000);
+}
+
+function timerStop(n) {
+    if (!timerRunning[n]) return;
+    clearInterval(timerIntervals[n]);
+    timerRunning[n] = false;
+    var best = parseInt(localStorage.getItem(TIMER_PREFIX + n) || '999999');
+    if (timerSeconds[n] > 0 && timerSeconds[n] < best) {
+        localStorage.setItem(TIMER_PREFIX + n, timerSeconds[n]);
+        var el = document.getElementById('best-' + n);
+        if (el) el.textContent = fmtTime(timerSeconds[n]);
+    }
+}
+
+function resetTimer(n) {
+    clearInterval(timerIntervals[n]);
+    timerRunning[n] = false;
+    timerStarted[n] = false;
+    timerSeconds[n] = 0;
+    var el = document.getElementById('timer-' + n);
+    if (el) el.textContent = '0:00';
+}
+
+function fmtTime(s) {
+    return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60);
+}
+
+function loadBestTimes() {
+    for (var i = 1; i <= 4; i++) {
+        var v = localStorage.getItem(TIMER_PREFIX + i);
+        if (v) {
+            var el = document.getElementById('best-' + i);
+            if (el) el.textContent = fmtTime(parseInt(v));
+        }
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TAB 1 — ZUORDNUNG
+// ══════════════════════════════════════════════════════════════════
+var ZUO_DATA = [
+    // Akkusativ
+    { praep: 'um', kat: 'akk' },
+    { praep: 'durch', kat: 'akk' },
+    { praep: 'gegen', kat: 'akk' },
+    { praep: 'bis', kat: 'akk' },
+    { praep: 'entlang (Akk.)', kat: 'akk' },
+    // Dativ
+    { praep: 'aus', kat: 'dat' },
+    { praep: 'bei', kat: 'dat' },
+    { praep: 'nach', kat: 'dat' },
+    { praep: 'zu', kat: 'dat' },
+    { praep: 'von', kat: 'dat' },
+    { praep: 'gegenüber', kat: 'dat' },
+    { praep: 'ab', kat: 'dat' },
+    // Genitiv
+    { praep: 'außerhalb', kat: 'gen' },
+    { praep: 'innerhalb', kat: 'gen' },
+    { praep: 'entlang (Gen.)', kat: 'gen' },
+    // Wechselpräpositionen
+    { praep: 'in', kat: 'wech' },
+    { praep: 'auf', kat: 'wech' },
+    { praep: 'an', kat: 'wech' },
+    { praep: 'unter', kat: 'wech' },
+    { praep: 'über', kat: 'wech' },
+    { praep: 'vor', kat: 'wech' },
+    { praep: 'hinter', kat: 'wech' },
+    { praep: 'zwischen', kat: 'wech' },
+    { praep: 'neben', kat: 'wech' }
+];
+
+var ZUO_KATEGORIEN = [
+    { id: 'akk',  label: 'Akkusativ',       klasse: 'akk' },
+    { id: 'dat',  label: 'Dativ',            klasse: 'dat' },
+    { id: 'gen',  label: 'Genitiv',          klasse: 'gen' },
+    { id: 'wech', label: 'Wechselpräposition', klasse: 'wech' }
+];
+
+var zuoDragged = null;
+var zuoCorrect = 0;
+
+function shuffleArr(arr) {
+    var a = arr.slice();
+    for (var i = a.length-1; i > 0; i--) {
+        var j = Math.floor(Math.random()*(i+1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+}
+
+function initZuo() {
+    zuoCorrect = 0;
+    var c = document.getElementById('zuoContainer');
+    c.innerHTML = '';
+    var scoreEl = document.getElementById('zuoScore');
+    scoreEl.style.display = 'none';
+    scoreEl.className = 'zuo-score';
+
+    // Pool
+    var pool = document.createElement('div');
+    pool.className = 'zuo-pool';
+    pool.id = 'zuoPool';
+    pool.addEventListener('dragover', function(e){ e.preventDefault(); });
+    pool.addEventListener('drop', function(e){
+        e.preventDefault();
+        if (zuoDragged) { pool.appendChild(zuoDragged); zuoDragged = null; colorAllZuoChips(); }
+    });
+    pool.addEventListener('click', function(e){
+        if (e.target === pool) {
+            var sel = pool.querySelector('.chip.selected');
+            if (sel) { pool.appendChild(sel); sel.classList.remove('selected'); colorAllZuoChips(); }
+        }
+    });
+
+    shuffleArr(ZUO_DATA).forEach(function(item) {
+        var chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = item.praep;
+        chip.dataset.kat = item.kat;
+        chip.draggable = true;
+        chip.addEventListener('dragstart', function(e){
+            zuoDragged = chip;
+            e.dataTransfer.setData('text/plain','');
+            setTimeout(function(){ chip.style.opacity = '0.4'; }, 0);
+        });
+        chip.addEventListener('dragend', function(){
+            chip.style.opacity = '';
+            zuoDragged = null;
+            colorAllZuoChips();
+        });
+        chip.addEventListener('click', function(){
+            if (chip.classList.contains('correct')) return;
+            if (chip.classList.contains('selected')) {
+                chip.classList.remove('selected'); return;
+            }
+            document.querySelectorAll('#sec-1 .chip.selected').forEach(function(c){ c.classList.remove('selected'); });
+            chip.classList.add('selected');
+        });
+        pool.appendChild(chip);
+    });
+    c.appendChild(pool);
+
+    // Grid
+    var grid = document.createElement('div');
+    grid.className = 'zuo-layout';
+    ZUO_KATEGORIEN.forEach(function(kat) {
+        var box = document.createElement('div');
+        box.className = 'zuo-kategorie ' + kat.klasse;
+        var h4 = document.createElement('h4');
+        h4.textContent = kat.label;
+        box.appendChild(h4);
+        var drop = document.createElement('div');
+        drop.className = 'zuo-drop';
+        drop.dataset.kat = kat.id;
+        drop.id = 'zuoDrop-' + kat.id;
+        drop.addEventListener('dragover', function(e){ e.preventDefault(); drop.classList.add('dragover'); });
+        drop.addEventListener('dragleave', function(){ drop.classList.remove('dragover'); });
+        drop.addEventListener('drop', function(e){
+            e.preventDefault();
+            drop.classList.remove('dragover');
+            if (zuoDragged) { drop.appendChild(zuoDragged); zuoDragged = null; colorAllZuoChips(); }
+        });
+        drop.addEventListener('click', function(){
+            var sel = document.querySelector('#sec-1 .chip.selected');
+            if (sel) { drop.appendChild(sel); sel.classList.remove('selected'); colorAllZuoChips(); }
+        });
+        box.appendChild(drop);
+        grid.appendChild(box);
+    });
+    c.appendChild(grid);
+}
+
+function colorAllZuoChips() {
+    timerAutoStart(1);
+    var correct = 0; var total = 0;
+    document.querySelectorAll('#sec-1 .chip').forEach(function(chip) {
+        var zone = chip.closest('.zuo-drop');
+        chip.classList.remove('correct','wrong');
+        if (zone) {
+            total++;
+            if (chip.dataset.kat === zone.dataset.kat) {
+                chip.classList.add('correct'); correct++;
+            } else {
+                chip.classList.add('wrong');
+            }
+        }
+    });
+    if (total === ZUO_DATA.length && correct === ZUO_DATA.length) {
+        timerStop(1);
+        var sc = document.getElementById('zuoScore');
+        sc.style.display = 'block';
+        sc.className = 'zuo-score complete';
+        sc.textContent = '✅ Perfekt! Alle ' + ZUO_DATA.length + ' Präpositionen korrekt zugeordnet!';
+    }
+}
+
+function zuoLoesung() {
+    timerStop(1);
+    ZUO_DATA.forEach(function(item) {
+        var chip = Array.from(document.querySelectorAll('#sec-1 .chip')).find(function(c){ return c.dataset.kat === item.kat && c.textContent === item.praep; });
+        if (!chip) return;
+        var drop = document.getElementById('zuoDrop-' + item.kat);
+        if (drop) { drop.appendChild(chip); chip.classList.remove('wrong','selected'); chip.classList.add('correct'); }
+    });
+    var sc = document.getElementById('zuoScore');
+    sc.style.display = 'block';
+    sc.className = 'zuo-score complete';
+    sc.textContent = '✅ Alle Lösungen angezeigt!';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TAB 2 — LÜCKENTEXT
+// ══════════════════════════════════════════════════════════════════
+var LUECKEN_A = [
+    { nr:1,  segs: [{t:'Der Bär läuft '},{b:'durch',w:80},{t:' den Wald, '},{b:'an',w:50},{t:' der Straße entlang.'}] },
+    { nr:2,  segs: [{t:'Tom ist '},{b:'gegen',w:80},{t:' das Haus gefahren.'}] },
+    { nr:3,  segs: [{t:'Ich bin '},{b:'bei',w:60},{t:' Jack zu Hause.'}] },
+    { nr:4,  segs: [{t:'Ich fahre '},{b:'nach',w:70},{t:' Dresden.'}] },
+    { nr:5,  segs: [{t:'Du findest mich '},{b:'außerhalb',w:100},{t:' der Schule.'}] },
+    { nr:6,  segs: [{t:'Gestern bin ich den ganzen Nachmittag den Main '},{b:'entlang',w:90},{t:' gerannt.'}] },
+    { nr:7,  segs: [{t:'Sie kommen '},{b:'aus',w:60},{t:' der Schweiz.'}] },
+    { nr:8,  segs: [{t:'Der Weg führt '},{b:'um',w:50},{t:' den See herum.'}] },
+    { nr:9,  segs: [{t:'Das Café liegt '},{b:'innerhalb',w:90},{t:' der Altstadt.'}] },
+    { nr:10, segs: [{t:'Fahr '},{b:'bis',w:50},{t:' zur nächsten Kreuzung und dann links.'}] },
+    { nr:11, segs: [{t:'Das Krankenhaus befindet sich '},{b:'gegenüber',w:110},{t:' dem Bahnhof.'}] },
+    { nr:12, segs: [{t:'Der Zug fährt '},{b:'ab',w:50},{t:' dem Gleis 5.'}] }
+];
+
+var LUECKEN_B = [
+    { nr:1,  segs: [{t:'Die Landkarte hängt an '},{b:'der',w:50,hint:'Wand (die → ?)'},{t:' Wand. (Wo?)'}] },
+    { nr:2,  segs: [{t:'Lisa hängt die Landkarte an '},{b:'die',w:50,hint:'Wand (die → ?)'},{t:' Wand. (Wohin?)'}] },
+    { nr:3,  segs: [{t:'Ich bin auf '},{b:'dem',w:60,hint:'Berg (der → ?)'},{t:' Berg. (Wo?)'}] },
+    { nr:4,  segs: [{t:'Ich klettere auf '},{b:'den',w:60,hint:'Berg (der → ?)'},{t:' Berg. (Wohin?)'}] },
+    { nr:5,  segs: [{t:'Wir verstecken uns hinter '},{b:'dem',w:60,hint:'Busch (der → ?)'},{t:' Busch. (Wo?)'}] },
+    { nr:6,  segs: [{t:'Wir laufen hinter '},{b:'den',w:60,hint:'Busch (der → ?)'},{t:' Busch. (Wohin?)'}] },
+    { nr:7,  segs: [{t:'Das Poster hängt über '},{b:'der',w:50,hint:'Couch (die → ?)'},{t:' Couch. (Wo?)'}] },
+    { nr:8,  segs: [{t:'Sie hängt das Poster über '},{b:'die',w:50,hint:'Couch (die → ?)'},{t:' Couch. (Wohin?)'}] },
+    { nr:9,  segs: [{t:'Der Stuhl steht neben '},{b:'dem',w:60,hint:'Tisch (der → ?)'},{t:' Tisch. (Wo?)'}] },
+    { nr:10, segs: [{t:'Alex stellt den Stuhl neben '},{b:'den',w:60,hint:'Tisch (der → ?)'},{t:' Tisch. (Wohin?)'}] },
+    { nr:11, segs: [{t:'Jack steht vor '},{b:'dem',w:60,hint:'Bären (der → ?)'},{t:' Bären. (Wo?)'}] },
+    { nr:12, segs: [{t:'Jack stellt sich vor '},{b:'den',w:60,hint:'Bären (der → ?)'},{t:' Bären. (Wohin?)'}] }
+];
+
+var LUECKEN_C = [
+    { nr:1,  segs: [{t:'Lisa möchte ein neues Bett '},{b:'im',w:50,hint:'in + dem'},{t:' Schlafzimmer.'}] },
+    { nr:2,  segs: [{t:'Das Sofa steht '},{b:'im',w:50,hint:'in + dem'},{t:' Wohnzimmer '},{b:'an',w:50},{t:' der Wand.'}] },
+    { nr:3,  segs: [{t:'Die Regale hängen '},{b:'über',w:60},{t:' dem Fernseher.'}] },
+    { nr:4,  segs: [{t:'Der Schreibtisch steht '},{b:'am',w:50,hint:'an + dem'},{t:' Fenster.'}] },
+    { nr:5,  segs: [{t:'Sie überlegt, die neuen Möbel '},{b:'an',w:50},{t:' den Platz der alten Möbel zu stellen.'}] },
+    { nr:6,  segs: [{t:'Das Bett steht '},{b:'vor',w:60},{t:' dem Schrank.'}] }
+];
+
+function buildLuecken(data, containerId) {
+    var c = document.getElementById(containerId);
+    c.innerHTML = '';
+    data.forEach(function(item) {
+        var div = document.createElement('div');
+        div.className = 'luecken-item';
+        var nr = document.createElement('div');
+        nr.className = 'satz-nr';
+        nr.textContent = 'Satz ' + item.nr;
+        div.appendChild(nr);
+        var p = document.createElement('p');
+        item.segs.forEach(function(seg) {
+            if (seg.t !== undefined) {
+                p.appendChild(document.createTextNode(seg.t));
+            } else {
+                var inp = document.createElement('input');
+                inp.className = 'luecken-inp';
+                inp.type = 'text';
+                inp.placeholder = '';
+                inp.style.width = (seg.w || 80) + 'px';
+                inp.dataset.ans = seg.b;
+                if (seg.hint) inp.title = seg.hint;
+                inp.setAttribute('autocomplete','off');
+                inp.addEventListener('input', function(){
+                    timerAutoStart(2);
+                    liveCheckLuecke(inp);
+                    checkLueckenAllOk();
+                });
+                p.appendChild(inp);
+            }
+        });
+        div.appendChild(p);
+        c.appendChild(div);
+    });
+}
+
+function liveCheckLuecke(inp) {
+    var ans = (inp.dataset.ans || '').toLowerCase();
+    var val = inp.value.trim().toLowerCase();
+    inp.classList.remove('ok','no');
+    if (!val) return;
+    if (val === ans) { inp.classList.add('ok'); return; }
+    if (ans.indexOf(val) === 0) return;
+    inp.classList.add('no');
+}
+
+function checkLueckenAllOk() {
+    var all = document.querySelectorAll('#sec-2 .luecken-inp');
+    var ok = Array.from(all).every(function(i){ return i.classList.contains('ok'); });
+    if (ok && all.length > 0) timerStop(2);
+}
+
+function lueckenLoesung() {
+    timerStop(2);
+    document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp){
+        var h = inp.nextElementSibling;
+        if (h && h.classList.contains('luecken-hint')) h.remove();
+        if (!inp.classList.contains('ok')) {
+            inp.classList.add('no');
+            var hint = document.createElement('span');
+            hint.className = 'luecken-hint';
+            hint.textContent = inp.dataset.ans;
+            inp.insertAdjacentElement('afterend', hint);
+        }
+    });
+}
+
+function lueckenReset() {
+    document.querySelectorAll('#sec-2 .luecken-inp').forEach(function(inp){
+        inp.value = '';
+        inp.classList.remove('ok','no');
+        var h = inp.nextElementSibling;
+        if (h && h.classList.contains('luecken-hint')) h.remove();
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TAB 3 — SATZBAU
+// ══════════════════════════════════════════════════════════════════
+var satzbauData = [
+    {
+        parts: ['ich', 'laufe', 'die', 'Straße', 'entlang'],
+        valid: [['ich','laufe','die','Straße','entlang']],
+        punct: '.'
+    },
+    {
+        parts: ['wir', 'gehen', 'durch', 'den', 'Wald'],
+        valid: [['wir','gehen','durch','den','Wald']],
+        punct: '.'
+    },
+    {
+        parts: ['das', 'Café', 'liegt', 'außerhalb', 'der', 'Stadt'],
+        valid: [['das','Café','liegt','außerhalb','der','Stadt']],
+        punct: '.'
+    },
+    {
+        parts: ['Lisa', 'hängt', 'das', 'Poster', 'an', 'die', 'Wand'],
+        valid: [['Lisa','hängt','das','Poster','an','die','Wand']],
+        punct: '.'
+    },
+    {
+        parts: ['das', 'Poster', 'hängt', 'an', 'der', 'Wand'],
+        valid: [['das','Poster','hängt','an','der','Wand']],
+        punct: '.'
+    },
+    {
+        parts: ['ich', 'fahre', 'nach', 'Dresden'],
+        valid: [['ich','fahre','nach','Dresden']],
+        punct: '.'
+    },
+    {
+        parts: ['Wir', 'verstecken', 'uns', 'hinter', 'dem', 'Busch'],
+        valid: [['Wir','verstecken','uns','hinter','dem','Busch']],
+        punct: '.'
+    },
+    {
+        parts: ['unter', 'der', 'Woche', 'arbeite', 'ich', 'sehr', 'viel'],
+        valid: [['unter','der','Woche','arbeite','ich','sehr','viel']],
+        punct: '.'
+    },
+    {
+        parts: ['der', 'Schreibtisch', 'steht', 'am', 'Fenster'],
+        valid: [['der','Schreibtisch','steht','am','Fenster']],
+        punct: '.'
+    },
+    {
+        parts: ['am', 'Dienstag', 'fahren', 'wir', 'in', 'den', 'Urlaub'],
+        valid: [['am','Dienstag','fahren','wir','in','den','Urlaub']],
+        punct: '.'
+    }
+];
+
+var sbDragged = null;
+
+function getSbCursor() {
+    var c = document.getElementById('sb-insert-cursor');
+    if (!c) {
+        c = document.createElement('div');
+        c.id = 'sb-insert-cursor';
+        c.style.cssText = 'width:3px;min-height:32px;background:#e67e22;border-radius:2px;align-self:stretch;pointer-events:none;flex-shrink:0;';
+    }
+    return c;
+}
+
+function getSbInsertPos(zone, clientX) {
+    var chips = Array.from(zone.querySelectorAll('.chip'));
+    for (var i = 0; i < chips.length; i++) {
+        var r = chips[i].getBoundingClientRect();
+        if (clientX < r.left + r.width/2) return chips[i];
+    }
+    return null;
+}
+
+function sbCapitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function sbUpdateCapitalization(row) {
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    chips.forEach(function(c, i) {
+        var orig = c.dataset.orig;
+        var isProper = orig.charAt(0) === orig.charAt(0).toUpperCase() && orig.charAt(0) !== orig.charAt(0).toLowerCase();
+        c.textContent = isProper ? orig : (i === 0 ? sbCapitalize(orig) : orig);
+    });
+}
+
+function sbMakeChip(word) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = word;
+    chip.dataset.orig = word;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', function(e){
+        sbDragged = chip;
+        timerAutoStart(3);
+        e.dataTransfer.setData('text/plain','');
+        setTimeout(function(){ chip.style.opacity = '0.4'; }, 0);
+    });
+    chip.addEventListener('dragend', function(){
+        chip.style.opacity = '';
+        sbDragged = null;
+        var c = document.getElementById('sb-insert-cursor');
+        if (c && c.parentNode) c.parentNode.removeChild(c);
+    });
+    return chip;
+}
+
+function sbRegisterZone(zone, idx) {
+    zone.addEventListener('dragover', function(e){
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = getSbCursor();
+        var before = getSbInsertPos(zone, e.clientX);
+        if (before) zone.insertBefore(cursor, before);
+        else zone.appendChild(cursor);
+    });
+    zone.addEventListener('dragleave', function(e){
+        if (!zone.contains(e.relatedTarget)) {
+            var c = document.getElementById('sb-insert-cursor');
+            if (c && c.parentNode === zone) zone.removeChild(c);
+        }
+    });
+    zone.addEventListener('drop', function(e){
+        e.preventDefault();
+        if (!sbDragged) return;
+        var cursor = document.getElementById('sb-insert-cursor');
+        if (cursor && cursor.parentNode === zone) { zone.insertBefore(sbDragged, cursor); zone.removeChild(cursor); }
+        else zone.appendChild(sbDragged);
+        sbDragged = null;
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+    });
+}
+
+function sbColorRow(idx) {
+    var row = document.getElementById('sb-row-' + idx);
+    var chips = Array.from(row.querySelectorAll('.chip'));
+    var order = chips.map(function(c){ return c.dataset.orig; });
+    var ok = satzbauData[idx].valid.some(function(v){ return JSON.stringify(v) === JSON.stringify(order); });
+    chips.forEach(function(c){
+        c.classList.remove('correct','incorrect');
+        c.classList.add(ok ? 'correct' : 'incorrect');
+    });
+    var existing = row.querySelector('.sb-punkt');
+    if (existing) existing.parentNode.removeChild(existing);
+    if (ok) {
+        var punkt = document.createElement('span');
+        punkt.className = 'sb-punkt';
+        punkt.textContent = satzbauData[idx].punct || '.';
+        row.appendChild(punkt);
+    }
+    return ok;
+}
+
+function sbCheckAuto(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    if (bank.querySelectorAll('.chip').length > 0) {
+        row.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('correct','incorrect'); });
+        row.classList.remove('correct','incorrect');
+        fb.textContent = '';
+        return;
+    }
+    setTimeout(function(){
+        timerAutoStart(3);
+        var ok = sbColorRow(idx);
+        if (ok) {
+            row.classList.add('correct'); row.classList.remove('incorrect');
+            fb.className = 'satzbau-feedback correct';
+            fb.textContent = '✓ Korrekt!';
+            sbCheckAllDone();
+        } else {
+            row.classList.add('incorrect'); row.classList.remove('correct');
+            fb.className = 'satzbau-feedback incorrect';
+            fb.textContent = '✗ Falsche Reihenfolge – verschiebe die Chips!';
+        }
+    }, 500);
+}
+
+function sbCheckAllDone() {
+    var allOk = satzbauData.every(function(_, i){
+        var row = document.getElementById('sb-row-' + i);
+        return row && row.classList.contains('correct');
+    });
+    if (allOk) timerStop(3);
+}
+
+function sbShowSolution(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-' + idx);
+    var fb   = document.getElementById('sb-fb-' + idx);
+    var solution = satzbauData[idx].valid[0];
+    var allChips = {};
+    Array.from(bank.querySelectorAll('.chip')).forEach(function(c){ allChips[c.dataset.orig] = c; });
+    Array.from(row.querySelectorAll('.chip')).forEach(function(c){ allChips[c.dataset.orig] = c; });
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild) row.removeChild(row.firstChild);
+    solution.forEach(function(word, i){
+        var chip = allChips[word];
+        if (chip) {
+            chip.textContent = (i === 0) ? sbCapitalize(word) : word;
+            chip.classList.remove('correct','incorrect');
+            row.appendChild(chip);
+        }
+    });
+    fb.textContent = '';
+    setTimeout(function(){ sbCheckAuto(idx); }, 100);
+}
+
+function sbResetOne(idx) {
+    var bank = document.getElementById('sb-bank-' + idx);
+    var row  = document.getElementById('sb-row-'  + idx);
+    var fb   = document.getElementById('sb-fb-'   + idx);
+    while (bank.firstChild) bank.removeChild(bank.firstChild);
+    while (row.firstChild)  row.removeChild(row.firstChild);
+    row.classList.remove('correct','incorrect');
+    fb.textContent = ''; fb.className = 'satzbau-feedback';
+    var ex = row.querySelector('.sb-punkt');
+    if (ex) ex.parentNode.removeChild(ex);
+    var parts = satzbauData[idx].parts.slice();
+    for (var i = parts.length-1; i > 0; i--) {
+        var j = Math.floor(Math.random()*(i+1));
+        var t = parts[i]; parts[i] = parts[j]; parts[j] = t;
+    }
+    parts.forEach(function(w){ bank.appendChild(sbMakeChip(w)); });
+}
+
+function initSatzbau() {
+    var container = document.getElementById('satzbauContainer');
+    container.innerHTML = '';
+    satzbauData.forEach(function(ex, idx){
+        var item = document.createElement('div');
+        item.className = 'satzbau-item';
+        var lbl = document.createElement('div');
+        lbl.className = 'sb-label';
+        lbl.textContent = 'Satz ' + (idx+1);
+        item.appendChild(lbl);
+        var bank = document.createElement('div');
+        bank.className = 'chips-container'; bank.id = 'sb-bank-' + idx;
+        var row = document.createElement('div');
+        row.className = 'sentence-builder'; row.id = 'sb-row-' + idx;
+        var fb = document.createElement('div');
+        fb.className = 'satzbau-feedback'; fb.id = 'sb-fb-' + idx;
+        var parts = ex.parts.slice();
+        for (var i = parts.length-1; i > 0; i--) {
+            var j = Math.floor(Math.random()*(i+1));
+            var t = parts[i]; parts[i] = parts[j]; parts[j] = t;
+        }
+        parts.forEach(function(w){ bank.appendChild(sbMakeChip(w)); });
+        sbRegisterZone(bank, idx);
+        sbRegisterZone(row, idx);
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex; gap:8px; margin-top:6px;';
+        var solveBtn = document.createElement('button');
+        solveBtn.className = 'btn'; solveBtn.textContent = 'Lösen';
+        solveBtn.setAttribute('data-idx', idx);
+        solveBtn.addEventListener('click', function(){ sbShowSolution(parseInt(this.getAttribute('data-idx'))); });
+        var resetBtn = document.createElement('button');
+        resetBtn.className = 'btn'; resetBtn.textContent = '↺ Neustart';
+        resetBtn.setAttribute('data-idx', idx);
+        resetBtn.addEventListener('click', function(){ sbResetOne(parseInt(this.getAttribute('data-idx'))); });
+        btnRow.appendChild(solveBtn); btnRow.appendChild(resetBtn);
+        item.appendChild(bank); item.appendChild(row); item.appendChild(fb); item.appendChild(btnRow);
+        container.appendChild(item);
+    });
+}
+
+function sbShowAll() {
+    timerStop(3);
+    satzbauData.forEach(function(_, idx){ sbShowSolution(idx); });
+}
+
+function resetSatzbau() { initSatzbau(); }
+
+// ══════════════════════════════════════════════════════════════════
+// TAB 4 — WORTSCHATZ
+// ══════════════════════════════════════════════════════════════════
+var WORTSCHATZ = [
+    // Lokale Präpositionen
+    { id:1,  type:'p', en:'around, in a circle', de:'um' },
+    { id:2,  type:'p', en:'through, across', de:'durch' },
+    { id:3,  type:'p', en:'along (Akkusativ, after noun)', de:'entlang' },
+    { id:4,  type:'p', en:'against, into (collision)', de:'gegen' },
+    { id:5,  type:'p', en:'until, as far as', de:'bis' },
+    { id:6,  type:'p', en:'from (origin, starting point)', de:'aus' },
+    { id:7,  type:'p', en:'at, near (at someone\'s home)', de:'bei' },
+    { id:8,  type:'p', en:'opposite, across from', de:'gegenüber' },
+    { id:9,  type:'p', en:'to (city, country, direction)', de:'nach' },
+    { id:10, type:'p', en:'to (person, place)', de:'zu' },
+    { id:11, type:'p', en:'from (origin)', de:'von' },
+    { id:12, type:'p', en:'outside of', de:'außerhalb' },
+    { id:13, type:'p', en:'inside of, within', de:'innerhalb' },
+    // Wechselpräpositionen
+    { id:14, type:'p', en:'in, into', de:'in' },
+    { id:15, type:'p', en:'on, onto (horizontal surface)', de:'auf' },
+    { id:16, type:'p', en:'on, onto (vertical surface / at)', de:'an' },
+    { id:17, type:'p', en:'under, beneath', de:'unter' },
+    { id:18, type:'p', en:'over, above, across', de:'über' },
+    { id:19, type:'p', en:'in front of, before', de:'vor' },
+    { id:20, type:'p', en:'behind', de:'hinter' },
+    { id:21, type:'p', en:'between', de:'zwischen' },
+    { id:22, type:'p', en:'next to, beside', de:'neben' },
+    // Nomen aus dem Lesetext
+    { id:23, type:'n', en:'the wall, partition', artikel:'die', de:'Wand', plural:'Wände' },
+    { id:24, type:'n', en:'the map (geographical)', artikel:'die', de:'Landkarte', plural:'Landkarten' },
+    { id:25, type:'n', en:'the direction', artikel:'die', de:'Richtung', plural:'Richtungen' },
+    { id:26, type:'n', en:'the furniture (collective)', artikel:'die', de:'Möbel', plural:'\u2013' },
+    { id:27, type:'n', en:'the wardrobe, cupboard', artikel:'der', de:'Schrank', plural:'Schränke' },
+    { id:28, type:'n', en:'the shelf, bookcase', artikel:'das', de:'Regal', plural:'Regale' },
+    { id:29, type:'n', en:'the bush, shrub', artikel:'der', de:'Busch', plural:'Büsche' },
+    { id:30, type:'n', en:'the corner, angle', artikel:'die', de:'Ecke', plural:'Ecken' }
+];
+
+function initVocab() {
+    var c = document.getElementById('vocabContainer');
+    c.innerHTML = '';
+    c.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:10px;';
+    var shuffled = WORTSCHATZ.slice().sort(function(){ return Math.random()-0.5; });
+    shuffled.forEach(function(item){
+        var div = document.createElement('div');
+        div.className = 'vocab-item';
+        div.style.marginBottom = '0';
+        var en = document.createElement('span');
+        en.className = 'vocab-en';
+        en.textContent = item.en;
+        div.appendChild(en);
+        var arrow = document.createElement('span');
+        arrow.className = 'vocab-arrow';
+        arrow.textContent = '\u2192';
+        div.appendChild(arrow);
+        var inputs = document.createElement('div');
+        inputs.className = 'vocab-inputs';
+        if (item.type === 'n') {
+            var artInp = document.createElement('input');
+            artInp.className = 'art'; artInp.type = 'text'; artInp.placeholder = 'Artikel';
+            artInp.dataset.ans = item.artikel.toLowerCase(); artInp.dataset.field = 'art';
+            artInp.setAttribute('autocomplete','off');
+            artInp.addEventListener('input', function(){ timerAutoStart(4); wortschatzCheck(this); checkVocabAllOk(); });
+            inputs.appendChild(artInp);
+            var wordInp = document.createElement('input');
+            wordInp.className = 'wort'; wordInp.type = 'text'; wordInp.placeholder = 'Wort';
+            wordInp.dataset.ans = item.de; wordInp.dataset.field = 'word';
+            wordInp.setAttribute('autocomplete','off');
+            wordInp.addEventListener('input', function(){ timerAutoStart(4); wortschatzCheck(this); checkVocabAllOk(); });
+            inputs.appendChild(wordInp);
+            if (item.plural !== '\u2013') {
+                var plInp = document.createElement('input');
+                plInp.className = 'wort'; plInp.style.width = '140px'; plInp.type = 'text';
+                plInp.placeholder = 'Plural';
+                plInp.dataset.ans = item.plural; plInp.dataset.field = 'plural';
+                plInp.setAttribute('autocomplete','off');
+                plInp.addEventListener('input', function(){ timerAutoStart(4); wortschatzCheck(this); checkVocabAllOk(); });
+                inputs.appendChild(plInp);
+            } else {
+                var plDisabled = document.createElement('input');
+                plDisabled.className = 'wort'; plDisabled.style.width = '80px';
+                plDisabled.value = '\u2013'; plDisabled.disabled = true;
+                plDisabled.classList.add('correct'); plDisabled.style.opacity = '0.6';
+                plDisabled.title = 'Kein Plural';
+                inputs.appendChild(plDisabled);
+            }
+        } else {
+            var deInp = document.createElement('input');
+            deInp.className = 'wort'; deInp.style.width = '200px'; deInp.type = 'text';
+            deInp.placeholder = 'Deutsch';
+            deInp.dataset.ans = item.de; deInp.dataset.field = 'word';
+            deInp.setAttribute('autocomplete','off');
+            deInp.addEventListener('input', function(){ timerAutoStart(4); wortschatzCheck(this); checkVocabAllOk(); });
+            inputs.appendChild(deInp);
+        }
+        div.appendChild(inputs);
+        c.appendChild(div);
+    });
+}
+
+function wortschatzCheck(inp) {
+    var user = inp.value;
+    var answer = inp.dataset.ans;
+    var field = inp.dataset.field;
+    inp.classList.remove('correct','wrong');
+    if (!user) return;
+    var cmpUser   = (field === 'art') ? user.toLowerCase().trim() : user.trim();
+    var cmpAnswer = (field === 'art') ? answer.toLowerCase() : answer;
+    if (cmpUser === cmpAnswer) { inp.classList.add('correct'); }
+    else if (cmpAnswer.indexOf(cmpUser) === 0) { /* Präfix — neutral */ }
+    else { inp.classList.add('wrong'); }
+}
+
+function checkVocabAllOk() {
+    var all = document.querySelectorAll('#sec-4 .vocab-inputs input');
+    var ok = Array.from(all).every(function(i){ return i.disabled || i.classList.contains('correct'); });
+    if (ok && all.length > 0) timerStop(4);
+}
+
+function showVocabLoesung() {
+    timerStop(4);
+    document.querySelectorAll('#sec-4 .vocab-inputs input').forEach(function(inp){
+        if (inp.disabled) return;
+        var h = inp.nextElementSibling;
+        if (h && h.classList.contains('vocab-hint')) h.remove();
+        var user = (inp.dataset.field === 'art') ? inp.value.trim().toLowerCase() : inp.value.trim();
+        var ans  = (inp.dataset.field === 'art') ? inp.dataset.ans.toLowerCase() : inp.dataset.ans;
+        if (user === ans) {
+            inp.classList.remove('wrong'); inp.classList.add('correct');
+        } else {
+            inp.classList.add('wrong');
+            var hint = document.createElement('span');
+            hint.className = 'vocab-hint'; hint.textContent = inp.dataset.ans;
+            inp.insertAdjacentElement('afterend', hint);
+        }
+    });
+}
+
+function resetVocab() {
+    document.querySelectorAll('#sec-4 .vocab-inputs input').forEach(function(inp){
+        if (inp.disabled) return;
+        inp.value = ''; inp.classList.remove('correct','wrong');
+        var h = inp.nextElementSibling;
+        if (h && h.classList.contains('vocab-hint')) h.remove();
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// INITIALISIERUNG
+// ══════════════════════════════════════════════════════════════════
+buildLuecken(LUECKEN_A, 'lueckenContainerA');
+buildLuecken(LUECKEN_B, 'lueckenContainerB');
+buildLuecken(LUECKEN_C, 'lueckenContainerC');
+initZuo();
+initSatzbau();
+initVocab();
+loadBestTimes();
+</script>
+</body>
+</html>
