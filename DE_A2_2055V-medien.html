@@ -672,7 +672,7 @@ function initSatzbau(){timerStarted[4]=false;if(timerIds[4]){clearInterval(timer
 function resetSatzbau() { initSatzbau(); }
 
 // ===== TAB 5: WORTSCHATZ =====
-var WORTSCHATZ = [
+var WS_VOCAB = [
     { id:1, type:'n', en:'(the TV channel)', artikel:'der', de:'Sender', plural:'Sender' },
     { id:2, type:'n', en:'(the TV show)', artikel:'die', de:'Sendung', plural:'Sendungen' },
     { id:3, type:'n', en:'(the entertainment)', artikel:'die', de:'Unterhaltung', plural:'Unterhaltungen' },
@@ -690,7 +690,7 @@ var WORTSCHATZ = [
 function initVocab() {
     var container = document.getElementById('vocabContainer');
     container.innerHTML = '';
-    var shuffled = WORTSCHATZ.slice().sort(function() { return Math.random() - 0.5; });
+    var shuffled = WS_VOCAB.slice().sort(function() { return Math.random() - 0.5; });
     shuffled.forEach(function(item) {
         var div = document.createElement('div');
         div.className = 'vocab-item';
