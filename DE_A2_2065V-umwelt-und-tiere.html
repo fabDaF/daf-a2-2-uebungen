@@ -20,12 +20,12 @@ body {
 /* ===== HEADER ===== */
 .header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  padding: 22px 28px 16px;
-  font-family: Georgia, serif;
+  color: white;
+  padding: 30px;
+  text-align: center;
 }
-.header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
-.header p { font-size: 0.92rem; opacity: 0.88; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header p { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
 .header .big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
 
 /* ===== NAV ===== */
@@ -289,7 +289,7 @@ body {
   <!-- HEADER -->
   <div class="header">
     <h1>Die Umwelt und die Tiere</h1>
-    <p>A2 · Lektion 2065V · Vokabular</p>
+    <p style="font-family: Georgia, serif;">A2 · Lektion 2065V &nbsp;|&nbsp; Vokabular</p>
     <div class="big-emoji">🌍</div>
   </div>
 
@@ -688,63 +688,55 @@ body {
 function showSection(n) {
   document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
   document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===n); });
-  timerAutoStart(n);
 }
 
-// ===== TIMER =====
-const timerState = {};
-function pad(x) { return String(x).padStart(2,'0'); }
-function fmtTime(s) { return pad(Math.floor(s/60))+':'+pad(s%60); }
+// ===== TIMER (Referenz-Pattern: timerStarted/timers/timerIntervals + localStorage) =====
+var STORAGE_KEY = 'daf-2065V-best';
+var timers       = [0,0,0,0,0,0];
+var timerStarted = [false,false,false,false,false,false];
+var timerIntervals = [null,null,null,null,null,null];
+var bestTimes    = {};
+
+function fmtTime(s) { return Math.floor(s/60) + ':' + ('0'+(s%60)).slice(-2); }
+
+function loadBestTimes() {
+    try { bestTimes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { bestTimes = {}; }
+    for (var n = 0; n < 6; n++) {
+        var el = document.getElementById('best-'+n);
+        if (el && bestTimes[n] !== undefined) el.textContent = fmtTime(bestTimes[n]);
+    }
+}
 
 function timerAutoStart(n) {
-  if (!timerState[n]) {
-    timerState[n] = { seconds: 0, best: null, interval: null, running: false };
-  }
-  const st = timerState[n];
-  if (st.running) return;
-  st.running = true;
-  st.interval = setInterval(() => {
-    st.seconds++;
-    updateTimerDisplay(n);
-  }, 1000);
-}
-
-function updateTimerDisplay(n) {
-  var st = timerState[n];
-  if (!st) return;
-  var bestStr = st.best !== null ? fmtTime(st.best) : '--:--';
-  var el = document.getElementById('timer-'+n);
-  if (el) el.textContent = fmtTime(st.seconds);
-  var elBest = document.getElementById('best-'+n);
-  if (elBest) elBest.textContent = bestStr;
-}
-
-function resetTimer(n) {
-  if (!timerState[n]) return;
-  const st = timerState[n];
-  clearInterval(st.interval);
-  if (st.best === null || st.seconds < st.best) {
-    if (st.seconds > 0) st.best = st.seconds;
-  }
-  st.seconds = 0;
-  st.running = false;
-  updateTimerDisplay(n);
-  timerAutoStart(n);
+    if (timerStarted[n]) return;
+    timerStarted[n] = true;
+    timers[n] = 0;
+    timerIntervals[n] = setInterval(function() {
+        timers[n]++;
+        var el = document.getElementById('timer-'+n);
+        if (el) el.textContent = fmtTime(timers[n]);
+    }, 1000);
 }
 
 function timerStop(n) {
-  if (!timerState[n]) return;
-  const st = timerState[n];
-  clearInterval(st.interval);
-  st.running = false;
-  if (st.best === null || st.seconds < st.best) {
-    if (st.seconds > 0) st.best = st.seconds;
-  }
-  updateTimerDisplay(n);
+    if (timerIntervals[n]) { clearInterval(timerIntervals[n]); timerIntervals[n] = null; }
+    if (timers[n] > 0 && (bestTimes[n] === undefined || timers[n] < bestTimes[n])) {
+        bestTimes[n] = timers[n];
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(bestTimes)); } catch(e) {}
+        var el = document.getElementById('best-'+n);
+        if (el) el.textContent = fmtTime(bestTimes[n]);
+    }
 }
 
-// Start timer for tab 0 on load
-window.addEventListener('load', () => { timerAutoStart(0); });
+function resetTimer(n) {
+    if (timerIntervals[n]) { clearInterval(timerIntervals[n]); timerIntervals[n] = null; }
+    timers[n] = 0;
+    timerStarted[n] = false;
+    var el = document.getElementById('timer-'+n);
+    if (el) el.textContent = '0:00';
+}
+
+loadBestTimes();
 
 // ===== QA CHECK =====
 const QA_ANSWERS = [
@@ -753,6 +745,7 @@ const QA_ANSWERS = [
   ['verschmutzung', 'plastik', 'abgase', 'schmutzig', 'müll']
 ];
 function checkQA(i) {
+  timerAutoStart(1);
   const val = document.getElementById('qa'+i).value.toLowerCase().trim();
   const fb  = document.getElementById('qa'+i+'-fb');
   if (val.length < 3) { fb.textContent = ''; fb.className = 'qa-feedback'; return; }
@@ -772,6 +765,7 @@ function normalize(s) {
     .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');
 }
 function checkLT(i) {
+  timerAutoStart(2);
   const el = document.getElementById('lt'+i);
   const val = el.value;
   const ans = el.dataset.ans;
@@ -795,6 +789,7 @@ function updateLTScore() {
 const RF_ANSWERS = ['F','F','R','F','F','R'];
 let rfScore = [null,null,null,null,null,null];
 function checkRF(i, choice) {
+  timerAutoStart(3);
   rfScore[i] = choice;
   const item = document.getElementById('rf'+i);
   const btns = item.querySelectorAll('.rf-btn');
@@ -1008,7 +1003,7 @@ function sbCheckAllDone() {
     var row = document.getElementById('sb-row-' + i);
     return row && row.classList.contains('correct');
   });
-  if (allOk) resetTimer(4);
+  if (allOk) timerStop(4);
 }
 
 function sbShowSolution(idx) {
@@ -1198,6 +1193,7 @@ function initVocab() {
 }
 
 function vocabLiveCheck(inp) {
+    timerAutoStart(5);
     var id = parseInt(inp.dataset.id);
     var field = inp.dataset.field;
     var w = WORTSCHATZ.filter(function(x){ return x.id === id; })[0];
