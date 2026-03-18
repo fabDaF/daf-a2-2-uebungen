@@ -924,6 +924,12 @@ function sbMakeChip(word) {
         var c = document.getElementById('sb-insert-cursor');
         if (c && c.parentNode) c.parentNode.removeChild(c);
     });
+    chip.addEventListener('click', function(){
+        if (chip.classList.contains('correct')) return;
+        var sel = document.querySelector('.chip.selected');
+        if (sel && sel !== chip) { sel.classList.remove('selected'); }
+        chip.classList.toggle('selected');
+    });
     return chip;
 }
 
@@ -952,6 +958,17 @@ function sbRegisterZone(zone, idx) {
         var row = document.getElementById('sb-row-' + idx);
         sbUpdateCapitalization(row);
         sbCheckAuto(idx);
+    });
+    zone.addEventListener('click', function(e){
+        if (e.target !== zone) return;
+        var sel = document.querySelector('.chip.selected');
+        if (!sel) return;
+        sel.classList.remove('selected');
+        zone.appendChild(sel);
+        var row = document.getElementById('sb-row-' + idx);
+        sbUpdateCapitalization(row);
+        sbCheckAuto(idx);
+        timerAutoStart(3);
     });
 }
 
