@@ -230,9 +230,10 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
             <div class="section-sub">Lies den Text und beantworte die Fragen mit Richtig oder Falsch.</div>
 
             <div class="lese-text" id="leseText">
-                <p>Der frühere Präsident Barack Obama hat jetzt einen neuen Twitter-Rekord. Nach den Ereignissen von Charlottesville veröffentlicht er auf Twitter ein Zitat aus Mandelas Autobiografie. Es heißt dort, dass alle Menschen gleich sind.</p>
-                <p>Der Beitrag hat mehr als drei Millionen Fans. Das ist ein neuer Rekord auf Twitter. Viele Promis und Schauspieler haben den Beitrag geteilt. In den Tagesnachrichten und Abendnachrichten wurde darüber berichtet.</p>
-                <p>Obama hat den Computer hochgefahren und den Beitrag selbst veröffentlicht. Er hat keine Sendung im Fernsehen gebraucht, sondern nur sein Handy und einen Internetzugang. Soziale Medien sind heute sehr wichtig für die Unterhaltung und die Kommunikation.</p>
+                <p>Früher hatte man abends keine große Auswahl: Man schaute, was gerade im <span class="vocab-hl" data-tooltip="TV program">Fernsehprogramm</span> stand — und das war's. Heute ist das völlig anders. Streamingdienste wie Netflix, Disney+ und Amazon Prime bieten tausende Filme und Serien an, rund um die Uhr, ohne Werbung.</p>
+                <p>Besonders beliebt sind Serien. Viele Menschen schauen eine ganze Staffel an einem Wochenende — <span class="vocab-hl" data-tooltip="episode">Folge</span> für <span class="vocab-hl" data-tooltip="episode">Folge</span>, manchmal bis tief in die Nacht. Besonders <span class="vocab-hl" data-tooltip="crime show">Krimi</span>-Serien und dramatische Thriller sind gerade sehr gefragt. Aber auch eine gute <span class="vocab-hl" data-tooltip="comedy">Komödie</span> zum Lachen kommt nie aus der Mode.</p>
+                <p>Hinter jeder erfolgreichen <span class="vocab-hl" data-tooltip="TV show">Sendung</span> stecken viele Menschen: Drehbuchautoren, Regisseure — und natürlich die Darsteller. Manche <span class="vocab-hl" data-tooltip="actor">Schauspieler</span> und <span class="vocab-hl" data-tooltip="actress">Schauspielerin</span>nen werden durch eine einzige Rolle weltberühmt. Dann werden sie zu echten <span class="vocab-hl" data-tooltip="celebrities">Promis</span> — man sieht ihr Gesicht überall, in Zeitschriften, auf Instagram, im Fernsehen.</p>
+                <p>Aber nicht alle schauen nur zur <span class="vocab-hl" data-tooltip="entertainment">Unterhaltung</span>. Viele Menschen bleiben auch mit den Nachrichten auf dem Laufenden. Morgens gibt es beim Frühstück einen Blick auf die <span class="vocab-hl" data-tooltip="daily news">Tagesnachrichten</span>, abends die <span class="vocab-hl" data-tooltip="evening news">Abendnachrichten</span> im linearen Fernsehen. Und immer mehr Menschen schauen diese Inhalte einfach online — auf dem Handy, beim <span class="vocab-hl" data-tooltip="TV channel">Sender</span> ihrer Wahl.</p>
             </div>
 
             <p class="rf-title">Richtig oder Falsch?</p>
@@ -578,12 +579,12 @@ function resetLuecken() {
 
 // ===== TAB 3: RICHTIG/FALSCH DATA =====
 var RF_DATA = [
-    { text: 'Der jetzige Präsident Obama hat einen Twitter-Rekord.', ans: false },
-    { text: 'Obama veröffentlicht ein Zitat aus Mandelas Autobiografie.', ans: true },
-    { text: 'Obama veröffentlicht den Beitrag auf Instagram.', ans: false },
-    { text: 'Der Beitrag hat mehr als drei Millionen Fans.', ans: true },
-    { text: 'Laut dem Zitat sind alle Menschen verschieden.', ans: false },
-    { text: 'Viele Promis haben den Beitrag geteilt.', ans: true }
+    { text: 'Früher hatte man abends keine große Auswahl beim Fernsehen.', ans: true },
+    { text: 'Streamingdienste wie Netflix zeigen viel Werbung.', ans: false },
+    { text: 'Krimi-Serien und Thriller sind gerade sehr beliebt.', ans: true },
+    { text: 'Eine Komödie ist ein dramatischer Thriller.', ans: false },
+    { text: 'Manche Schauspieler werden durch eine Rolle weltberühmt.', ans: true },
+    { text: 'Die Abendnachrichten gibt es nur noch online.', ans: false }
 ];
 
 function initRF() {
