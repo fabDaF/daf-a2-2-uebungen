@@ -258,17 +258,7 @@ body {
 .vocab-hint { color: #27ae60; font-weight: 600; font-size: 0.8em; margin-left: 6px; }
 @media (max-width: 600px) { .vocab-item { flex-direction: column; align-items: flex-start; } }
 
-/* ===== SCORE ===== */
-.score-box {
-  background: #f5f0ff;
-  border: 2px solid #b39ddb;
-  border-radius: 10px;
-  padding: 12px 20px;
-  margin-top: 20px;
-  font-size: 0.95rem;
-  color: #444;
-  text-align: center;
-}
+
 
 /* ===== FOOTER ===== */
 .footer {
@@ -551,7 +541,6 @@ body {
       <div class="lt-sentence">9. Die <input class="lt-input" id="lt8" data-ans="Regenzeit" oninput="checkLT(8)" autocomplete="off"> und die Trockenzeit wechseln sich in manchen Regionen ab.</div>
       <div class="lt-sentence">10. Wir leben alle in einer gemeinsamen <input class="lt-input" id="lt9" data-ans="Umwelt" oninput="checkLT(9)" autocomplete="off">.</div>
 
-      <div class="score-box" id="lt-score">Beantworte die Fragen — dein Ergebnis erscheint hier.</div>
     </div>
   </div>
 
@@ -623,7 +612,6 @@ body {
           </div>
         </li>
       </ul>
-      <div class="score-box" id="rf-score">Beantworte alle Fragen — dein Ergebnis erscheint hier.</div>
     </div>
   </div>
 
@@ -782,7 +770,6 @@ function updateLTScore() {
   for (let i=0;i<total;i++) {
     if (document.getElementById('lt'+i) && document.getElementById('lt'+i).classList.contains('correct')) correct++;
   }
-  document.getElementById('lt-score').textContent = '✓ ' + correct + ' / ' + total + ' richtig';
 }
 
 // ===== R/F QUIZ =====
@@ -802,16 +789,11 @@ function checkRF(i, choice) {
   }
   updateRFScore();
 }
-function updateRFScore() {
-  const answered = rfScore.filter(x=>x!==null).length;
-  const correct  = rfScore.filter((x,i)=>x===RF_ANSWERS[i]).length;
-  document.getElementById('rf-score').textContent = '✓ ' + correct + ' / ' + answered + ' richtig';
-}
+function updateRFScore() { /* score display removed */ }
 
 function resetRF() {
   rfScore = [null,null,null,null,null,null];
   document.querySelectorAll('.rf-btn').forEach(function(b){ b.className = 'rf-btn'; });
-  document.getElementById('rf-score').textContent = 'Beantworte alle Fragen — dein Ergebnis erscheint hier.';
 }
 
 function showLtLoesung() {
@@ -827,7 +809,6 @@ function resetLT() {
     var el = document.getElementById('lt'+i);
     if (el) { el.value = ''; el.className = 'lt-input'; }
   }
-  document.getElementById('lt-score').textContent = 'Beantworte die Fragen — dein Ergebnis erscheint hier.';
 }
 
 // ===== SATZBAU (satzbau-drag-drop skill) =====
