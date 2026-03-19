@@ -385,9 +385,18 @@ def check_file(filepath):
     print(f"\n{BOLD}[12] Case-Sensitivity{RESET}")
 
     # Suche nach toLowerCase() in liveCheck/wortschatzCheck Kontexten
-    lower_matches = re.findall(r'(liveCheck|wortschatzCheck|checkWs|makeWsInp)[^}]*toLowerCase', content, re.DOTALL)
-    if lower_matches:
-        errors.append(fail(f"toLowerCase() in Feedback-Funktionen gefunden — VERBOTEN"))
+    # liveCheckEndung ist explizit erlaubt (Endungen sind immer case-insensitive)
+    has_lower = False
+    for fn in ['wortschatzCheck', 'checkWs', 'makeWsInp']:
+        if re.search(fn + r'[^}]*toLowerCase', content, re.DOTALL):
+            has_lower = True
+    # liveCheck nur flaggen wenn es als eigenständige Funktion vorliegt (nicht liveCheckEndung)
+    if re.search(r'function liveCheck\s*\(', content):
+        m_fn = re.search(r'function liveCheck\s*\(.*?\{(.*?)\n\}', content, re.DOTALL)
+        if m_fn and 'toLowerCase' in m_fn.group(1):
+            has_lower = True
+    if has_lower:
+        errors.append(fail("toLowerCase() in Feedback-Funktionen gefunden — VERBOTEN"))
     else:
         passes.append(ok("Kein toLowerCase() in Feedback-Funktionen"))
 

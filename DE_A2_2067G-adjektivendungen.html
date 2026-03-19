@@ -232,6 +232,19 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
   background: #f0f2f5; border-radius: 4px; padding: 1px 6px;
   margin-left: 6px; vertical-align: middle;
 }
+.luecken-inp {
+    border: none;
+    border-bottom: 3px solid #667eea;
+    background: transparent;
+    outline: none;
+    font-family: inherit;
+    font-size: 1em;
+    transition: border-color 0.2s, color 0.2s;
+    padding: 2px 4px;
+}
+.luecken-inp:focus { border-bottom-color: #4a148c; }
+.luecken-inp.ok { border-bottom-color: #27ae60; color: #27ae60; font-weight: 700; }
+.luecken-inp.no { border-bottom-color: #e74c3c; color: #e74c3c; }
 .luecke-section-title {
   font-size: 0.9rem; font-weight: 700; color: #3949ab;
   margin: 18px 0 8px; padding-left: 4px;
@@ -674,19 +687,25 @@ function mcCheck(step, btn, correct) {
 /* ============================================================
    LIVE CHECK / HINT
    ============================================================ */
-function liveCheck(inp) {
-  var val = inp.value.trim();
-  var ans = inp.dataset.answer || '';
-  inp.classList.remove('correct','wrong');
-  if (val.length === 0) return;
-  if (val === ans) {
-    inp.classList.add('correct');
-  } else if (ans.indexOf(val) === 0) {
-    /* gültiger Präfix — neutral */
-  } else {
-    inp.classList.add('wrong');
-  }
+function liveCheckEndung(inp) {
+  var val = inp.value.trim().toLowerCase();
+  var ans = (inp.dataset.answer || '').toLowerCase();
+  inp.classList.remove('ok', 'no');
+  if (!val) return;
+  if (val === ans) { inp.classList.add('ok'); return; }
+  if (ans.indexOf(val) === 0) { return; } // gültiger Prefix → neutral
+  inp.classList.add('no');
 }
+
+function checkAllLueckeOk(tabN) {
+  var inputs = document.querySelectorAll('#sec-2 .luecken-inp');
+  var allOk = inputs.length > 0 && Array.from(inputs).every(function(i) {
+    return i.classList.contains('ok');
+  });
+  if (allOk) timerStop(tabN);
+}
+
+
 function showHint(inp) {
   var next = inp.nextElementSibling;
   if (next && next.classList.contains('correction-hint')) next.remove();
@@ -853,100 +872,97 @@ function resetZuo() {
    ============================================================ */
 
 // Teil A — nach bestimmtem Artikel
+
+// ── LÜCKENTEXT — Adjektivendungen
+// Format: { pre, stem, end, post, hint }
+// stem = Adjektivstamm (sichtbar), end = Endung (Schüler tippt), hint = Kasus
 var LUECKE_A = [
-  { segs: [{t:'Der '},{b:'alte',s:'m'},{t:' Baum im Garten ist sehr groß.'}], hint:'Nom. Mask.' },
-  { segs: [{t:'Ich esse den '},{b:'frischen',s:'m'},{t:' Fisch sehr gerne.'}], hint:'Akk. Mask.' },
-  { segs: [{t:'Das Kind spielt mit dem '},{b:'bunten',s:'m'},{t:' Ball.'}], hint:'Dat. Mask.' },
-  { segs: [{t:'Die '},{b:'kleine',s:'m'},{t:' Katze schläft auf dem Sofa.'}], hint:'Nom. Fem.' },
-  { segs: [{t:'Er liebt die '},{b:'neue',s:'m'},{t:' Wohnung in der Stadtmitte.'}], hint:'Akk. Fem.' },
-  { segs: [{t:'Wir geben der '},{b:'alten',s:'m'},{t:' Frau gerne Hilfe.'}], hint:'Dat. Fem.' },
-  { segs: [{t:'Das '},{b:'schöne',s:'m'},{t:' Wetter macht mich glücklich.'}], hint:'Nom. Neut.' },
-  { segs: [{t:'Er öffnet das '},{b:'alte',s:'m'},{t:' Fenster im Wohnzimmer.'}], hint:'Akk. Neut.' },
-  { segs: [{t:'Sie wohnt in dem '},{b:'großen',s:'m'},{t:' Haus am See.'}], hint:'Dat. Neut.' },
-  { segs: [{t:'Die '},{b:'jungen',s:'m'},{t:' Leute tanzen auf dem Marktplatz.'}], hint:'Nom. Plural' },
-  { segs: [{t:'Er besucht die '},{b:'alten',s:'m'},{t:' Freunde jedes Wochenende.'}], hint:'Akk. Plural' },
-  { segs: [{t:'Sie hilft den '},{b:'kleinen',s:'m'},{t:' Kindern beim Lesen.'}], hint:'Dat. Plural' }
+  { pre:'Der alt',   end:'e',  post:' Baum im Garten ist sehr groß.',         hint:'Nom. Mask.' },
+  { pre:'Ich esse den frisch', end:'en', post:' Fisch sehr gerne.',            hint:'Akk. Mask.' },
+  { pre:'Das Kind spielt mit dem bunt', end:'en', post:' Ball.',               hint:'Dat. Mask.' },
+  { pre:'Die klein', end:'e',  post:' Katze schläft auf dem Sofa.',            hint:'Nom. Fem.' },
+  { pre:'Er liebt die neu', end:'e', post:' Wohnung in der Stadtmitte.',       hint:'Akk. Fem.' },
+  { pre:'Wir geben der alt', end:'en', post:' Frau gerne Hilfe.',              hint:'Dat. Fem.' },
+  { pre:'Das schön', end:'e',  post:' Wetter macht mich glücklich.',           hint:'Nom. Neut.' },
+  { pre:'Er öffnet das alt', end:'e',  post:' Fenster im Wohnzimmer.',         hint:'Akk. Neut.' },
+  { pre:'Sie wohnt in dem groß', end:'en', post:' Haus am See.',               hint:'Dat. Neut.' },
+  { pre:'Die jung', end:'en',  post:' Leute tanzen auf dem Marktplatz.',       hint:'Nom. Plural' },
+  { pre:'Er besucht die alt', end:'en', post:' Freunde jedes Wochenende.',     hint:'Akk. Plural' },
+  { pre:'Sie hilft den klein', end:'en', post:' Kindern beim Lesen.',          hint:'Dat. Plural' }
 ];
 
-// Teil B — nach unbestimmtem Artikel
 var LUECKE_B = [
-  { segs: [{t:'Ein '},{b:'junger',s:'m'},{t:' Mann steht an der Ecke.'}], hint:'Nom. Mask.' },
-  { segs: [{t:'Ich habe einen '},{b:'neuen',s:'m'},{t:' Kollegen kennengelernt.'}], hint:'Akk. Mask.' },
-  { segs: [{t:'Sie spricht mit einem '},{b:'freundlichen',s:'m'},{t:' Arzt.'}], hint:'Dat. Mask.' },
-  { segs: [{t:'Eine '},{b:'hübsche',s:'m'},{t:' Frau sitzt am Tisch.'}], hint:'Nom. Fem.' },
-  { segs: [{t:'Er kauft eine '},{b:'rote',s:'m'},{t:' Rose für seine Mutter.'}], hint:'Akk. Fem.' },
-  { segs: [{t:'Wir helfen einer '},{b:'alten',s:'m'},{t:' Dame über die Straße.'}], hint:'Dat. Fem.' },
-  { segs: [{t:'Ein '},{b:'warmes',s:'m'},{t:' Bad entspannt den Körper.'}], hint:'Nom. Neut.' },
-  { segs: [{t:'Er trägt ein '},{b:'blaues',s:'m'},{t:' Hemd zur Arbeit.'}], hint:'Akk. Neut.' },
-  { segs: [{t:'Das Paket liegt in einem '},{b:'großen',s:'m'},{t:' Karton.'}], hint:'Dat. Neut.' },
-  { segs: [{t:'Kein '},{b:'schöner',s:'m'},{t:' Tag für einen Ausflug.'}], hint:'Nom. Mask.' },
-  { segs: [{t:'Es ist kein '},{b:'einfaches',s:'m'},{t:' Problem.'}], hint:'Nom. Neut.' },
-  { segs: [{t:'Mein '},{b:'neuer',s:'m'},{t:' Chef ist sehr nett.'}], hint:'Nom. Mask. (Possessivartikel)' }
+  { pre:'Ein jung', end:'er',  post:' Mann steht an der Ecke.',                hint:'Nom. Mask.' },
+  { pre:'Ich habe einen neu', end:'en', post:' Kollegen kennengelernt.',        hint:'Akk. Mask.' },
+  { pre:'Sie spricht mit einem freundlich', end:'en', post:' Arzt.',           hint:'Dat. Mask.' },
+  { pre:'Eine hübsch', end:'e',  post:' Frau sitzt am Tisch.',                 hint:'Nom. Fem.' },
+  { pre:'Er kauft eine rot', end:'e',  post:' Rose für seine Mutter.',         hint:'Akk. Fem.' },
+  { pre:'Wir helfen einer alt', end:'en', post:' Dame über die Straße.',       hint:'Dat. Fem.' },
+  { pre:'Ein warm', end:'es',  post:' Bad entspannt den Körper.',              hint:'Nom. Neut.' },
+  { pre:'Er trägt ein blau', end:'es',  post:' Hemd zur Arbeit.',              hint:'Akk. Neut.' },
+  { pre:'Das Paket liegt in einem groß', end:'en', post:' Karton.',            hint:'Dat. Neut.' },
+  { pre:'Kein schön', end:'er',  post:' Tag für einen Ausflug.',               hint:'Nom. Mask.' },
+  { pre:'Es ist kein einfach', end:'es', post:' Problem.',                     hint:'Nom. Neut.' },
+  { pre:'Mein neu', end:'er',  post:' Chef ist sehr nett.',                    hint:'Nom. Mask. (Possessivartikel)' }
 ];
 
-// Teil C — ohne Artikel
 var LUECKE_C = [
-  { segs: [{t:''},{b:'Frischer',s:'m'},{t:' Kaffee schmeckt am besten.'}], hint:'Nom. Mask.' },
-  { segs: [{t:'Ich trinke gerne '},{b:'frischen',s:'m'},{t:' Orangensaft.'}], hint:'Akk. Mask.' },
-  { segs: [{t:'Er macht Spaghetti mit '},{b:'frischem',s:'m'},{t:' Basilikum.'}], hint:'Dat. Mask.' },
-  { segs: [{t:''},{b:'Kalte',s:'m'},{t:' Milch ist sehr gesund.'}], hint:'Nom. Fem.' },
-  { segs: [{t:'Er kauft jeden Tag '},{b:'frische',s:'m'},{t:' Brötchen.'}], hint:'Akk. Plural' },
-  { segs: [{t:'Mit '},{b:'gutem',s:'m'},{t:' Wetter fahren wir an den See.'}], hint:'Dat. Neut.' },
-  { segs: [{t:''},{b:'Schönes',s:'m'},{t:' Wetter macht gute Laune.'}], hint:'Nom. Neut.' },
-  { segs: [{t:'Sie mag '},{b:'dunklen',s:'m'},{t:' Kaffee ohne Zucker.'}], hint:'Akk. Mask.' },
-  { segs: [{t:'Er wohnt in '},{b:'kleinen',s:'m'},{t:' Zimmern, aber er ist glücklich.'}], hint:'Dat. Plural' },
-  { segs: [{t:''},{b:'Guter',s:'m'},{t:' Rat ist teuer.'}], hint:'Nom. Mask.' }
+  { pre:'Frisch', end:'er',  post:' Kaffee schmeckt am besten.',               hint:'Nom. Mask.' },
+  { pre:'Ich trinke gerne frisch', end:'en', post:' Orangensaft.',             hint:'Akk. Mask.' },
+  { pre:'Er macht Spaghetti mit frisch', end:'em', post:' Basilikum.',         hint:'Dat. Mask.' },
+  { pre:'Kalt', end:'e',  post:' Milch ist sehr gesund.',                      hint:'Nom. Fem.' },
+  { pre:'Er kauft jeden Tag frisch', end:'e',  post:' Brötchen.',              hint:'Akk. Plural' },
+  { pre:'Mit gut', end:'em',  post:' Wetter fahren wir an den See.',           hint:'Dat. Neut.' },
+  { pre:'Schön', end:'es',  post:' Wetter macht gute Laune.',                  hint:'Nom. Neut.' },
+  { pre:'Sie mag dunkl', end:'en', post:' Kaffee ohne Zucker.',                hint:'Akk. Mask.' },
+  { pre:'Er wohnt in klein', end:'en', post:' Zimmern, aber er ist glücklich.',hint:'Dat. Plural' },
+  { pre:'Gut', end:'er',  post:' Rat ist teuer.',                              hint:'Nom. Mask.' }
 ];
 
-function buildLueckeSection(data, containerId, tabN, prefix) {
+function buildLueckeSection(data, containerId, tabN) {
   var ctnr = document.getElementById(containerId);
   ctnr.innerHTML = '';
   data.forEach(function(item, idx) {
     var div = document.createElement('div');
     div.className = 'luecke-item';
-    item.segs.forEach(function(seg) {
-      if (seg.t !== undefined) {
-        div.appendChild(document.createTextNode(seg.t));
-      } else {
-        var inp = document.createElement('input');
-        inp.type = 'text';
-        inp.className = 'blank';
-        inp.dataset.answer = seg.b;
-        var w = seg.s === 's' ? 50 : seg.s === 'm' ? 90 : seg.s === 'l' ? 140 : 200;
-        inp.style.width = w + 'px';
-        inp.placeholder = '...';
-        inp.setAttribute('autocomplete','off');
-        inp.addEventListener('input', function() {
-          timerAutoStart(tabN);
-          liveCheck(inp);
-          checkAllInputsOk(tabN);
-        });
-        inp.addEventListener('click', function() {
-          if (inp.classList.contains('wrong') || (!inp.classList.contains('correct') && inp.value.length > 0)) {
-            showHint(inp);
-            checkAllInputsOk(tabN);
-          }
-        });
-        div.appendChild(inp);
-        var hintSpan = document.createElement('span');
-        hintSpan.className = 'luecke-hint';
-        hintSpan.textContent = item.hint || '';
-        div.appendChild(hintSpan);
-      }
+
+    // Text vor dem Stamm
+    var preNode = document.createTextNode(item.pre);
+    div.appendChild(preNode);
+
+    // Eingabefeld für die Endung
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'luecken-inp';
+    inp.dataset.answer = item.end;
+    inp.style.cssText = 'width:44px; text-align:center; font-weight:700; color:#4a148c;';
+    inp.placeholder = '___';
+    inp.setAttribute('autocomplete', 'off');
+    inp.addEventListener('input', function() {
+      timerAutoStart(tabN);
+      liveCheckEndung(inp);
+      checkAllLueckeOk(tabN);
     });
+    div.appendChild(inp);
+
+    // Text nach der Lücke
+    var postNode = document.createTextNode(item.post);
+    div.appendChild(postNode);
+
+    // Kasushinweis
+    var hintSpan = document.createElement('span');
+    hintSpan.className = 'luecke-hint';
+    hintSpan.textContent = item.hint || '';
+    div.appendChild(hintSpan);
+
     ctnr.appendChild(div);
   });
 }
 
 function lueckeInit() {
-  buildLueckeSection(LUECKE_A, 'luecke-container-A', 2, 'A');
-  buildLueckeSection(LUECKE_B, 'luecke-container-B', 2, 'B');
-  buildLueckeSection(LUECKE_C, 'luecke-container-C', 2, 'C');
-  var total = LUECKE_A.length + LUECKE_B.length + LUECKE_C.length;
-  var t = document.getElementById('total2');
-  if (t) t.textContent = total;
-  var s = document.getElementById('score2');
-  if (s) s.textContent = 0;
+  buildLueckeSection(LUECKE_A, 'luecke-container-A', 2);
+  buildLueckeSection(LUECKE_B, 'luecke-container-B', 2);
+  buildLueckeSection(LUECKE_C, 'luecke-container-C', 2);
 }
 
 function resetLuecke() {
