@@ -600,6 +600,18 @@ def check_file(filepath):
     else:
         passes.append(ok('Kein verbotenes Satz-1/2/3-Label im Satzbau'))
 
+    # 15o: DOM-Zugriffe auf score/total-IDs müssen abgesichert sein (if el)
+    # Wenn score-box entfernt wird, crasht initSatzbau/initLuecke sonst mit null-Fehler
+    import re as _re4
+    unguarded_score = _re4.findall(
+        r"document\.getElementById\('(?:score|total)\d+'\)\.textContent",
+        content
+    )
+    if unguarded_score:
+        errors.append(fail(f"[15o] Ungesicherter DOM-Zugriff auf score/total-Element ({len(unguarded_score)}x) — immer mit 'var el = getElementById(...); if (el) el.textContent = ...' absichern"))
+    else:
+        passes.append(ok('DOM-Zugriffe auf score/total-Elemente abgesichert (kein crash bei entfernter score-box)'))
+
     # ═══════════════════════════════════════════════════════
     # [16] daf-uebungsformen Skill-Regeln
     # ═══════════════════════════════════════════════════════
