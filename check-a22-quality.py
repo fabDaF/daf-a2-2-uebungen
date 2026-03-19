@@ -566,6 +566,16 @@ def check_file(filepath):
         if has_timer_ids:
             errors.append(fail('[15l] .btn-row CSS FEHLT — Skill-Standard: getrennte Zeile unter .timer-bar mit Neustart- und Lösungen-Buttons'))
 
+    # 15m: score-box darf NICHT in timer-bar stehen — Skill kennt kein Richtig/Falsch in der Timer-Bar
+    # Prüft ob class="score-box" innerhalb eines timer-bar divs vorkommt
+    import re as _re
+    timer_bar_blocks = _re.findall(r'<div class="timer-bar"[^>]*>.*?</div>', content, _re.DOTALL)
+    score_in_timer = any('score-box' in block for block in timer_bar_blocks)
+    if score_in_timer:
+        errors.append(fail('[15m] score-box innerhalb von .timer-bar gefunden — Skill-Standard: Timer-Bar enthält NUR ⏱ Timer + 🏆 Bestzeit, kein Richtig/Falsch'))
+    else:
+        passes.append(ok('Kein score-box in timer-bar (Skill-Standard: nur Timer + Bestzeit)'))
+
     # ═══════════════════════════════════════════════════════
     # ZUSAMMENFASSUNG
     # ═══════════════════════════════════════════════════════
