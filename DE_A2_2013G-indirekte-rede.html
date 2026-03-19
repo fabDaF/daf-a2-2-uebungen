@@ -34,8 +34,8 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 .mc-step { display: none; background: #f8f9fa; border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; }
 .mc-step.visible { display: block; }
 .mc-q { font-weight: 700; color: #333; margin-bottom: 14px; font-size: 0.97em; }
-.mc-opts { display: flex; flex-direction: column; gap: 8px; }
-.mc-opt { padding: 10px 16px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 0.9em; color: #444; transition: all 0.2s; }
+.mc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc-opt { padding: 10px 16px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 12px; color: #444; transition: all 0.2s; }
 .mc-opt:hover { border-color: #667eea; color: #667eea; }
 .mc-opt.correct { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; font-weight: 700; }
 .mc-opt.wrong { border-color: #e74c3c; background: #fce4ec; color: #c62828; }
@@ -557,11 +557,6 @@ function initSatzbau() {
     satzbauData.forEach(function(ex, idx) {
         var item = document.createElement('div');
         item.className = 'satzbau-item';
-
-        var lbl = document.createElement('div');
-        lbl.className = 'sb-label';
-        lbl.textContent = 'Satz ' + (idx + 1);
-        item.appendChild(lbl);
 
         var bank = document.createElement('div');
         bank.className = 'chips-container';

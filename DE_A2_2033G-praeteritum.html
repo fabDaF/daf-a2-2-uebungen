@@ -163,38 +163,38 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
                 <h4>Schritt 1: In welcher Zeit steht der Text?</h4>
                 <div class="mc-options">
                     <button class="mc-btn" onclick="mcCheck(0,this,false)">Präsens (Gegenwart)</button>
-                    <button class="mc-btn" onclick="mcCheck(0,this,false)">Perfekt (z. B. „ich habe gekauft")</button>
+                    <button class="mc-btn" onclick="mcCheck(0,this,false)">Perfekt (z. B. “ich habe gekauft")</button>
                     <button class="mc-btn" onclick="mcCheck(0,this,true)">Präteritum (einfache Vergangenheit)</button>
                 </div>
                 <div class="mc-feedback" id="mcfb0"></div>
             </div>
 
             <div class="mc-step" id="mc-step1">
-                <h4>Schritt 2: Schau dir „kaufte" und „schickte" an. Was fällt auf?</h4>
+                <h4>Schritt 2: Schau dir “kaufte" und “schickte" an. Was fällt auf?</h4>
                 <div class="mc-options">
                     <button class="mc-btn" onclick="mcCheck(1,this,false)">Der Stamm verändert sich komplett</button>
-                    <button class="mc-btn" onclick="mcCheck(1,this,true)">Der Stamm bleibt gleich, es wird „-te" angehängt</button>
-                    <button class="mc-btn" onclick="mcCheck(1,this,false)">Man braucht ein Hilfsverb wie „haben"</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,true)">Der Stamm bleibt gleich, es wird “-te" angehängt</button>
+                    <button class="mc-btn" onclick="mcCheck(1,this,false)">Man braucht ein Hilfsverb wie “haben"</button>
                 </div>
                 <div class="mc-feedback" id="mcfb1"></div>
             </div>
 
             <div class="mc-step" id="mc-step2">
-                <h4>Schritt 3: Vergleiche „brachte" (bringen) und „gab" (geben) mit „kaufte" (kaufen). Worin liegt der Unterschied?</h4>
+                <h4>Schritt 3: Vergleiche “brachte" (bringen) und “gab" (geben) mit “kaufte" (kaufen). Worin liegt der Unterschied?</h4>
                 <div class="mc-options">
-                    <button class="mc-btn" onclick="mcCheck(2,this,true)">Bei „brachte" und „gab" ändert sich der Stamm — das sind unregelmäßige Verben</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,true)">Bei “brachte" und “gab" ändert sich der Stamm — das sind unregelmäßige Verben</button>
                     <button class="mc-btn" onclick="mcCheck(2,this,false)">Alle Verben bilden das Präteritum gleich</button>
-                    <button class="mc-btn" onclick="mcCheck(2,this,false)">„Brachte" und „gab" sind Präsensformen</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">“Brachte" und “gab" sind Präsensformen</button>
                 </div>
                 <div class="mc-feedback" id="mcfb2"></div>
             </div>
 
             <div class="mc-step" id="mc-step3">
-                <h4>Schritt 4: „War" und „hatte" kommen im Alltag sehr häufig vor. Warum benutzt man diese Formen auch beim Sprechen im Präteritum?</h4>
+                <h4>Schritt 4: “War" und “hatte" kommen im Alltag sehr häufig vor. Warum benutzt man diese Formen auch beim Sprechen im Präteritum?</h4>
                 <div class="mc-options">
-                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Weil „sein" und „haben" kein Perfekt haben</button>
-                    <button class="mc-btn" onclick="mcCheck(3,this,true)">Weil das Präteritum von „sein" und „haben" kürzer und einfacher ist als das Perfekt</button>
-                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Weil man „sein" und „haben" nie im Perfekt benutzt</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Weil “sein" und “haben" kein Perfekt haben</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,true)">Weil das Präteritum von “sein" und “haben" kürzer und einfacher ist als das Perfekt</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">Weil man “sein" und “haben" nie im Perfekt benutzt</button>
                 </div>
                 <div class="mc-feedback" id="mcfb3"></div>
             </div>
@@ -739,10 +739,6 @@ function initSatzbau() {
     satzbauData.forEach(function(ex, idx) {
         var item = document.createElement('div');
         item.className = 'satzbau-item';
-        var lbl = document.createElement('div');
-        lbl.className = 'sb-label';
-        lbl.textContent = 'Satz ' + (idx + 1);
-        item.appendChild(lbl);
         var bank = document.createElement('div');
         bank.className = 'chips-container'; bank.id = 'sb-bank-' + idx;
         var row = document.createElement('div');

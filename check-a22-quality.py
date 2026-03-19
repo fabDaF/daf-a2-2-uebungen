@@ -585,6 +585,21 @@ def check_file(filepath):
     else:
         passes.append(ok('Kein score-box in timer-bar (Skill-Standard: nur Timer + Bestzeit)'))
 
+    # 15n: VERBOTEN — 'Satz 1/2/3' als Satzbau-Label (JS oder HTML)
+    # Der User hat ausdrücklich verboten, Sätze nummeriert zu benennen.
+    # Nur die spezifischen Label-Muster prüfen, NICHT Frage-Texte im Entdeckungslernen.
+    import re as _re2
+    satz_label_patterns = _re2.findall(
+        r"lbl\.textContent\s*=\s*'Satz\s+'\s*\+|"
+        r'<div class="sb-label">Satz\s+\d+|'
+        r'<div class="label">Satz\s+\d+:',
+        content
+    )
+    if satz_label_patterns:
+        errors.append(fail(f"[15n] VERBOTEN: Satzbau-Label 'Satz 1/2/3...' als JS oder HTML-Label gefunden ({len(satz_label_patterns)}x) — kein Label oder thematischen Hinweis verwenden"))
+    else:
+        passes.append(ok('Kein verbotenes Satz-1/2/3-Label im Satzbau'))
+
     # ═══════════════════════════════════════════════════════
     # ZUSAMMENFASSUNG
     # ═══════════════════════════════════════════════════════

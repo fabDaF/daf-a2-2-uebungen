@@ -203,22 +203,22 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
             <!-- MC Schritt 2 -->
             <div class="mc-step" id="mc-step2">
-                <h4>Schritt 3: Schau dir „herein" und „draußen" an. Was ist der Unterschied?</h4>
+                <h4>Schritt 3: Schau dir “herein" und “draußen" an. Was ist der Unterschied?</h4>
                 <div class="mc-options">
-                    <button class="mc-btn" onclick="mcCheck(2,this,true)">„herein" = hinein (in etwas), „nach draußen" = hinaus (aus etwas)</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,true)">“herein" = hinein (in etwas), “nach draußen" = hinaus (aus etwas)</button>
                     <button class="mc-btn" onclick="mcCheck(2,this,false)">Beide bedeuten dasselbe</button>
-                    <button class="mc-btn" onclick="mcCheck(2,this,false)">„herein" = Woher?, „draußen" = Wo?</button>
+                    <button class="mc-btn" onclick="mcCheck(2,this,false)">“herein" = Woher?, “draußen" = Wo?</button>
                 </div>
                 <div class="mc-feedback" id="mcfb2"></div>
             </div>
 
             <!-- MC Schritt 3 -->
             <div class="mc-step" id="mc-step3">
-                <h4>Schritt 4: Was ist der Unterschied zwischen „hin" und „her"?</h4>
+                <h4>Schritt 4: Was ist der Unterschied zwischen “hin" und “her"?</h4>
                 <div class="mc-options">
                     <button class="mc-btn" onclick="mcCheck(3,this,false)">Es gibt keinen Unterschied</button>
-                    <button class="mc-btn" onclick="mcCheck(3,this,true)">„hin" = vom Sprecher weg, „her" = zum Sprecher</button>
-                    <button class="mc-btn" onclick="mcCheck(3,this,false)">„hin" = zum Sprecher, „her" = vom Sprecher weg</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,true)">“hin" = vom Sprecher weg, “her" = zum Sprecher</button>
+                    <button class="mc-btn" onclick="mcCheck(3,this,false)">“hin" = zum Sprecher, “her" = vom Sprecher weg</button>
                 </div>
                 <div class="mc-feedback" id="mcfb3"></div>
             </div>
@@ -251,7 +251,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
             <div class="regel-highlight">
                 <h4>Lokaladverbien → Wo?</h4>
-                <p>Lokaladverbien beschreiben einen <b>Ort</b> oder eine <b>Position</b>. Sie beantworten die Frage <b>„Wo?"</b></p>
+                <p>Lokaladverbien beschreiben einen <b>Ort</b> oder eine <b>Position</b>. Sie beantworten die Frage <b>“Wo?"</b></p>
             </div>
 
             <table class="regel-table">
@@ -268,7 +268,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
             <div class="regel-highlight" style="margin-top: 24px;">
                 <h4>Direktionaladverbien → Wohin?</h4>
-                <p>Direktionaladverbien beschreiben eine <b>Richtung</b> oder ein <b>Ziel</b>. Sie beantworten die Frage <b>„Wohin?"</b></p>
+                <p>Direktionaladverbien beschreiben eine <b>Richtung</b> oder ein <b>Ziel</b>. Sie beantworten die Frage <b>“Wohin?"</b></p>
             </div>
 
             <table class="regel-table">
@@ -283,7 +283,7 @@ body { font-family: Georgia, 'Times New Roman', serif; background: linear-gradie
 
             <div class="regel-highlight" style="margin-top: 24px;">
                 <h4>Herkunftsadverbien → Woher?</h4>
-                <p>Herkunftsadverbien beschreiben den <b>Ausgangspunkt</b>. Sie beantworten die Frage <b>„Woher?"</b></p>
+                <p>Herkunftsadverbien beschreiben den <b>Ausgangspunkt</b>. Sie beantworten die Frage <b>“Woher?"</b></p>
             </div>
 
             <table class="regel-table">
@@ -472,8 +472,8 @@ function mcCheck(step, btn, correct) {
    LÜCKENTEXT (Tab 2)
    ═══════════════════════════════════════════════════════════════ */
 var LUECKEN_DATA = [
-    { id:1, text: '„Komm bitte ___!" — Die Mutter ruft das Kind ins Haus.', ans: 'herein', alts: ['rein'], size: 90 },
-    { id:2, text: '„Geh bitte ___!" — Der Lehrer schickt die Schüler auf den Schulhof.', ans: 'hinaus', alts: ['raus'], size: 80 },
+    { id:1, text: '“Komm bitte ___!" — Die Mutter ruft das Kind ins Haus.', ans: 'herein', alts: ['rein'], size: 90 },
+    { id:2, text: '“Geh bitte ___!" — Der Lehrer schickt die Schüler auf den Schulhof.', ans: 'hinaus', alts: ['raus'], size: 80 },
     { id:3, text: 'Wo kommst du ___? — Ich komme von der Arbeit.', ans: 'her', size: 60 },
     { id:4, text: 'Wo gehst du ___? — Ich gehe zum Supermarkt.', ans: 'hin', size: 60 },
     { id:5, text: 'Der Strand ist wunderschön. Ich möchte ___ fahren.', ans: 'dorthin', size: 90 },
@@ -807,10 +807,6 @@ function initSatzbau() {
     satzbauData.forEach(function(ex, idx) {
         var item = document.createElement('div');
         item.className = 'satzbau-item';
-        var lbl = document.createElement('div');
-        lbl.className = 'sb-label';
-        lbl.textContent = 'Satz ' + (idx + 1);
-        item.appendChild(lbl);
         var bank = document.createElement('div');
         bank.className = 'chips-container';
         bank.id = 'sb-bank-' + idx;
@@ -860,16 +856,16 @@ function resetSatzbau() { initSatzbau(); }
    MULTIPLE CHOICE (Tab 4)
    ═══════════════════════════════════════════════════════════════ */
 var MC_DATA = [
-    { id:1, q:'Welche Frage passt? — Das Hotel ist <b>hier</b>.', opts:['Wo?','Wohin?','Woher?'], correct:0, explain:'„hier" beschreibt einen Ort → Wo?' },
-    { id:2, q:'Welche Frage passt? — Ich gehe <b>dorthin</b>.', opts:['Wo?','Wohin?','Woher?'], correct:1, explain:'„dorthin" beschreibt eine Richtung → Wohin?' },
-    { id:3, q:'Welche Frage passt? — Er kommt <b>von dort</b>.', opts:['Wo?','Wohin?','Woher?'], correct:2, explain:'„von dort" beschreibt den Ausgangspunkt → Woher?' },
-    { id:4, q:'Welches Adverb passt? — Komm bitte ___! (in das Haus)', opts:['hinaus','herein','dorthin'], correct:1, explain:'„herein" = zum Sprecher, in etwas hinein.' },
-    { id:5, q:'Welches Adverb passt? — Geh bitte ___! (aus dem Haus)', opts:['herein','hierher','hinaus'], correct:2, explain:'„hinaus" = vom Sprecher weg, aus etwas heraus.' },
-    { id:6, q:'Was ist richtig? — Wo gehst du ___?', opts:['her','hin','dort'], correct:1, explain:'„gehen" = vom Sprecher weg → „hin".' },
-    { id:7, q:'Was ist richtig? — Wo kommst du ___?', opts:['hin','her','dorthin'], correct:1, explain:'„kommen" = zum Sprecher → „her".' },
-    { id:8, q:'Was passt? — Die Kinder kommen ___ herein.', opts:['von draußen','nach drinnen','dorthin'], correct:0, explain:'„von draußen" = Woher? Die Kinder kommen von draußen.' },
-    { id:9, q:'Was passt? — Die Rezeption ist ___.', opts:['dorthin','vorne links','von hier'], correct:1, explain:'„vorne links" beschreibt eine Position → Wo?' },
-    { id:10, q:'Was ist der Unterschied zwischen „hin" und „her"?', opts:['kein Unterschied','hin = zum Sprecher, her = weg','hin = weg vom Sprecher, her = zum Sprecher'], correct:2, explain:'„hin" = vom Sprecher weg, „her" = zum Sprecher.' }
+    { id:1, q:'Welche Frage passt? — Das Hotel ist <b>hier</b>.', opts:['Wo?','Wohin?','Woher?'], correct:0, explain:'“hier" beschreibt einen Ort → Wo?' },
+    { id:2, q:'Welche Frage passt? — Ich gehe <b>dorthin</b>.', opts:['Wo?','Wohin?','Woher?'], correct:1, explain:'“dorthin" beschreibt eine Richtung → Wohin?' },
+    { id:3, q:'Welche Frage passt? — Er kommt <b>von dort</b>.', opts:['Wo?','Wohin?','Woher?'], correct:2, explain:'“von dort" beschreibt den Ausgangspunkt → Woher?' },
+    { id:4, q:'Welches Adverb passt? — Komm bitte ___! (in das Haus)', opts:['hinaus','herein','dorthin'], correct:1, explain:'“herein" = zum Sprecher, in etwas hinein.' },
+    { id:5, q:'Welches Adverb passt? — Geh bitte ___! (aus dem Haus)', opts:['herein','hierher','hinaus'], correct:2, explain:'“hinaus" = vom Sprecher weg, aus etwas heraus.' },
+    { id:6, q:'Was ist richtig? — Wo gehst du ___?', opts:['her','hin','dort'], correct:1, explain:'“gehen" = vom Sprecher weg → “hin".' },
+    { id:7, q:'Was ist richtig? — Wo kommst du ___?', opts:['hin','her','dorthin'], correct:1, explain:'“kommen" = zum Sprecher → “her".' },
+    { id:8, q:'Was passt? — Die Kinder kommen ___ herein.', opts:['von draußen','nach drinnen','dorthin'], correct:0, explain:'“von draußen" = Woher? Die Kinder kommen von draußen.' },
+    { id:9, q:'Was passt? — Die Rezeption ist ___.', opts:['dorthin','vorne links','von hier'], correct:1, explain:'“vorne links" beschreibt eine Position → Wo?' },
+    { id:10, q:'Was ist der Unterschied zwischen “hin" und “her"?', opts:['kein Unterschied','hin = zum Sprecher, her = weg','hin = weg vom Sprecher, her = zum Sprecher'], correct:2, explain:'“hin" = vom Sprecher weg, “her" = zum Sprecher.' }
 ];
 
 function initMcExercises() {
