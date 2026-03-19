@@ -77,11 +77,12 @@ body {
 /* ============================================================
    CONTROL BAR
    ============================================================ */
-.control-bar {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 18px; padding: 6px 12px;
-  background: #f8f9fa; border-radius: 8px;
-}
+.timer-bar { display:flex; align-items:center; gap:12px; background:white; border-radius:10px; padding:10px 16px; margin-bottom:16px; box-shadow:0 2px 6px rgba(0,0,0,0.07); font-size:0.85rem; color:#666; }
+.timer-display { font-weight:700; color:#667eea; font-size:1rem; }
+.best-display  { color:#f39c12; font-weight:600; }
+.btn-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+.btn-row button { background:none; border:1px solid #c0b0e8; border-radius:16px; padding:5px 16px; cursor:pointer; font-size:.88rem; color:#5a3e9e; transition:background .2s; }
+.btn-row button:hover { background:#f0edf8; }
 .btn-row-cb { display: flex; gap: 6px; }
 .control-bar button {
   background: none; border: 1px solid #ddd; border-radius: 6px;
@@ -89,8 +90,6 @@ body {
   cursor: pointer; transition: all 0.15s; font-weight: 500;
 }
 .control-bar button:hover { border-color: #667eea; color: #667eea; }
-.timer-display { font-weight: 700; color: #667eea; font-size: 1rem; }
-.best-display  { color: #f39c12; font-weight: 600; }
 .score-box { font-size: 0.83rem; color: #888; margin-left: auto; }
 .score-box span { font-weight: 700; color: #667eea; }
 
@@ -445,12 +444,13 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
     alt="Sortieren und Zuordnen">
   <div class="sec-inner">
 
-    <div class="control-bar">
-      <button onclick="resetZuo()">↺ Neu</button>
-      <span>⏱</span>
-      <span class="timer-display" id="timer-1">0:00</span>
-      <span class="best-display" id="best-1"></span>
+    <div class="timer-bar">
+      <span>⏱ <span class="timer-display" id="timer-1">0:00</span></span>
+      <span>🏆 <span class="best-display" id="best-1">–</span></span>
       <span class="score-box">Richtig: <span id="score1">0</span> / <span id="total1">0</span></span>
+    </div>
+    <div class="btn-row">
+      <button onclick="resetZuo()">↺ Neustart</button>
     </div>
 
     <p style="font-size:0.88rem;color:#555;margin-bottom:14px;">
@@ -499,12 +499,14 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
     alt="Schreiben und Üben">
   <div class="sec-inner">
 
-    <div class="control-bar">
-      <button onclick="resetLuecke()">↺ Neu</button>
-      <span>⏱</span>
-      <span class="timer-display" id="timer-2">0:00</span>
-      <span class="best-display" id="best-2"></span>
+    <div class="timer-bar">
+      <span>⏱ <span class="timer-display" id="timer-2">0:00</span></span>
+      <span>🏆 <span class="best-display" id="best-2">–</span></span>
       <span class="score-box">Richtig: <span id="score2">0</span> / <span id="total2">0</span></span>
+    </div>
+    <div class="btn-row">
+      <button onclick="resetLuecke()">↺ Neustart</button>
+      <button onclick="showLueckeLoesung()">💡 Lösungen</button>
     </div>
 
     <p style="font-size:0.85rem;color:#555;margin-bottom:6px;">Tipp die richtige Adjektivendung ein. Klicke auf ein rotes Feld für den Hinweis.</p>
@@ -530,12 +532,14 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
     alt="Puzzle und Satzbau">
   <div class="sec-inner">
 
-    <div class="control-bar">
-      <button onclick="sbResetAll()">↺ Neu</button>
-      <span>⏱</span>
-      <span class="timer-display" id="timer-3">0:00</span>
-      <span class="best-display" id="best-3"></span>
+    <div class="timer-bar">
+      <span>⏱ <span class="timer-display" id="timer-3">0:00</span></span>
+      <span>🏆 <span class="best-display" id="best-3">–</span></span>
       <span class="score-box">Richtig: <span id="score3">0</span> / <span id="total3">0</span></span>
+    </div>
+    <div class="btn-row">
+      <button onclick="timerResetOne(3); initSatzbau();">↺ Neustart</button>
+      <button onclick="satzbauData.forEach(function(_,i){sbShowSolution(i);})">💡 Lösungen</button>
     </div>
 
     <div id="satzbauContainer"></div>
@@ -552,12 +556,13 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
     alt="Wortschatz lernen">
   <div class="sec-inner">
 
-    <div class="control-bar">
-      <button onclick="wsReset()">↺ Neu</button>
-      <span>⏱</span>
-      <span class="timer-display" id="timer-4">0:00</span>
-      <span class="best-display" id="best-4"></span>
+    <div class="timer-bar">
+      <span>⏱ <span class="timer-display" id="timer-4">0:00</span></span>
+      <span>🏆 <span class="best-display" id="best-4">–</span></span>
       <span class="score-box">Richtig: <span id="score4">0</span> / <span id="total4">0</span></span>
+    </div>
+    <div class="btn-row">
+      <button onclick="wsReset()">↺ Neustart</button>
     </div>
 
     <div class="vocab-grid" id="vocabContainer"></div>

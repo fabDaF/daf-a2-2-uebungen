@@ -525,6 +525,47 @@ def check_file(filepath):
         else:
             errors.append(fail("Nav-btn: flex: 1 FEHLT — Tabs werden linksbündig geclustert"))
 
+    # 15h: .btn darf NICHT ausgefüllt sein (background:#667eea = alter falscher Stil)
+    btn_css = re.search(r'\.btn\s*\{([^}]+)\}', content)
+    if btn_css:
+        btn_body = btn_css.group(1)
+        if re.search(r'background\s*:\s*#667eea|background\s*:\s*#5a6fd6', btn_body):
+            errors.append(fail('.btn hat gefüllten lila Hintergrund (background:#667eea) — Skill-Standard: background:none, border:1px solid #ddd'))
+        elif re.search(r'background\s*:\s*#9e9e9e|background\s*:\s*#757575', btn_body):
+            errors.append(fail('.btn.secondary mit grauem Hintergrund — muss dezent sein (background:none)'))
+        else:
+            passes.append(ok('.btn dezent (kein gefüllter lila/grauer Hintergrund)'))
+
+    # 15i: .btn-row button muss border haben (Skill-Standard)
+    btnrow_btn = re.search(r'\.btn-row\s+button\s*\{([^}]+)\}', content)
+    if btnrow_btn:
+        if 'border' in btnrow_btn.group(1):
+            passes.append(ok('.btn-row button mit border CSS (Skill-Standard)'))
+        else:
+            warnings.append(warn('.btn-row button CSS ohne border — Skill-Standard prüfen'))
+
+    # 15j: .control-bar ist VERBOTEN — veraltetes Pattern statt .timer-bar
+    if re.search(r'class="control-bar"|\.control-bar\s*\{', content):
+        errors.append(fail('[15j] .control-bar gefunden — veraltetes Layout-Pattern\! Korrekt: .timer-bar (weiß, Schatten) + .btn-row (lila Outline-Buttons) als getrennte Divs'))
+    else:
+        passes.append(ok('Kein .control-bar (veraltetes Timer-Layout-Pattern)'))
+
+    # 15k: .timer-bar CSS muss vorhanden sein wenn Timer-IDs vorhanden sind
+    has_timer_ids = bool(re.search(r'id="timer-\d', content))
+    has_timer_bar_css = bool(re.search(r'\.timer-bar\s*\{', content))
+    if has_timer_ids:
+        if has_timer_bar_css:
+            passes.append(ok('.timer-bar CSS vorhanden (Skill-Standard Timer-Layout)'))
+        else:
+            errors.append(fail('[15k] Timer-IDs vorhanden, aber .timer-bar CSS FEHLT — Skill-Standard: .timer-bar mit background:white, box-shadow, border-radius:10px'))
+
+    # 15l: .btn-row CSS muss vorhanden sein (für globale Steuer-Buttons)
+    if re.search(r'\.btn-row\s*\{', content):
+        passes.append(ok('.btn-row CSS vorhanden'))
+    else:
+        if has_timer_ids:
+            errors.append(fail('[15l] .btn-row CSS FEHLT — Skill-Standard: getrennte Zeile unter .timer-bar mit Neustart- und Lösungen-Buttons'))
+
     # ═══════════════════════════════════════════════════════
     # ZUSAMMENFASSUNG
     # ═══════════════════════════════════════════════════════
