@@ -492,11 +492,11 @@ body {
       <div class="timer-bar">
         <div class="btn-row">
           <button class="btn" onclick="lueckeReset()">↺ Neu</button>
+          <button class="btn" onclick="lueckeLoesung()">💡 Lösungen</button>
         </div>
         <div class="timer-display">
           <span>⏱ <span class="timer-val" id="timer-2">0:00</span></span>
           <span>🏆 <span class="best-val" id="best-2">–</span></span>
-          <span>Richtig: <span style="font-weight:700;color:#667eea" id="score2">0</span> / <span id="total2">0</span></span>
         </div>
       </div>
 
@@ -573,11 +573,11 @@ body {
       <div class="timer-bar">
         <div class="btn-row">
           <button class="btn" onclick="sbResetAll()">↺ Neu</button>
+          <button class="btn" onclick="sbShowAllSolutions()">💡 Lösungen</button>
         </div>
         <div class="timer-display">
           <span>⏱ <span class="timer-val" id="timer-3">0:00</span></span>
           <span>🏆 <span class="best-val" id="best-3">–</span></span>
-          <span>Richtig: <span style="font-weight:700;color:#667eea" id="score3">0</span> / <span id="total3">0</span></span>
         </div>
       </div>
 
@@ -758,15 +758,6 @@ function liveCheck(inp, tabN) {
   checkLueckeAllDone();
 }
 
-function updateScore2() {
-  var all = document.querySelectorAll('#sec-2 .gap-inp');
-  var ok  = document.querySelectorAll('#sec-2 .gap-inp.correct');
-  var s = document.getElementById('score2');
-  var t = document.getElementById('total2');
-  if (s) s.textContent = ok.length;
-  if (t) t.textContent = all.length;
-}
-
 function checkLueckeAllDone() {
   var all = document.querySelectorAll('#sec-2 .gap-inp');
   var ok  = document.querySelectorAll('#sec-2 .gap-inp.correct');
@@ -779,8 +770,15 @@ function lueckeReset() {
     inp.value = '';
     inp.classList.remove('correct','wrong');
   });
-  document.getElementById('score2').textContent = '0';
-  updateScore2();
+}
+
+function lueckeLoesung() {
+  timerStop(2);
+  document.querySelectorAll('#sec-2 .gap-inp').forEach(function(inp) {
+    inp.value = inp.dataset.ans;
+    inp.classList.remove('wrong');
+    inp.classList.add('correct');
+  });
 }
 
 /* ============================================================
@@ -984,6 +982,11 @@ function sbCheckAllDone() {
 }
 
 /* ─── Lösung anzeigen ────────────────────────────────────────── */
+function sbShowAllSolutions() {
+  timerStop(3);
+  for (var i = 0; i < satzbauData.length; i++) { sbShowSolution(i); }
+}
+
 function sbShowSolution(idx) {
   var bank = document.getElementById('sb-bank-' + idx);
   var row  = document.getElementById('sb-row-'  + idx);

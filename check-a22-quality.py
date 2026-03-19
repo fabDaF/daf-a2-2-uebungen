@@ -601,6 +601,95 @@ def check_file(filepath):
         passes.append(ok('Kein verbotenes Satz-1/2/3-Label im Satzbau'))
 
     # ═══════════════════════════════════════════════════════
+    # [16] daf-uebungsformen Skill-Regeln
+    # ═══════════════════════════════════════════════════════
+    print(f"\n{BOLD}[16] Übungsformen (daf-uebungsformen Skill){RESET}")
+
+    import re as _re3
+
+    # 16a: Kein Prüfen-Button — ABSOLUT VERBOTEN (gilt für alle Übungsformen)
+    pruef_buttons = _re3.findall(
+        r'<button[^>]*>[^<]*(?:Prüfen|Lösungen prüfen|Check)[^<]*</button>',
+        content
+    )
+    if pruef_buttons:
+        errors.append(fail(f"[16a] VERBOTEN: Prüfen-Button gefunden ({len(pruef_buttons)}x) — alle Übungen nutzen ausschließlich Live-Feedback"))
+    else:
+        passes.append(ok('Kein Prüfen-Button (Live-Feedback-Regel eingehalten)'))
+
+    # 16b: score-box / Richtig-Anzeige darf NICHT in timer-bar stehen
+    # (score-box in timer-bar wurde schon in 15m geprüft — hier prüfen wir
+    # auch inline-Spans mit "Richtig:" Text in timer-bar)
+    timer_bar_blocks = _re3.findall(r'<div class="timer-bar"[^>]*>.*?</div>\s*</div>', content, _re3.DOTALL)
+    richtig_in_timer = any(('Richtig:' in b or 'score' in b.lower() and 'score-box' in b) for b in timer_bar_blocks)
+    if richtig_in_timer:
+        errors.append(fail('[16b] "Richtig:"-Anzeige in timer-bar gefunden — VERBOTEN: Timer-Bar enthält NUR Timer + Bestzeit'))
+    else:
+        passes.append(ok('Keine Richtig/Score-Anzeige in timer-bar'))
+
+    # 16c: btn-row muss Lösungen-Button enthalten wenn lueckeReset/sbResetAll vorhanden
+    has_luecke_reset = 'lueckeReset' in content or 'lueckeReset()' in content
+    has_luecke_loesung = 'lueckeLoesung' in content or 'showLueckeLoesung' in content
+    has_sb_reset = 'sbResetAll' in content
+    has_sb_loesung = 'sbShowAllSolutions' in content or 'sbShowSolution' in content
+
+    if has_luecke_reset and not has_luecke_loesung:
+        errors.append(fail('[16c] Lückentext hat ↺ Neu aber KEINEN 💡 Lösungen-Button — Skill verlangt immer beide Buttons'))
+    elif has_luecke_reset:
+        passes.append(ok('Lückentext: Neu + Lösungen-Buttons vorhanden'))
+
+    if has_sb_reset and not has_sb_loesung:
+        errors.append(fail('[16d] Satzbau hat ↺ Neu aber KEINEN 💡 Lösungen-Button — Skill verlangt immer beide Buttons'))
+    elif has_sb_reset:
+        passes.append(ok('Satzbau: Neu + Lösungen-Buttons vorhanden'))
+
+    # 16e: .luecken-inp oder .gap-inp CSS: border-bottom (kein border ringsherum)
+    # Skill: border: none; border-bottom: 2px solid #c5cae9
+    has_luecke_inp = '.luecken-inp' in content or '.gap-inp' in content
+    if has_luecke_inp:
+        has_border_bottom = 'border-bottom' in content and ('luecken-inp' in content or 'gap-inp' in content)
+        has_wrong_border = _re3.search(r'\.(?:luecken-inp|gap-inp)\s*\{[^}]*border\s*:', content) is not None
+        if has_border_bottom:
+            passes.append(ok('Lückentext-Input: border-bottom CSS vorhanden'))
+        else:
+            errors.append(fail('[16e] Lückentext-Input: border-bottom fehlt — Skill: border:none; border-bottom:2px solid #c5cae9'))
+
+    # 16f: .ok und .no CSS für Lückentext-Inputs (grün/rot Feedback)
+    # Skill: .luecken-inp.ok → grün, .luecken-inp.no → rot
+    # Alternativen: .correct/.wrong sind auch erlaubt (ältere Dateien)
+    has_ok_no = ('.ok' in content and '.no' in content) or ('.correct' in content and '.wrong' in content)
+    if not has_ok_no:
+        errors.append(fail('[16f] Fehlende .ok/.no oder .correct/.wrong CSS-Klassen für Live-Feedback'))
+    else:
+        passes.append(ok('Live-Feedback CSS-Klassen (.ok/.no oder .correct/.wrong) vorhanden'))
+
+    # 16g: Multiple-Choice Buttons: font-size 11px (kompakte Pills, nicht breite Balken)
+    if '.mc-opt' in content:
+        mc_font = _re3.search(r'\.mc-opt\s*\{[^}]*font-size\s*:\s*11px', content)
+        mc_flex_col = _re3.search(r'\.mc-opts\s*\{[^}]*flex-direction\s*:\s*column', content)
+        if mc_flex_col:
+            errors.append(fail('[16g] .mc-opts mit flex-direction:column — VERBOTEN: Buttons müssen nebeneinander stehen (flex-wrap:wrap)'))
+        elif not mc_font:
+            warnings.append(warn('[16g] .mc-opt font-size sollte 11px sein (kompakte Pills, nicht breite Balken) — Skill-Empfehlung'))
+        else:
+            passes.append(ok('Multiple-Choice: kompakte Pill-Buttons (11px, flex-wrap)'))
+
+    # 16h: Zuordnungsübung — kein Prüfen-Button, Live-Feedback
+    if 'match-card' in content or 'matchDescCard' in content:
+        if _re3.search(r'<button[^>]*>(?:Prüfen|Check|Auswerten)', content):
+            errors.append(fail('[16h] Zuordnungsübung hat Prüfen-Button — VERBOTEN: sofortiges Live-Feedback via matchDescCard()'))
+        else:
+            passes.append(ok('Zuordnungsübung: kein Prüfen-Button (Live-Feedback)'))
+
+    # 16i: Wortschatz-Tab: wortschatzCheck() verwenden, NICHT liveCheck()
+    if 'wortschatzContainer' in content or 'wortschatzCheck' in content:
+        has_ws_check = 'wortschatzCheck' in content
+        if not has_ws_check:
+            errors.append(fail('[16i] Wortschatz-Tab ohne wortschatzCheck() — VERBOTEN: liveCheck() ist case-insensitive, Nomen müssen case-sensitive geprüft werden'))
+        else:
+            passes.append(ok('Wortschatz-Tab: wortschatzCheck() vorhanden (case-sensitive für Nomen)'))
+
+    # ═══════════════════════════════════════════════════════
     # ZUSAMMENFASSUNG
     # ═══════════════════════════════════════════════════════
     print(f"\n{'─'*60}")
