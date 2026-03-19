@@ -25,13 +25,11 @@ body {
    ============================================================ */
 .header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white; padding: 24px 30px;
-  font-family: Georgia, 'Times New Roman', serif;
+  color: white; padding: 30px; text-align: center;
 }
-.header h1 { font-size: 1.45rem; font-weight: 700; letter-spacing: 0.3px;
-  font-family: Georgia, 'Times New Roman', serif; }
-.header p  { font-size: 0.9rem; opacity: 0.85; margin-top: 4px;
-  font-family: 'Segoe UI', Arial, sans-serif; }
+.header h1 { font-size: 2.2em; font-family: Georgia, 'Times New Roman', serif; color: white; margin-bottom: 8px; border: none; padding: 0; }
+.header p  { font-size: 1.1em; font-family: Georgia, 'Times New Roman', serif; opacity: 0.95; color: rgba(255,255,255,0.9); margin: 0; }
+.big-emoji { font-size: 2.6em; display: block; margin-top: 8px; }
 
 /* ============================================================
    NAV
@@ -46,8 +44,8 @@ body {
 .nav-btn {
   flex: 1;
   padding: 14px 10px; text-align: center; cursor: pointer;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  border: none; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd;
+  outline: none; -webkit-appearance: none; appearance: none;
   transition: all 0.3s; font-size: 0.92em; font-weight: 500; color: #666;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   background: transparent; font-family: inherit;
@@ -308,9 +306,9 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
      HEADER
      ============================================================ -->
 <div class="header">
-  <div class="big-emoji">📝</div>
   <h1>Mehr über Adjektivendungen</h1>
-  <p>A2.2 · Lektion 2067G · Kasus, Adjektivdeklination, Präpositionen</p>
+  <p style="font-family: Georgia, serif;">A2.2 · Lektion 2067G · Kasus, Adjektivdeklination, Präpositionen</p>
+  <div class="big-emoji">📝</div>
 </div>
 
 <!-- ============================================================
