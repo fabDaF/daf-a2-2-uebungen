@@ -1034,8 +1034,8 @@ function initSatzbau() {
   if (container.dataset.init === '1') return;
   container.dataset.init = '1';
   container.innerHTML = '';
-  document.getElementById('total3').textContent = satzbauData.length;
-  document.getElementById('score3').textContent = '0';
+  var _t3 = document.getElementById('total3'); if (_t3) _t3.textContent = satzbauData.length;
+  var _s3 = document.getElementById('score3'); if (_s3) _s3.textContent = '0';
 
   satzbauData.forEach(function(ex, idx) {
     var item = document.createElement('div');
