@@ -90,8 +90,6 @@ body {
   cursor: pointer; transition: all 0.15s; font-weight: 500;
 }
 .control-bar button:hover { border-color: #667eea; color: #667eea; }
-.score-box { font-size: 0.83rem; color: #888; margin-left: auto; }
-.score-box span { font-weight: 700; color: #667eea; }
 
 /* ============================================================
    ENTDECKUNGS-TAB
@@ -447,7 +445,6 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
     <div class="timer-bar">
       <span>⏱ <span class="timer-display" id="timer-1">0:00</span></span>
       <span>🏆 <span class="best-display" id="best-1">–</span></span>
-      <span class="score-box">Richtig: <span id="score1">0</span> / <span id="total1">0</span></span>
     </div>
     <div class="btn-row">
       <button onclick="resetZuo()">↺ Neustart</button>
@@ -502,7 +499,6 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
     <div class="timer-bar">
       <span>⏱ <span class="timer-display" id="timer-2">0:00</span></span>
       <span>🏆 <span class="best-display" id="best-2">–</span></span>
-      <span class="score-box">Richtig: <span id="score2">0</span> / <span id="total2">0</span></span>
     </div>
     <div class="btn-row">
       <button onclick="resetLuecke()">↺ Neustart</button>
@@ -535,7 +531,6 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
     <div class="timer-bar">
       <span>⏱ <span class="timer-display" id="timer-3">0:00</span></span>
       <span>🏆 <span class="best-display" id="best-3">–</span></span>
-      <span class="score-box">Richtig: <span id="score3">0</span> / <span id="total3">0</span></span>
     </div>
     <div class="btn-row">
       <button onclick="timerResetOne(3); initSatzbau();">↺ Neustart</button>
@@ -559,7 +554,6 @@ input.blank.wrong   { border-color: #e74c3c; background: #ffebee; }
     <div class="timer-bar">
       <span>⏱ <span class="timer-display" id="timer-4">0:00</span></span>
       <span>🏆 <span class="best-display" id="best-4">–</span></span>
-      <span class="score-box">Richtig: <span id="score4">0</span> / <span id="total4">0</span></span>
     </div>
     <div class="btn-row">
       <button onclick="wsReset()">↺ Neustart</button>
@@ -787,7 +781,7 @@ function zuoInit() {
     bank.appendChild(chip);
   });
   updateScore(1);
-  document.getElementById('total1').textContent = ZUO_DATA.length;
+  var _s_total1 = document.getElementById('total1'); if (_s_total1) _s_total1.textContent = ZUO_DATA.length;
 }
 
 function allowDrop(e) { e.preventDefault(); }
@@ -1237,8 +1231,8 @@ function sbResetOne(idx) {
 function initSatzbau() {
   var container = document.getElementById('satzbauContainer');
   container.innerHTML = '';
-  document.getElementById('total3').textContent = satzbauData.length;
-  document.getElementById('score3').textContent = '0';
+  var _s_total3 = document.getElementById('total3'); if (_s_total3) _s_total3.textContent = satzbauData.length;
+  var _s_score3 = document.getElementById('score3'); if (_s_score3) _s_score3.textContent = '0';
 
   satzbauData.forEach(function(ex, idx) {
     var item = document.createElement('div');
@@ -1361,8 +1355,8 @@ function wsUpdateScore() {
 function wsInit() {
   var grid = document.getElementById('vocabContainer');
   grid.innerHTML = '';
-  document.getElementById('total4').textContent = WS_DATA.length;
-  document.getElementById('score4').textContent = '0';
+  var _s_total4 = document.getElementById('total4'); if (_s_total4) _s_total4.textContent = WS_DATA.length;
+  var _s_score4 = document.getElementById('score4'); if (_s_score4) _s_score4.textContent = '0';
   shuffle(WS_DATA).forEach(function(item) {
     var card = document.createElement('div');
     card.className = 'vocab-card';
