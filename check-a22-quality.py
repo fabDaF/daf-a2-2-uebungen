@@ -463,6 +463,69 @@ def check_file(filepath):
                     errors.append(fail("Lückentext-Timer (Callback) startet NACH Korrektheitscheck"))
 
     # ═══════════════════════════════════════════════════════
+    # 15. LAYOUT-QUALITÄT (Header, Nav, doppelter Footer)
+    # ═══════════════════════════════════════════════════════
+    print(f"\n{BOLD}[15] Layout-Qualität{RESET}")
+
+    # 15a: Kein doppelter Footer (<footer class="footer"> ist VERBOTEN)
+    if re.search(r'<footer\s+class="footer"', content):
+        errors.append(fail('Doppelter Footer: <footer class="footer"> gefunden — nur .author-footer erlaubt'))
+    else:
+        passes.append(ok("Kein doppelter Footer"))
+
+    # 15b: Kein .footer CSS (veraltetes Muster)
+    if re.search(r'\.footer\s*\{', content):
+        errors.append(fail('.footer CSS gefunden — veraltetes Muster, nur .author-footer verwenden'))
+    else:
+        passes.append(ok("Kein .footer CSS (veraltetes Muster)"))
+
+    # 15c: Header text-align: center
+    header_css = re.search(r'\.header\s*\{([^}]*)\}', content, re.DOTALL)
+    if header_css:
+        if 'text-align: center' in header_css.group(1) or 'text-align:center' in header_css.group(1):
+            passes.append(ok("Header: text-align: center"))
+        else:
+            errors.append(fail("Header: text-align: center FEHLT — Überschrift wird nicht zentriert"))
+    else:
+        errors.append(fail("Header CSS-Block nicht gefunden"))
+
+    # 15d: Header padding: 30px (nicht 24px oder anderes)
+    if header_css:
+        hpad = re.search(r'padding:\s*(\d+px)', header_css.group(1))
+        if hpad and hpad.group(1) == '30px':
+            passes.append(ok("Header: padding: 30px"))
+        elif hpad:
+            warnings.append(warn(f"Header padding: {hpad.group(1)} — Skill-Standard ist 30px"))
+
+    # 15e: big-emoji steht NACH dem <p>-Untertitel (nicht davor)
+    h1_pos = content.find('<h1>')
+    p_pos = content.find('<p ', h1_pos) if h1_pos >= 0 else -1
+    emoji_pos = content.find('class="big-emoji"', h1_pos) if h1_pos >= 0 else -1
+    if h1_pos >= 0 and p_pos >= 0 and emoji_pos >= 0:
+        if emoji_pos > p_pos:
+            passes.append(ok("big-emoji steht nach dem Untertitel (korrekte Reihenfolge)"))
+        else:
+            errors.append(fail("big-emoji steht VOR dem Untertitel — muss nach <p> kommen"))
+    elif emoji_pos >= 0 and h1_pos >= 0:
+        passes.append(ok("big-emoji vorhanden"))
+
+    # 15f: Nav-Button <button> braucht border:none / appearance:none (Browser-Defaults verhindern)
+    nav_btn_css = re.search(r'\.nav-btn\s*\{([^}]*)\}', content, re.DOTALL)
+    if nav_btn_css:
+        nb = nav_btn_css.group(1)
+        if 'appearance: none' in nb or '-webkit-appearance: none' in nb or 'border: none' in nb:
+            passes.append(ok("Nav-btn: Browser-Default-Border zurückgesetzt"))
+        else:
+            errors.append(fail("Nav-btn: border:none / appearance:none FEHLT — Browser rendert schwarze Linien bei <button>"))
+
+    # 15g: Nav-btn flex:1 vorhanden
+    if nav_btn_css:
+        if 'flex: 1' in nav_btn_css.group(1) or 'flex:1' in nav_btn_css.group(1):
+            passes.append(ok("Nav-btn: flex: 1 (Tabs gleichmäßig verteilt)"))
+        else:
+            errors.append(fail("Nav-btn: flex: 1 FEHLT — Tabs werden linksbündig geclustert"))
+
+    # ═══════════════════════════════════════════════════════
     # ZUSAMMENFASSUNG
     # ═══════════════════════════════════════════════════════
     print(f"\n{'─'*60}")
