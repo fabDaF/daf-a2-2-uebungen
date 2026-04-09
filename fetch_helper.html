@@ -1,0 +1,21 @@
+<!DOCTYPE html><html><body>
+<div id="out">Waiting...</div>
+<script>
+const ids = ['7391128','5475173','962356','7770947','1082528','4827133','6765072'];
+window._imgs = {}; window._done = false;
+(async () => {
+  for (const id of ids) {
+    document.getElementById('out').textContent = 'Fetching ' + id + '...';
+    try {
+      const r = await fetch('https://images.pexels.com/photos/'+id+'/pexels-photo-'+id+'.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop');
+      const blob = await r.blob();
+      const b64 = await new Promise(res => { const rd = new FileReader(); rd.onloadend = () => res(rd.result); rd.readAsDataURL(blob); });
+      window._imgs[id] = b64;
+    } catch(e) { window._imgs[id] = 'ERROR:' + e.message; }
+  }
+  const blob = new Blob([JSON.stringify(window._imgs)], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bilder_2032x.json'; document.body.appendChild(a); a.click();
+  window._done = true;
+  document.getElementById('out').textContent = 'DONE! ' + Object.keys(window._imgs).length + ' images';
+})();
+</script></body></html>
